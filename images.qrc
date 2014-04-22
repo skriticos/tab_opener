@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>rc/fileicon.png</file>
+        <file>rc/document-open.png</file>
+        <file>rc/folder.png</file>
+        <file>rc/folder-templates.png</file>
+        <file>rc/forward.png</file>
+        <file>rc/terminal.png</file>
+        <file>rc/text-editor.png</file>
+        <file>rc/back.png</file>
+        <file>rc/gohome.png</file>
+        <file>rc/go-jump-locationbar.png</file>
+        <file>rc/document-preview.png</file>
+        <file>rc/debug-run.png</file>
+        <file>rc/configure.png</file>
+        <file>rc/editpaste.png</file>
+        <file>rc/editcopy.png</file>
+        <file>rc/debug-execute-to-cursor.png</file>
+        <file>rc/media-seek-forward.png</file>
+        <file>rc/gnome-control-center.png</file>
+        <file>rc/kxkb.png</file>
+    </qresource>
+</RCC>
