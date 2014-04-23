@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QShortcut>
+#include <QFileSystemModel>
 
 namespace Ui {
 class MainWindow;
@@ -19,9 +20,12 @@ public:
 private slots:
     void on_wpb_edit_toggled(bool checked);
 
+    void on_wb_folders_activated(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     QShortcut *shortEsc;
+    QFileSystemModel *dirmodel, *filemodel;
 };
 
 #endif // MAINWINDOW_H
