@@ -4,9 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+CONFIG(release, debug|release) {
+    #This is a release build
+    DEFINES += QT_NO_DEBUG_OUTPUT
+} else {
+    #This is a debug build
+}
 
 TARGET = tab_opener
 TEMPLATE = app

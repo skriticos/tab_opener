@@ -5,6 +5,7 @@
 #include <QShortcut>
 #include <QFileSystemModel>
 #include <QDebug>
+#include <QtSql>
 
 namespace Ui {
 class MainWindow;

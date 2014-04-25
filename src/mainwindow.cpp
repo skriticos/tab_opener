@@ -34,6 +34,16 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     myFileExtOpenEdit["go"] = QStringList() << "/usr/bin/go run %F" << "/usr/bin/gvim %F";
     myFileExtOpenEdit["h"] = QStringList() << "" << "/usr/bin/gvim %F";
     myFileExtOpenEdit["cpp"] = QStringList() << "" << "/usr/bin/gvim %F";
+
+    QSqlDatabase mydb = QSqlDatabase::addDatabase("QSQLITE");
+    mydb.setDatabaseName("/home/seth/.tab_opener.db");
+    mydb.open();
+    if (mydb.tables().contains("extensions")) {
+        qDebug() << "extension table found, reading entries..";
+    } else {
+        mydb.exec("create table extensions ( extension varchar(20), appopen varchar(255), appedit varchar(255) );");
+    }
+    mydb.close();
 }
 
 MainWindow::~MainWindow()
