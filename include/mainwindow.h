@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QShortcut>
 #include <QFileSystemModel>
+#include <QDebug>
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,7 @@ private:
     Ui::MainWindow *ui;
     QShortcut *shortEsc;
     QFileSystemModel *dirmodel, *filemodel;
+    QHash<QString, QStringList> myFileExtOpenEdit;
 };
 
 #endif // MAINWINDOW_H
