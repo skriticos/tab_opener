@@ -25,19 +25,22 @@ SOURCES += \
     src/filelist.cpp \
     src/cmdlist.cpp \
     src/mainwindow.cpp \
-    src/datastore.cpp
+    src/datastore.cpp \
+    src/configwidget.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
     include/filelist.h \
     include/cmdlist.h \
     include/mainwindow.h \
-    include/datastore.h
+    include/datastore.h \
+    src/configwidget.h
 
 FORMS    += \
     ui/filelist.ui \
     ui/cmdlist.ui \
-    ui/mainwindow.ui
+    ui/mainwindow.ui \
+    src/configwidget.ui
 
 RESOURCES += \
     images.qrc

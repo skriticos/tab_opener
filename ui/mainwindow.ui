@@ -107,7 +107,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" rowspan="2" colspan="10">
+      <item row="2" column="1" rowspan="2" colspan="11">
        <widget class="QListView" name="wb_files">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -117,7 +117,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="10">
+      <item row="0" column="1" colspan="11">
        <widget class="QWidget" name="wpath" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -276,6 +276,19 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="0" rowspan="4">
+       <widget class="QTreeView" name="wb_folders">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
       <item row="1" column="6">
        <widget class="HoverButton" name="wpb_terminal">
         <property name="sizePolicy">
@@ -293,7 +306,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="10">
+      <item row="1" column="11">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -323,19 +336,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0" rowspan="4">
-       <widget class="QTreeView" name="wb_folders">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <attribute name="headerVisible">
-         <bool>false</bool>
-        </attribute>
-       </widget>
-      </item>
       <item row="1" column="9">
        <widget class="HoverButton" name="wpb_edit">
         <property name="sizePolicy">
@@ -353,6 +353,23 @@
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="10">
+       <widget class="HoverButton" name="pushButton_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/configure.png</normaloff>:/images/rc/configure.png</iconset>
         </property>
        </widget>
       </item>
