@@ -24,13 +24,15 @@ SOURCES += \
     src/hoverbutton.cpp \
     src/filelist.cpp \
     src/cmdlist.cpp \
-    src/mainwindow.cpp
+    src/mainwindow.cpp \
+    src/datastore.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
     include/filelist.h \
     include/cmdlist.h \
-    include/mainwindow.h
+    include/mainwindow.h \
+    include/datastore.h
 
 FORMS    += \
     ui/filelist.ui \

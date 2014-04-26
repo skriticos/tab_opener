@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QtSql>
 
+#include "datastore.h"
+
 namespace Ui {
 class MainWindow;
 }
