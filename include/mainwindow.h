@@ -23,12 +23,16 @@ public:
 
 private slots:
     void setPresets();
+    void setRootPath();
+    void setPath(QString path);
     void on_wpb_edit_toggled(bool checked);
     void on_wb_folders_activated(const QModelIndex &index);
     void on_config_presets_clicked();
 
 private:
     Ui::MainWindow *ui;
+    QString path;
+    QList<QPushButton> charmButtons;
     QShortcut *shortEsc;
     QFileSystemModel *dirmodel, *filemodel;
     ConfigWidget *wconfig;

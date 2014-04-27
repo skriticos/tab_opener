@@ -52,19 +52,13 @@ void DataStore::loadData()
 
 void DataStore::saveData()
 {
-    /* -> does not work, posted question on SO why
     QSqlQuery qPreset(myDB);
-    qPreset.prepare("UPDATE presets SET path=':path' WHERE id=':id';");
+    qPreset.prepare("UPDATE presets SET path=:path WHERE id=:id;");
     for (int i=0; i<10; i++){
         qPreset.bindValue(":path", presets[i]);
         qPreset.bindValue(":id", i+1);
         qPreset.exec();
     }
-    */
-
-    // workaround
-    for (int i=0; i<10; i++)
-        myDB.exec("UPDATE presets SET path='" + presets[i] + "' WHERE id='" + QString::number(i+1) + "';");
 }
 
 void DataStore::setPreset(int pos, QString path)

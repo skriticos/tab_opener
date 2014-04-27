@@ -31,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wb_folders->hideColumn(3);
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
+
+    connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
 }
 
 MainWindow::~MainWindow()
@@ -50,6 +52,37 @@ void MainWindow::setPresets()
     ui->wprb7->setText(ds->getPreset(7));
     ui->wprb8->setText(ds->getPreset(8));
     ui->wprb9->setText(ds->getPreset(9));
+}
+
+void MainWindow::setRootPath()
+{
+    this->setPath(QDir::rootPath());
+}
+
+void MainWindow::setPath(QString path)
+{
+    this->path = path;
+
+    // split path into directories
+    QStringList charmParts = path.split(QDir::separator());
+
+    ui->wb_folders->setCurrentIndex(dirmodel->index(path));
+    ui->wb_files->setRootIndex(filemodel->setRootPath(path));
+    ui->wb_folders->setExpanded(dirmodel->index(path), true);
+
+    // clear previous buttons and labels
+    // TODO
+
+    // create new charms
+    /*
+    for (int i=0; i<charmParts.size(); i++){
+        if (!charmParts[i].isEmpty()){
+            QPushButton b = QPushButton(charmParts[i], this);
+            this->charmButtons.append(b);
+
+        }
+    }
+    */
 }
 
 void MainWindow::on_wpb_edit_toggled(bool checked)
