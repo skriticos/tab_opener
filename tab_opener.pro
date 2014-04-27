@@ -26,7 +26,8 @@ SOURCES += \
     src/cmdlist.cpp \
     src/mainwindow.cpp \
     src/datastore.cpp \
-    src/configwidget.cpp
+    src/configwidget.cpp \
+    src/charmbutton.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -34,7 +35,8 @@ HEADERS  += \
     include/cmdlist.h \
     include/mainwindow.h \
     include/datastore.h \
-    include/configwidget.h
+    include/configwidget.h \
+    include/charmbutton.h
 
 FORMS    += \
     ui/filelist.ui \

@@ -1,7 +1,6 @@
 #include "hoverbutton.h"
 
-HoverButton::HoverButton(QWidget *parent) :
-    QPushButton(parent)
+HoverButton::HoverButton(QWidget *parent) : QPushButton(parent)
 {
     setFlat(true);
 }

@@ -8,6 +8,7 @@
 
 #include "datastore.h"
 #include "configwidget.h"
+#include "charmbutton.h"
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ private slots:
     void on_wpb_edit_toggled(bool checked);
     void on_wb_folders_activated(const QModelIndex &index);
     void on_config_presets_clicked();
+    void charmClicked(QString path);
 
 private:
     Ui::MainWindow *ui;
@@ -37,6 +39,8 @@ private:
     QFileSystemModel *dirmodel, *filemodel;
     ConfigWidget *wconfig;
     DataStore *ds;
+
+    CharmButton *cbutton;
 };
 
 #endif // MAINWINDOW_H

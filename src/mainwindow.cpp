@@ -33,6 +33,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wb_folders->hideColumn(1);
 
     connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+
+    /*
+     * this is the proof of concept part for charms
+     * should be straight forward from here to implement this correctly now
+     */
+    cbutton = new CharmButton("test", "/home/seth/projects", ui->wpcharms);
+    connect(cbutton, SIGNAL(charmClicked(QString)), this, SLOT(charmClicked(QString)));
+    int i = ui->horizontalLayout_2->count();
+    ui->horizontalLayout_2->insertWidget(i-2, cbutton);
+    QLabel *l = new QLabel("/", this);
+    ui->horizontalLayout_2->insertWidget(i-1, l);
 }
 
 MainWindow::~MainWindow()
@@ -100,4 +111,9 @@ void MainWindow::on_wb_folders_activated(const QModelIndex &index)
 void MainWindow::on_config_presets_clicked()
 {
     wconfig->show();
+}
+
+void MainWindow::charmClicked(QString path)
+{
+    this->setPath(path);
 }
