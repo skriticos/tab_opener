@@ -4,6 +4,9 @@
 #include <QtCore>
 #include <QObject>
 #include <QSql>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 #include <QDebug>
 
 struct ExtensionHandlers
@@ -36,11 +39,13 @@ class DataStore : public QObject
     Q_OBJECT
 public:
     explicit DataStore(QObject *parent = 0);
+    ~DataStore();
     void loadData();
     void saveData();
     void incrementFile(QString filePath, QString execPath);
     void incrementCmd(QString command, QString execPath);
     void setPreset(int pos, QString path);
+    QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
 
 signals:
@@ -48,12 +53,14 @@ signals:
 public slots:
 
 private:
-    QStringList presets;
+    QString presets[10];
     QHash<QString, ExtensionHandlers> extensions;
     QList<FileEntry> recentFiles; // fifo queue, 10 entries
     QList<FileEntry> popularFiles; // sorted list, most used first
     QList<RunEntry> recentCommands; // fifo queue, 10 entries
     QList<RunEntry> popularCommands; // sorted list, most used first
+
+    QSqlDatabase myDB;
 };
 
 #endif // DATASTORE_H

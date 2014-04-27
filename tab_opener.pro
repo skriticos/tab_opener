@@ -34,13 +34,13 @@ HEADERS  += \
     include/cmdlist.h \
     include/mainwindow.h \
     include/datastore.h \
-    src/configwidget.h
+    include/configwidget.h
 
 FORMS    += \
     ui/filelist.ui \
     ui/cmdlist.ui \
     ui/mainwindow.ui \
-    src/configwidget.ui
+    ui/configwidget.ui
 
 RESOURCES += \
     images.qrc

@@ -74,7 +74,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="HoverButton" name="pushButton_2">
+       <widget class="HoverButton" name="edit_file">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -91,7 +91,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="HoverButton" name="pushButton">
+       <widget class="HoverButton" name="view_file">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -357,7 +357,7 @@
        </widget>
       </item>
       <item row="1" column="10">
-       <widget class="HoverButton" name="pushButton_3">
+       <widget class="HoverButton" name="config_presets">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>

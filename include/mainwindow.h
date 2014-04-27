@@ -5,9 +5,9 @@
 #include <QShortcut>
 #include <QFileSystemModel>
 #include <QDebug>
-#include <QtSql>
 
 #include "datastore.h"
+#include "configwidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,15 +22,17 @@ public:
     ~MainWindow();
 
 private slots:
+    void setPresets();
     void on_wpb_edit_toggled(bool checked);
-
     void on_wb_folders_activated(const QModelIndex &index);
+    void on_config_presets_clicked();
 
 private:
     Ui::MainWindow *ui;
     QShortcut *shortEsc;
     QFileSystemModel *dirmodel, *filemodel;
-    QHash<QString, QStringList> myFileExtOpenEdit;
+    ConfigWidget *wconfig;
+    DataStore *ds;
 };
 
 #endif // MAINWINDOW_H
