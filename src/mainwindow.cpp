@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
     shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(close()));
-    ui->wpc_edit->setVisible(false);
 
     // setup navi
     QString homePath = QDir::homePath();
@@ -32,18 +31,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
 
-    connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+    setPath(QDir::homePath());
 
-    /*
-     * this is the proof of concept part for charms
-     * should be straight forward from here to implement this correctly now
-     */
-    cbutton = new CharmButton("test", "/home/seth/projects", ui->wpcharms);
-    connect(cbutton, SIGNAL(charmClicked(QString)), this, SLOT(charmClicked(QString)));
-    int i = ui->horizontalLayout_2->count();
-    ui->horizontalLayout_2->insertWidget(i-2, cbutton);
-    QLabel *l = new QLabel("/", this);
-    ui->horizontalLayout_2->insertWidget(i-1, l);
+    connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
 }
 
 MainWindow::~MainWindow()
@@ -82,30 +72,36 @@ void MainWindow::setPath(QString path)
     ui->wb_folders->setExpanded(dirmodel->index(path), true);
 
     // clear previous buttons and labels
-    // TODO
+    for (int i=cblist.size()-1; i>=0; i--){
+        ui->horizontalLayout_2->removeWidget(cblist.at(i));
+        delete this->cblist.at(i);
+        cblist.removeAt(i);
+    }
+    for (int i=cllist.size()-1; i>=0; i--){
+        ui->horizontalLayout_2->removeWidget(cllist.at(i));
+        delete this->cllist.at(i);
+        cllist.removeAt(i);
+    }
 
-    // create new charms
-    /*
-    for (int i=0; i<charmParts.size(); i++){
-        if (!charmParts[i].isEmpty()){
-            QPushButton b = QPushButton(charmParts[i], this);
-            this->charmButtons.append(b);
+    // add charm buttons to charm navigation
+    if (path != "/") {
+        for (int i=1; i<charmParts.size(); i++){
+            QString p;
+            for (int j=1; j<=i; j++)
+                p += "/" + charmParts.at(j);
+            CharmButton *b = new CharmButton(charmParts.at(i), p, ui->wpcharms);
+            this->cblist.append(b);
+            connect(b, SIGNAL(charmClicked(QString)), this, SLOT(setPath(QString)));
 
+            int k = ui->horizontalLayout_2->count();
+            ui->horizontalLayout_2->insertWidget(k-1, b);
+            if (i < charmParts.size()-1){
+                QLabel *l = new QLabel("/", ui->wpcharms);
+                this->cllist.append(l);
+                ui->horizontalLayout_2->insertWidget(k, l);
+            }
         }
     }
-    */
-}
-
-void MainWindow::on_wpb_edit_toggled(bool checked)
-{
-    ui->wpc_edit->setVisible(checked);
-    ui->wpcharms->setVisible(!checked);
-}
-
-void MainWindow::on_wb_folders_activated(const QModelIndex &index)
-{
-   QString path = dirmodel->fileInfo(index).absoluteFilePath();
-   ui->wb_files->setRootIndex(filemodel->setRootPath(path));
 }
 
 void MainWindow::on_config_presets_clicked()
@@ -116,4 +112,20 @@ void MainWindow::on_config_presets_clicked()
 void MainWindow::charmClicked(QString path)
 {
     this->setPath(path);
+}
+
+void MainWindow::on_wpb_home_clicked()
+{
+   setPath(QDir::homePath());
+}
+
+void MainWindow::on_wb_folders_clicked(const QModelIndex &index)
+{
+   QString path = dirmodel->fileInfo(index).absoluteFilePath();
+   delete filemodel;
+   filemodel = new QFileSystemModel(this);
+   ui->wb_files->setModel(filemodel);
+   filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+   ui->wb_files->setRootIndex(filemodel->setRootPath(path));
+   this->setPath(path);
 }

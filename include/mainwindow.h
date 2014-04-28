@@ -5,6 +5,7 @@
 #include <QShortcut>
 #include <QFileSystemModel>
 #include <QDebug>
+#include <QLabel>
 
 #include "datastore.h"
 #include "configwidget.h"
@@ -26,10 +27,10 @@ private slots:
     void setPresets();
     void setRootPath();
     void setPath(QString path);
-    void on_wpb_edit_toggled(bool checked);
-    void on_wb_folders_activated(const QModelIndex &index);
     void on_config_presets_clicked();
     void charmClicked(QString path);
+    void on_wpb_home_clicked();
+    void on_wb_folders_clicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
@@ -40,7 +41,8 @@ private:
     ConfigWidget *wconfig;
     DataStore *ds;
 
-    CharmButton *cbutton;
+    QList<CharmButton*> cblist;
+    QList<QLabel*> cllist;
 };
 
 #endif // MAINWINDOW_H
