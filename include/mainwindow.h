@@ -10,6 +10,7 @@
 #include "datastore.h"
 #include "configwidget.h"
 #include "charmbutton.h"
+#include "presetbutton.h"
 
 namespace Ui {
 class MainWindow;

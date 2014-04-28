@@ -410,70 +410,70 @@ p, li { white-space: pre-wrap; }
           <number>0</number>
          </property>
          <item row="9" column="0">
-          <widget class="HoverButton" name="wprb8">
+          <widget class="PresetButton" name="wprb8">
            <property name="text">
             <string>wprb8</string>
            </property>
           </widget>
          </item>
          <item row="8" column="0">
-          <widget class="HoverButton" name="wprb7">
+          <widget class="PresetButton" name="wprb7">
            <property name="text">
             <string>wprb7</string>
            </property>
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="HoverButton" name="wprb2">
+          <widget class="PresetButton" name="wprb2">
            <property name="text">
             <string>wprb2</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="HoverButton" name="wprb1">
+          <widget class="PresetButton" name="wprb1">
            <property name="text">
             <string>wprb1</string>
            </property>
           </widget>
          </item>
          <item row="7" column="0">
-          <widget class="HoverButton" name="wprb6">
+          <widget class="PresetButton" name="wprb6">
            <property name="text">
             <string>wprb6</string>
            </property>
           </widget>
          </item>
          <item row="4" column="0">
-          <widget class="HoverButton" name="wprb3">
+          <widget class="PresetButton" name="wprb3">
            <property name="text">
             <string>wprb3</string>
            </property>
           </widget>
          </item>
          <item row="6" column="0">
-          <widget class="HoverButton" name="wprb5">
+          <widget class="PresetButton" name="wprb5">
            <property name="text">
             <string>wprb5</string>
            </property>
           </widget>
          </item>
          <item row="10" column="0">
-          <widget class="HoverButton" name="wprb9">
+          <widget class="PresetButton" name="wprb9">
            <property name="text">
             <string>wprb9</string>
            </property>
           </widget>
          </item>
          <item row="5" column="0">
-          <widget class="HoverButton" name="wprb4">
+          <widget class="PresetButton" name="wprb4">
            <property name="text">
             <string>wprb4</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
-          <widget class="HoverButton" name="wprb0">
+          <widget class="PresetButton" name="wprb0">
            <property name="text">
             <string>wprb0</string>
            </property>
@@ -540,6 +540,11 @@ p, li { white-space: pre-wrap; }
    <extends>QWidget</extends>
    <header location="global">cmdlist.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PresetButton</class>
+   <extends>QPushButton</extends>
+   <header location="global">presetbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -34,6 +34,17 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     setPath(QDir::homePath());
 
     connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+
+    connect(ui->wprb0, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb1, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb2, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb3, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb4, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb5, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb6, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb7, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb8, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+    connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -43,6 +54,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::setPresets()
 {
+    /*
+    for (int i=0; i<10; i++) {
+        PresetButton *pb =
+            ui->wpreset->findChild<PresetButton*>("wprb" + QString.number(i));
+    }
+    */
     ui->wprb0->setText(ds->getPreset(0));
     ui->wprb1->setText(ds->getPreset(1));
     ui->wprb2->setText(ds->getPreset(2));
