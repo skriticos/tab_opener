@@ -32,6 +32,7 @@ private slots:
     void charmClicked(QString path);
     void on_wpb_home_clicked();
     void on_wb_folders_clicked(const QModelIndex &index);
+    void notesChanged();
 
 private:
     Ui::MainWindow *ui;

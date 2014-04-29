@@ -47,6 +47,8 @@ public:
     void setPreset(int pos, QString path);
     QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
+    QString getNotes();
+    void setNotes(QString notes);
 
 signals:
 
@@ -54,6 +56,7 @@ public slots:
 
 private:
     QString presets[10];
+    QString notes;
     QHash<QString, ExtensionHandlers> extensions;
     QList<FileEntry> recentFiles; // fifo queue, 10 entries
     QList<FileEntry> popularFiles; // sorted list, most used first

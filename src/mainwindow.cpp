@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->wprb7, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb8, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+
+    ui->we_notes->setPlainText(ds->getNotes());
+    connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -54,12 +57,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::setPresets()
 {
-    /*
-    for (int i=0; i<10; i++) {
-        PresetButton *pb =
-            ui->wpreset->findChild<PresetButton*>("wprb" + QString.number(i));
-    }
-    */
     ui->wprb0->setText(ds->getPreset(0));
     ui->wprb1->setText(ds->getPreset(1));
     ui->wprb2->setText(ds->getPreset(2));
@@ -145,4 +142,9 @@ void MainWindow::on_wb_folders_clicked(const QModelIndex &index)
    filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
    ui->wb_files->setRootIndex(filemodel->setRootPath(path));
    this->setPath(path);
+}
+
+void MainWindow::notesChanged()
+{
+    ds->setNotes(ui->we_notes->toPlainText());
 }
