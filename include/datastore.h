@@ -50,6 +50,12 @@ public:
     QString getNotes();
     void setNotes(QString notes);
 
+    QString getFileBrowser() const;
+    void setFileBrowser(const QString &value);
+
+    QString getTerminalEmulator() const;
+    void setTerminalEmulator(const QString &value);
+
 signals:
 
 public slots:
@@ -57,6 +63,8 @@ public slots:
 private:
     QString presets[10];
     QString notes;
+    QString fileBrowser;
+    QString terminalEmulator;
     QHash<QString, ExtensionHandlers> extensions;
     QList<FileEntry> recentFiles; // fifo queue, 10 entries
     QList<FileEntry> popularFiles; // sorted list, most used first

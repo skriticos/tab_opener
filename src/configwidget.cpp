@@ -24,6 +24,9 @@ void ConfigWidget::showEvent(QShowEvent *event){
         this->ui->preset7->setText(ds->getPreset(7));
         this->ui->preset8->setText(ds->getPreset(8));
         this->ui->preset9->setText(ds->getPreset(9));
+
+        this->ui->filemanager->setText(ds->getFileBrowser());
+        this->ui->terminal->setText(ds->getTerminalEmulator());
     }
 }
 
@@ -39,4 +42,7 @@ void ConfigWidget::on_ConfigWidget_accepted()
     ds->setPreset(7, ui->preset7->text());
     ds->setPreset(8, ui->preset8->text());
     ds->setPreset(9, ui->preset9->text());
+
+    ds->setFileBrowser(ui->filemanager->text());
+    ds->setTerminalEmulator(ui->terminal->text());
 }

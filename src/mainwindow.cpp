@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowFlags(Qt::FramelessWindowHint);
 
     ds = new DataStore(this);
     setPresets();
