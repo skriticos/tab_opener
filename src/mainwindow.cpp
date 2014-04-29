@@ -49,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
     ui->we_notes->setPlainText(ds->getNotes());
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
+
 }
 
 MainWindow::~MainWindow()

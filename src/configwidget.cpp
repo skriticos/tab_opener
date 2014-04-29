@@ -6,6 +6,13 @@ ConfigWidget::ConfigWidget(DataStore *ds, QWidget *parent) : QDialog(parent), ui
     ui->setupUi(this);
     this->ds = ds;
     this->deleting_item = false;
+
+    QStringList keys = ds->getExtMapKeys();
+    for(int i=0; i<keys.size(); i++){
+        QString ext = keys.at(i);
+        QListWidgetItem *w = new QListWidgetItem(ext, ui->extensionlist);
+        ds->setExtMapItem(ext, w);
+    }
 }
 
 ConfigWidget::~ConfigWidget()

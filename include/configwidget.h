@@ -23,7 +23,6 @@ private slots:
     void on_ConfigWidget_accepted();
     void on_btnCommit_clicked();
     void on_extensionlist_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
-
     void on_btnDelete_clicked();
 
 private:

@@ -43,8 +43,9 @@ public:
     ~DataStore();
     void loadData();
     void saveData();
-    void incrementFile(QString filePath, QString execPath);
-    void incrementCmd(QString command, QString execPath);
+
+    // getters and setters follow
+
     void setPreset(int pos, QString path);
     QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
@@ -62,6 +63,7 @@ public:
     void setExtMapItem(QString key, QListWidgetItem *widget);
     void deleteExtMapItem(QString key);
     bool extMapContains(QString key);
+    QStringList getExtMapKeys();
 
     QString getOpenAppsItem(QString key);
     void setOpenAppsItem(QString key, QString value);
@@ -86,6 +88,7 @@ private:
     QList<RunEntry> recentCommands; // fifo queue, 10 entries
     QList<RunEntry> popularCommands; // sorted list, most used first
 
+    // extension configuration data
     QMap<QString, QListWidgetItem*> extMap;
     QMap<QString, QString> openApps; // ext -> open
     QMap<QString, QString> editApps; // ext -> edit

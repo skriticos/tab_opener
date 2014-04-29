@@ -21,6 +21,10 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
     }
 
+    if(!myDB.tables().contains("extensions")) {
+        myDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
+    }
+
     loadData();
 }
 
@@ -48,6 +52,16 @@ void DataStore::loadData()
         if(qGeneral.value(0).toString() == "terminalEmulator")
             this->terminalEmulator = qGeneral.value(1).toString();
     }
+
+    QSqlQuery qExtensions = myDB.exec("SELECT ext, open, edit FROM extensions");
+    while (qExtensions.next()){
+        QString ext = qExtensions.value(0).toString();
+        QString open = qExtensions.value(1).toString();
+        QString edit = qExtensions.value(2).toString();
+        extMap[ext] = NULL;
+        openApps[ext] = open;
+        editApps[ext] = edit;
+    }
 }
 
 void DataStore::saveData()
@@ -73,6 +87,21 @@ void DataStore::saveData()
     qGeneral.bindValue(":key", "terminalEmulator");
     qGeneral.bindValue(":value", this->terminalEmulator);
     qGeneral.exec();
+
+    // reset extensions table
+    myDB.exec("DROP TABLE extensions");
+    myDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
+    QSqlQuery qExtensions;
+    qExtensions.prepare("INSERT INTO extensions (ext, open, edit) "
+                        "VALUES (:ext, :open, :edit)");
+    QStringList keys = extMap.keys();
+    for (int i=0; i<keys.size(); i++){
+        QString ext = keys.at(i);
+        qExtensions.bindValue(":ext", ext);
+        qExtensions.bindValue(":open", openApps[ext]);
+        qExtensions.bindValue(":edit", editApps[ext]);
+        qExtensions.exec();
+    }
 }
 
 void DataStore::setPreset(int pos, QString path)
@@ -136,6 +165,11 @@ void DataStore::deleteExtMapItem(QString key)
 bool DataStore::extMapContains(QString key)
 {
     return this->extMap.contains(key);
+}
+
+QStringList DataStore::getExtMapKeys()
+{
+    return extMap.keys();
 }
 
 QString DataStore::getOpenAppsItem(QString key)
