@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QShowEvent>
+#include <QListWidgetItem>
 
 #include "datastore.h"
 
@@ -20,12 +21,22 @@ public:
 
 private slots:
     void on_ConfigWidget_accepted();
+    void on_btnCommit_clicked();
+    void on_extensionlist_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
+    void on_btnDelete_clicked();
 
 private:
     void showEvent(QShowEvent *event);
 
+    QMap<QString, QListWidgetItem*> extMap;
+    QMap<QString, QString> openApps; // ext -> open
+    QMap<QString, QString> editApps; // ext -> edit
+
     Ui::ConfigWidget *ui;
     DataStore *ds;
+
+    bool deleting_item;
 };
 
 #endif // CONFIGWIDGET_H

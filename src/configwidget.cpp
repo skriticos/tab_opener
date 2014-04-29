@@ -5,6 +5,7 @@ ConfigWidget::ConfigWidget(DataStore *ds, QWidget *parent) : QDialog(parent), ui
 {
     ui->setupUi(this);
     this->ds = ds;
+    this->deleting_item = false;
 }
 
 ConfigWidget::~ConfigWidget()
@@ -46,3 +47,63 @@ void ConfigWidget::on_ConfigWidget_accepted()
     ds->setFileBrowser(ui->filemanager->text());
     ds->setTerminalEmulator(ui->terminal->text());
 }
+
+void ConfigWidget::on_btnCommit_clicked()
+{
+    // commit new extension mapping
+    QString ext = ui->extension->text();
+    QString open = ui->viewerpath->text();
+    QString edit = ui->editorPath->text();
+
+    QListWidgetItem *w;
+    if (!this->extMap.contains(ext)) { // new extension
+        w = new QListWidgetItem(ext, ui->extensionlist);
+        this->extMap[ext] = w;
+
+    } else { // existing extension
+        w = this->extMap[ext];
+    }
+    this->openApps[ext] = open;
+    this->editApps[ext] = edit;
+    ui->extensionlist->setCurrentItem(w);
+}
+
+void ConfigWidget::on_extensionlist_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
+{
+    if (this->deleting_item)
+        return;
+    previous = previous; // I'm not unused, ha!
+    QString ext = current->text();
+    ui->extension->setText(ext);
+    ui->viewerpath->setText(this->openApps[ext]);
+    ui->editorPath->setText(this->editApps[ext]);
+}
+
+void ConfigWidget::on_btnDelete_clicked()
+{
+    if (extMap.size() == 0)
+        return;
+    this->deleting_item = true;
+    QListWidgetItem *w = ui->extensionlist->selectedItems().at(0);
+    QString ext = w->text();
+    delete w;
+    openApps.remove(ext);
+    editApps.remove(ext);
+    extMap.remove(ext);
+    ui->extension->clear();
+    ui->viewerpath->clear();
+    ui->editorPath->clear();
+    this->deleting_item = false;
+    if (extMap.size() > 0) {
+        ext = ui->extensionlist->selectedItems().at(0)->text();
+        ui->extension->setText(ext);
+        ui->viewerpath->setText(this->openApps[ext]);
+        ui->editorPath->setText(this->editApps[ext]);
+    }
+}
+
+
+
+
+
+
