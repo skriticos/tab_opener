@@ -149,3 +149,25 @@ void MainWindow::notesChanged()
 {
     ds->setNotes(ui->we_notes->toPlainText());
 }
+
+void MainWindow::on_wpb_terminal_clicked()
+{
+    QProcess *p = new QProcess(this);
+    QStringList sl;
+    sl = ds->getTerminalEmulator().split(" ");
+    QString cmd = sl.at(0);
+    sl.removeAt(0);
+    sl << this->path;
+    p->start(cmd, QStringList() << sl);
+}
+
+void MainWindow::on_wpb_folder_clicked()
+{
+    QProcess *p = new QProcess(this);
+    QStringList sl;
+    sl = ds->getFileBrowser().split(" ");
+    QString cmd = sl.at(0);
+    sl.removeAt(0);
+    sl << this->path;
+    p->start(cmd, QStringList() << sl);
+}

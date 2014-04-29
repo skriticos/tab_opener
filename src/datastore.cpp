@@ -18,7 +18,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     if(!myDB.tables().contains("general")) {
         myDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
         myDB.exec("INSERT INTO general (key, value) VALUES ('fileBrowser', '/usr/bin/dolphin')");
-        myDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole')");
+        myDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
     }
 
     loadData();
