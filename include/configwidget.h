@@ -29,10 +29,6 @@ private slots:
 private:
     void showEvent(QShowEvent *event);
 
-    QMap<QString, QListWidgetItem*> extMap;
-    QMap<QString, QString> openApps; // ext -> open
-    QMap<QString, QString> editApps; // ext -> edit
-
     Ui::ConfigWidget *ui;
     DataStore *ds;
 

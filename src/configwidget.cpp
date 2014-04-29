@@ -56,15 +56,15 @@ void ConfigWidget::on_btnCommit_clicked()
     QString edit = ui->editorPath->text();
 
     QListWidgetItem *w;
-    if (!this->extMap.contains(ext)) { // new extension
+    if(!ds->extMapContains(ext)) {
         w = new QListWidgetItem(ext, ui->extensionlist);
-        this->extMap[ext] = w;
+        ds->setExtMapItem(ext, w);
 
     } else { // existing extension
-        w = this->extMap[ext];
+        w = ds->getExtMapItem(ext);
     }
-    this->openApps[ext] = open;
-    this->editApps[ext] = edit;
+    ds->setOpenAppsItem(ext, open);
+    ds->setEditMapItem(ext, edit);
     ui->extensionlist->setCurrentItem(w);
 }
 
@@ -75,30 +75,30 @@ void ConfigWidget::on_extensionlist_currentItemChanged(QListWidgetItem *current,
     previous = previous; // I'm not unused, ha!
     QString ext = current->text();
     ui->extension->setText(ext);
-    ui->viewerpath->setText(this->openApps[ext]);
-    ui->editorPath->setText(this->editApps[ext]);
+    ui->viewerpath->setText(ds->getOpenAppsItem(ext));
+    ui->editorPath->setText(ds->getEditMapItem(ext));
 }
 
 void ConfigWidget::on_btnDelete_clicked()
 {
-    if (extMap.size() == 0)
+    if(ds->getExtMapSize() == 0)
         return;
     this->deleting_item = true;
     QListWidgetItem *w = ui->extensionlist->selectedItems().at(0);
     QString ext = w->text();
     delete w;
-    openApps.remove(ext);
-    editApps.remove(ext);
-    extMap.remove(ext);
+    ds->deleteOpenAppsItem(ext);
+    ds->deleteEditMapItem(ext);
+    ds->deleteExtMapItem(ext);
     ui->extension->clear();
     ui->viewerpath->clear();
     ui->editorPath->clear();
     this->deleting_item = false;
-    if (extMap.size() > 0) {
+    if(ds->getExtMapSize() > 0) {
         ext = ui->extensionlist->selectedItems().at(0)->text();
         ui->extension->setText(ext);
-        ui->viewerpath->setText(this->openApps[ext]);
-        ui->editorPath->setText(this->editApps[ext]);
+        ui->viewerpath->setText(ds->getOpenAppsItem(ext));
+        ui->editorPath->setText(ds->getEditMapItem(ext));
     }
 }
 

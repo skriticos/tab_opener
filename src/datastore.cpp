@@ -113,4 +113,60 @@ void DataStore::setTerminalEmulator(const QString &value)
     terminalEmulator = value;
 }
 
+QListWidgetItem* DataStore::getExtMapItem(QString key)
+{
+    return this->extMap[key];
+}
+
+int DataStore::getExtMapSize()
+{
+    return this->extMap.size();
+}
+
+void DataStore::setExtMapItem(QString key, QListWidgetItem *widget)
+{
+    this->extMap[key] = widget;
+}
+
+void DataStore::deleteExtMapItem(QString key)
+{
+    this->extMap.remove(key);
+}
+
+bool DataStore::extMapContains(QString key)
+{
+    return this->extMap.contains(key);
+}
+
+QString DataStore::getOpenAppsItem(QString key)
+{
+    return this->openApps[key];
+}
+
+void DataStore::setOpenAppsItem(QString key, QString value)
+{
+    this->openApps[key] = value;
+}
+
+void DataStore::deleteOpenAppsItem(QString key)
+{
+    this->openApps.remove(key);
+}
+
+QString DataStore::getEditMapItem(QString key)
+{
+    return this->editApps[key];
+}
+
+void DataStore::setEditMapItem(QString key, QString value)
+{
+    this->editApps[key] = value;
+}
+
+void DataStore::deleteEditMapItem(QString key)
+{
+    this->editApps.remove(key);
+}
+
+
 
