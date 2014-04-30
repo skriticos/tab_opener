@@ -39,6 +39,10 @@ private slots:
 
     void on_wpb_folder_clicked();
 
+    void on_view_file_clicked();
+
+    void on_edit_file_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString path;

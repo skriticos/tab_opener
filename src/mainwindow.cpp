@@ -172,3 +172,45 @@ void MainWindow::on_wpb_folder_clicked()
     sl << this->path;
     p->start(cmd, QStringList() << sl);
 }
+
+void MainWindow::on_view_file_clicked()
+{
+    // get currently selected file
+    QModelIndex index = ui->wb_files->selectionModel()->selectedIndexes().at(0);
+    QString selectedFilePath = filemodel->fileInfo(index).absoluteFilePath();
+
+    // extract filetype
+    QString extension = selectedFilePath.split(".").last();
+
+    // prepare command string and arguments
+    QString tmp = ds->getOpenAppsItem(extension);
+    QString cmd = tmp.split(" ").at(0);
+    QStringList tmp2 = tmp.split(" ");
+    tmp2.removeFirst();
+    QStringList args = QStringList() << tmp2 << selectedFilePath;
+
+    // execute open command
+    QProcess *p = new QProcess(this);
+    p->start(cmd, args);
+}
+
+void MainWindow::on_edit_file_clicked()
+{
+    // get currently selected file
+    QModelIndex index = ui->wb_files->selectionModel()->selectedIndexes().at(0);
+    QString selectedFilePath = filemodel->fileInfo(index).absoluteFilePath();
+
+    // extract filetype
+    QString extension = selectedFilePath.split(".").last();
+
+    // prepare command string and arguments
+    QString tmp = ds->getEditMapItem(extension);
+    QString cmd = tmp.split(" ").at(0);
+    QStringList tmp2 = tmp.split(" ");
+    tmp2.removeFirst();
+    QStringList args = QStringList() << tmp2 << selectedFilePath;
+
+    // execute open command
+    QProcess *p = new QProcess(this);
+    p->start(cmd, args);
+}
