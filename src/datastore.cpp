@@ -25,6 +25,10 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
     }
 
+    if(!myDB.tables().contains("recent_files")) {
+        myDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
+    }
+
     loadData();
 }
 
@@ -61,6 +65,13 @@ void DataStore::loadData()
         extMap[ext] = NULL;
         openApps[ext] = open;
         editApps[ext] = edit;
+    }
+
+    // recent files
+    QSqlQuery qRecentFiles = myDB.exec("SELECT path FROM recent_files");
+    while (qRecentFiles.next()) {
+        QString path = qRecentFiles.value(0).toString();
+        this->recentFiles.append(path);
     }
 }
 
@@ -101,6 +112,17 @@ void DataStore::saveData()
         qExtensions.bindValue(":open", openApps[ext]);
         qExtensions.bindValue(":edit", editApps[ext]);
         qExtensions.exec();
+    }
+
+    // recent files
+    myDB.exec("DROP TABLE recent_files");
+    myDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
+    QSqlQuery qRecentFiles;
+    qRecentFiles.prepare("INSERT INTO recent_files (path) VALUES (:path)");
+    int recentFileCount = this->getRecentFileCount();
+    for (int i=0; i<recentFileCount; i++){
+        qRecentFiles.bindValue(":path", this->getRecentFile(i));
+        qRecentFiles.exec();
     }
 }
 
@@ -200,6 +222,24 @@ void DataStore::setEditMapItem(QString key, QString value)
 void DataStore::deleteEditMapItem(QString key)
 {
     this->editApps.remove(key);
+}
+
+QString DataStore::getRecentFile(int pos)
+{
+    return this->recentFiles.at(pos);
+}
+
+int DataStore::getRecentFileCount()
+{
+    return this->recentFiles.size();
+}
+
+void DataStore::pushRecentFile(QString path)
+{
+    if(recentFiles.contains(path)) return;
+    this->recentFiles.prepend(path);
+    if (this->recentFiles.size() > 10)
+        this->recentFiles.removeLast();
 }
 
 

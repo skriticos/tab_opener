@@ -73,6 +73,10 @@ public:
     void setEditMapItem(QString key, QString value);
     void deleteEditMapItem(QString key);
 
+    QString getRecentFile(int pos);
+    int getRecentFileCount();
+    void pushRecentFile(QString path);
+
 signals:
 
 public slots:
@@ -83,15 +87,13 @@ private:
     QString fileBrowser;
     QString terminalEmulator;
     QHash<QString, ExtensionHandlers> extensions;
-    QList<FileEntry> recentFiles; // fifo queue, 10 entries
-    QList<FileEntry> popularFiles; // sorted list, most used first
-    QList<RunEntry> recentCommands; // fifo queue, 10 entries
-    QList<RunEntry> popularCommands; // sorted list, most used first
 
     // extension configuration data
     QMap<QString, QListWidgetItem*> extMap;
     QMap<QString, QString> openApps; // ext -> open
     QMap<QString, QString> editApps; // ext -> edit
+
+    QStringList recentFiles;
 
 
     QSqlDatabase myDB;

@@ -50,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->we_notes->setPlainText(ds->getNotes());
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 
+    ui->wfileinner->init(ds);
 }
 
 MainWindow::~MainWindow()
@@ -192,6 +193,10 @@ void MainWindow::on_view_file_clicked()
     // execute open command
     QProcess *p = new QProcess(this);
     p->start(cmd, args);
+
+    // push file to stack
+    ds->pushRecentFile(selectedFilePath);
+    ui->wfileinner->update();
 }
 
 void MainWindow::on_edit_file_clicked()
@@ -213,4 +218,8 @@ void MainWindow::on_edit_file_clicked()
     // execute open command
     QProcess *p = new QProcess(this);
     p->start(cmd, args);
+
+    // push file to stack
+    ds->pushRecentFile(selectedFilePath);
+    ui->wfileinner->update();
 }
