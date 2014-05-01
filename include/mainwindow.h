@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QLabel>
 #include <QProcess>
+#include <QMessageBox>
 
 #include "datastore.h"
 #include "configwidget.h"
@@ -34,14 +35,17 @@ private slots:
     void on_wpb_home_clicked();
     void on_wb_folders_clicked(const QModelIndex &index);
     void notesChanged();
-
     void on_wpb_terminal_clicked();
-
     void on_wpb_folder_clicked();
-
     void on_view_file_clicked();
-
     void on_edit_file_clicked();
+
+    void on_werb_exec_clicked();
+    void onMyStdoutReadyRead();
+    void onMyStderrReadReady();
+    void onMyProcessFinished(int exitCode);
+
+    void on_wer_cmd_returnPressed();
 
 private:
     Ui::MainWindow *ui;
@@ -54,6 +58,8 @@ private:
 
     QList<CharmButton*> cblist;
     QList<QLabel*> cllist;
+    QProcess *guiCmdProcess;
+    bool processRunnning;
 };
 
 #endif // MAINWINDOW_H

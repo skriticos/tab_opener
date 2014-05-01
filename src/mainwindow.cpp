@@ -53,6 +53,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wfileinner->init(ds);
 
     connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
+
+    this->processRunnning = false;
 }
 
 MainWindow::~MainWindow()
@@ -224,4 +226,73 @@ void MainWindow::on_edit_file_clicked()
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
     ui->wfileinner->update();
+}
+
+// Execute command, read output and populate output window
+void MainWindow::on_werb_exec_clicked()
+{
+    if (this->processRunnning) {
+        QMessageBox::critical(this,
+                              "Previous process still running",
+                              "Refusing to execute new process before previous process exited");
+        return;
+    }
+
+    // gather command and arguments
+    QString raw = this->ui->wer_cmd->text();
+    QString prog = raw.split(" ").at(0);
+    QStringList args = raw.split(" "); args.removeFirst();
+
+    // crear terminal output
+    this->ui->we_output->clear();
+
+    // run process
+    QProcess *process = new QProcess(this);
+    this->guiCmdProcess = process;
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(onMyStdoutReadyRead()));
+    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(onMyStderrReadReady()));
+    connect(process, SIGNAL(finished(int)), this, SLOT(onMyProcessFinished(int)));
+    this->processRunnning = true;
+    this->ui->wer_cmd->clear();
+    this->ui->we_output->append(raw);
+    process->start(prog, args);
+    // rest is handled by callbacks
+}
+
+// Note: /bin/cat ../foo.html will render the html page.. might want to escape the output.
+void MainWindow::onMyStdoutReadyRead()
+{
+    QByteArray out = this->guiCmdProcess->readAllStandardOutput();
+    QString s(out);
+    s.replace("&", "&amp;");
+    s.replace("<", "&lt;");
+    s.replace(">", "&gt;");
+    s.replace("\n", "<br>");
+    s.replace(" ", "&nbsp;");
+    this->ui->we_output->append(s);
+}
+
+void MainWindow::onMyStderrReadReady()
+{
+    QByteArray err = this->guiCmdProcess->readAllStandardError();
+    QString s(err);
+    s.replace("&", "&amp;");
+    s.replace("<", "&lt;");
+    s.replace(">", "&gt;");
+    s.replace("\n", "<br>");
+    s.replace(" ", "&nbsp;");
+    this->ui->we_output->append("<span style=\"color:red\">" + s + "</span>");
+}
+
+void MainWindow::onMyProcessFinished(int exitCode)
+{
+    this->processRunnning = false;
+    this->ui->we_output->append("<span style=\"color:green\">done, exit code: "
+                                + QString::number(exitCode) + "</span>");
+    this->guiCmdProcess = NULL;
+}
+
+void MainWindow::on_wer_cmd_returnPressed()
+{
+    this->on_werb_exec_clicked();
 }
