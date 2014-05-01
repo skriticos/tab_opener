@@ -10,23 +10,14 @@
 #include <QDebug>
 #include <QListWidgetItem>
 
-struct ExtensionHandlers
+class FileEntry
 {
-    int id;
-    QString openPath;
-    QString editPath;
-};
-
-struct FileEntry
-{
-    int id;
-    QString execPath;
+public:
     QString filePath;
     int usageCount;
 
-    FileEntry(){
-        usageCount = 0;
-    }
+    explicit FileEntry(QString path);
+    static bool isMore(FileEntry *a, FileEntry *b);
 };
 
 struct RunEntry
@@ -77,6 +68,9 @@ public:
     int getRecentFileCount();
     void pushRecentFile(QString path);
 
+    QString getPopularFile(int pos);
+    int getPopularFileCount();
+
 signals:
 
 public slots:
@@ -86,7 +80,6 @@ private:
     QString notes;
     QString fileBrowser;
     QString terminalEmulator;
-    QHash<QString, ExtensionHandlers> extensions;
 
     // extension configuration data
     QMap<QString, QListWidgetItem*> extMap;
@@ -94,6 +87,8 @@ private:
     QMap<QString, QString> editApps; // ext -> edit
 
     QStringList recentFiles;
+    QList<FileEntry*> fileLog; // sorted list of file entries based on usage count
+    QMap<QString, FileEntry*> fileEntryIndex; //inde of path of file entries
 
 
     QSqlDatabase myDB;

@@ -21,16 +21,9 @@ public:
 
 public slots:
     void buttonSelected(QString path, FileButton *butt);
-    /*
-    void openClicked();
-    void editClicked();
-    void forwardClicked();
-    void copyClicked();
-    */
 
 private slots:
     void on_wflab_file_view_clicked();
-
     void on_wflab_file_edit_clicked();
 
 private:

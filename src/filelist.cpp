@@ -16,8 +16,22 @@ FileList::FileList(QWidget *parent) : QWidget(parent), ui(new Ui::FileList)
     this->recentButtons.append(this->ui->wflrb8);
     this->recentButtons.append(this->ui->wflrb9);
 
+    this->popularButtons.append(this->ui->wflpb0);
+    this->popularButtons.append(this->ui->wflpb1);
+    this->popularButtons.append(this->ui->wflpb2);
+    this->popularButtons.append(this->ui->wflpb3);
+    this->popularButtons.append(this->ui->wflpb4);
+    this->popularButtons.append(this->ui->wflpb5);
+    this->popularButtons.append(this->ui->wflpb6);
+    this->popularButtons.append(this->ui->wflpb7);
+    this->popularButtons.append(this->ui->wflpb8);
+    this->popularButtons.append(this->ui->wflpb9);
+
     for(int i=0; i<10; i++) {
         FileButton *fb = this->recentButtons.at(i);
+        connect(fb, SIGNAL(myToggled(QString, FileButton*)), this, SLOT(buttonSelected(QString, FileButton*)));
+
+        fb = this->popularButtons.at(i);
         connect(fb, SIGNAL(myToggled(QString, FileButton*)), this, SLOT(buttonSelected(QString, FileButton*)));
     }
 
@@ -27,18 +41,15 @@ FileList::FileList(QWidget *parent) : QWidget(parent), ui(new Ui::FileList)
 void FileList::init(DataStore *ds)
 {
     this->ds = ds;
-
-    int recentFileCount = ds->getRecentFileCount();
-    for (int i=0; i<recentFileCount; i++) {
-        QString path = ds->getRecentFile(i);
-        this->recentButtons.at(i)->setPath(path);
-    }
+    this->update();
 }
 
 void FileList::update()
 {
     // update file list (invoked in main after opening / editing a file from browser or from this for the same)
     // we start off by clearing all the labels
+
+    // setup recent files
     for (int i=0; i<10; i++)
         this->recentButtons.at(i)->setPath("");
 
@@ -46,6 +57,19 @@ void FileList::update()
     for (int i=0; i<recentFileCount; i++) {
         QString path = ds->getRecentFile(i);
         this->recentButtons.at(i)->setPath(path);
+    }
+
+    // setup popular files
+    for (int i=0; i<10; i++)
+        this->popularButtons.at(i)->setPath("");
+
+    int popularFileCount = ds->getPopularFileCount();
+    int count = 10;
+    if (popularFileCount < 10)
+        count = popularFileCount;
+    for (int i=0; i<count; i++){
+        QString path = ds->getPopularFile(i);
+        this->popularButtons.at(i)->setPath(path);
     }
 }
 

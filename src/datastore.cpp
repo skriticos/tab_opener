@@ -29,6 +29,10 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
     }
 
+    if(!myDB.tables().contains("file_usage")) {
+        myDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
+    }
+
     loadData();
 }
 
@@ -72,6 +76,17 @@ void DataStore::loadData()
     while (qRecentFiles.next()) {
         QString path = qRecentFiles.value(0).toString();
         this->recentFiles.append(path);
+    }
+
+    // file usage
+    QSqlQuery qFileUsage = myDB.exec("SELECT path, usage_count FROM file_usage");
+    while (qFileUsage.next()){
+        QString path = qFileUsage.value(0).toString();
+        int usage_count = qFileUsage.value(1).toInt();
+        FileEntry *fe = new FileEntry(path);
+        fe->usageCount = usage_count;
+        this->fileEntryIndex[path] = fe;
+        this->fileLog.append(fe);
     }
 }
 
@@ -123,6 +138,19 @@ void DataStore::saveData()
     for (int i=0; i<recentFileCount; i++){
         qRecentFiles.bindValue(":path", this->getRecentFile(i));
         qRecentFiles.exec();
+    }
+
+    // file usage
+    myDB.exec("DROP TABLE file_usage");
+    myDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
+    QSqlQuery qFileUsage;
+    qFileUsage.prepare("INSERT INTO file_usage (path, usage_count) VALUES (:path, :usage_count)");
+    int fileEntryCount = this->fileEntryIndex.size();
+    for (int i=0; i<fileEntryCount; i++){
+        FileEntry *fe = this->fileLog.at(i);
+        qFileUsage.bindValue(":path", fe->filePath);
+        qFileUsage.bindValue(":usage_count", fe->usageCount);
+        qFileUsage.exec();
     }
 }
 
@@ -236,11 +264,44 @@ int DataStore::getRecentFileCount()
 
 void DataStore::pushRecentFile(QString path)
 {
-    if(recentFiles.contains(path)) return;
-    this->recentFiles.prepend(path);
-    if (this->recentFiles.size() > 10)
-        this->recentFiles.removeLast();
+    if(!recentFiles.contains(path)){
+        this->recentFiles.prepend(path);
+        if (this->recentFiles.size() > 10)
+            this->recentFiles.removeLast();
+    }
+
+    // update usage record
+    FileEntry *e;
+    if (this->fileEntryIndex.contains(path)) { // file path already exists
+        e = this->fileEntryIndex[path];
+        e->usageCount++;
+    } else { // new file path
+        e = new FileEntry(path);
+        this->fileEntryIndex[path] = e;
+        this->fileLog.append(e);
+    }
+
+    // sort usage report
+    qStableSort(this->fileLog.begin(), this->fileLog.end(), FileEntry::isMore);
 }
 
+QString DataStore::getPopularFile(int pos)
+{
+    return this->fileLog.at(pos)->filePath;
+}
 
+int DataStore::getPopularFileCount()
+{
+    return this->fileEntryIndex.size();
+}
 
+FileEntry::FileEntry(QString path)
+{
+    this->filePath = path;
+    this->usageCount = 1;
+}
+
+bool FileEntry::isMore(FileEntry *a, FileEntry *b)
+{
+    return a->usageCount > b->usageCount;
+}
