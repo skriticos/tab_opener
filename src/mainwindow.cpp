@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 
     ui->wfileinner->init(ds);
+
+    connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
 }
 
 MainWindow::~MainWindow()

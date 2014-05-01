@@ -126,3 +126,10 @@ void FileList::on_wflab_file_edit_clicked()
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
 }
+
+void FileList::on_wflab_file_path_clicked()
+{
+    QFileInfo fi = QFileInfo(this->selectedFilePath);
+    QString basePath = fi.absolutePath();
+    emit this->forwardPath(basePath);
+}

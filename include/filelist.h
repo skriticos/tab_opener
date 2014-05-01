@@ -19,12 +19,17 @@ public:
     void update();
     ~FileList();
 
+signals:
+    void forwardPath(QString path);
+
 public slots:
     void buttonSelected(QString path, FileButton *butt);
 
 private slots:
     void on_wflab_file_view_clicked();
     void on_wflab_file_edit_clicked();
+
+    void on_wflab_file_path_clicked();
 
 private:
     Ui::FileList *ui;
