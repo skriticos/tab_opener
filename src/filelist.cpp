@@ -133,3 +133,9 @@ void FileList::on_wflab_file_path_clicked()
     QString basePath = fi.absolutePath();
     emit this->forwardPath(basePath);
 }
+
+void FileList::on_wflab_file_copy_clicked()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(this->selectedFilePath);
+}

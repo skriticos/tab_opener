@@ -2,6 +2,8 @@
 #define FILELIST_H
 
 #include <QWidget>
+#include <QClipboard>
+
 #include "filebutton.h"
 #include "datastore.h"
 
@@ -28,8 +30,8 @@ public slots:
 private slots:
     void on_wflab_file_view_clicked();
     void on_wflab_file_edit_clicked();
-
     void on_wflab_file_path_clicked();
+    void on_wflab_file_copy_clicked();
 
 private:
     Ui::FileList *ui;
