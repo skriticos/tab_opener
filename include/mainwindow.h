@@ -41,11 +41,10 @@ private slots:
     void on_edit_file_clicked();
 
     void on_werb_exec_clicked();
+    void on_wer_cmd_returnPressed();
     void onMyStdoutReadyRead();
     void onMyStderrReadReady();
     void onMyProcessFinished(int exitCode);
-
-    void on_wer_cmd_returnPressed();
 
 private:
     Ui::MainWindow *ui;

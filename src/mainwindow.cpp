@@ -255,6 +255,7 @@ void MainWindow::on_werb_exec_clicked()
     this->processRunnning = true;
     this->ui->wer_cmd->clear();
     this->ui->we_output->append(raw);
+    process->setWorkingDirectory(this->path);
     process->start(prog, args);
     // rest is handled by callbacks
 }
