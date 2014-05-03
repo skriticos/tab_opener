@@ -20,10 +20,15 @@ public:
     static bool isMore(FileEntry *a, FileEntry *b);
 };
 
-struct RunEntry
+class RunEntry
 {
+public:
+
     QString command;
     QString execPath;
+    int usageCount;
+
+    explicit RunEntry(QString command, QString path);
 };
 
 class DataStore : public QObject
@@ -68,6 +73,10 @@ public:
     int getRecentFileCount();
     void pushRecentFile(QString path);
 
+    RunEntry* getRecentCommand(int pos);
+    int getRecentCommandCount();
+    void pushRecentCommand(QString command, QString path);
+
     QString getPopularFile(int pos);
     int getPopularFileCount();
 
@@ -89,6 +98,8 @@ private:
     QStringList recentFiles;
     QList<FileEntry*> fileLog; // sorted list of file entries based on usage count
     QMap<QString, FileEntry*> fileEntryIndex; //inde of path of file entries
+
+    QList<RunEntry*> recentCommands;
 
 
     QSqlDatabase myDB;

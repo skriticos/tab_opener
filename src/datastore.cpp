@@ -33,6 +33,10 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
     }
 
+    if(!myDB.tables().contains("recent_commands")){
+        myDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
+    }
+
     loadData();
 }
 
@@ -87,6 +91,15 @@ void DataStore::loadData()
         fe->usageCount = usage_count;
         this->fileEntryIndex[path] = fe;
         this->fileLog.append(fe);
+    }
+
+    // recent commands
+    QSqlQuery qRecentCommands = myDB.exec("SELECT command, path FROM recent_commands");
+    while (qRecentCommands.next()){
+        QString command = qRecentCommands.value(0).toString();
+        QString path = qRecentCommands.value(1).toString();
+        RunEntry *re = new RunEntry(command, path);
+        this->recentCommands.append(re);
     }
 }
 
@@ -151,6 +164,18 @@ void DataStore::saveData()
         qFileUsage.bindValue(":path", fe->filePath);
         qFileUsage.bindValue(":usage_count", fe->usageCount);
         qFileUsage.exec();
+    }
+
+    // recent commands
+    myDB.exec("DROP TABLE recent_commands");
+    myDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
+    QSqlQuery qRecentCommands;
+    qRecentCommands.prepare("INSERT INTO recent_commands (command, path) VALUES (:command, :path)");
+    for (int i=0; i<this->recentCommands.size(); i++){
+        RunEntry *re = this->recentCommands.at(i);
+        qRecentCommands.bindValue(":command", re->command);
+        qRecentCommands.bindValue(":path", re->execPath);
+        qRecentCommands.exec();
     }
 }
 
@@ -285,6 +310,35 @@ void DataStore::pushRecentFile(QString path)
     qStableSort(this->fileLog.begin(), this->fileLog.end(), FileEntry::isMore);
 }
 
+RunEntry *DataStore::getRecentCommand(int pos)
+{
+    return this->recentCommands.at(pos);
+}
+
+int DataStore::getRecentCommandCount()
+{
+    return this->recentCommands.size();
+}
+
+void DataStore::pushRecentCommand(QString command, QString path)
+{
+    // we only check for command string in lookp
+    // executing command in different paths still results in one recent entry
+    bool contains = false;
+    for (int i=0; i<this->getRecentCommandCount(); i++){
+        if (this->recentCommands.at(i)->command == command) {
+            contains = true;
+            break;
+        }
+    }
+    if (!contains) {
+        RunEntry *re = new RunEntry(command, path);
+        this->recentCommands.prepend(re);
+        if (this->recentCommands.size() > 10)
+            this->recentCommands.removeLast();
+    }
+}
+
 QString DataStore::getPopularFile(int pos)
 {
     return this->fileLog.at(pos)->filePath;
@@ -304,4 +358,12 @@ FileEntry::FileEntry(QString path)
 bool FileEntry::isMore(FileEntry *a, FileEntry *b)
 {
     return a->usageCount > b->usageCount;
+}
+
+
+RunEntry::RunEntry(QString command, QString path)
+{
+    this->command = command;
+    this->execPath = path;
+    this->usageCount = 1;
 }

@@ -30,6 +30,7 @@ private slots:
     void setPresets();
     void setRootPath();
     void setPath(QString path);
+    void setCommand(QString cmd, QString path);
     void on_config_presets_clicked();
     void charmClicked(QString path);
     void on_wpb_home_clicked();

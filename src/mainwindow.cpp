@@ -51,8 +51,11 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 
     ui->wfileinner->init(ds);
-
     connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
+
+    ui->wcmdinner->init(ds);
+    connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
+            this, SLOT(setCommand(QString,QString)));
 
     this->processRunnning = false;
 }
@@ -123,6 +126,12 @@ void MainWindow::setPath(QString path)
             }
         }
     }
+}
+
+void MainWindow::setCommand(QString cmd, QString path)
+{
+    this->setPath(path);
+    this->ui->wer_cmd->setText(cmd);
 }
 
 void MainWindow::on_config_presets_clicked()
@@ -256,6 +265,10 @@ void MainWindow::on_werb_exec_clicked()
     this->ui->wer_cmd->clear();
     this->ui->we_output->append(raw);
     process->setWorkingDirectory(this->path);
+
+    ds->pushRecentCommand(raw, this->path);
+    this->ui->wcmdinner->update();
+
     process->start(prog, args);
     // rest is handled by callbacks
 }

@@ -29,7 +29,8 @@ SOURCES += \
     src/configwidget.cpp \
     src/charmbutton.cpp \
     src/presetbutton.cpp \
-	src/filebutton.cpp
+	src/filebutton.cpp \
+    src/commandbutton.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -40,7 +41,8 @@ HEADERS  += \
     include/configwidget.h \
     include/charmbutton.h \
     include/presetbutton.h \
-	include/filebutton.h
+	include/filebutton.h \
+    include/commandbutton.h
 
 FORMS    += \
     ui/filelist.ui \

@@ -54,7 +54,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="HoverButton" name="wclrb0">
+       <widget class="CommandButton" name="wclrb0">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -64,7 +64,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb1">
+       <widget class="CommandButton" name="wclrb1">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -74,7 +74,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb2">
+       <widget class="CommandButton" name="wclrb2">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -84,7 +84,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb3">
+       <widget class="CommandButton" name="wclrb3">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -94,7 +94,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb4">
+       <widget class="CommandButton" name="wclrb4">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -104,7 +104,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb5">
+       <widget class="CommandButton" name="wclrb5">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -114,7 +114,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb6">
+       <widget class="CommandButton" name="wclrb6">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -124,7 +124,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb7">
+       <widget class="CommandButton" name="wclrb7">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -134,7 +134,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb8">
+       <widget class="CommandButton" name="wclrb8">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -144,7 +144,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclrb9">
+       <widget class="CommandButton" name="wclrb9">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -180,28 +180,6 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
-      <item>
-       <widget class="HoverButton" name="wclab_run">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../images.qrc">
-          <normaloff>:/images/rc/debug-run.png</normaloff>:/images/rc/debug-run.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="HoverButton" name="wclab_path">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../images.qrc">
-          <normaloff>:/images/rc/media-seek-forward.png</normaloff>:/images/rc/media-seek-forward.png</iconset>
-        </property>
-       </widget>
-      </item>
       <item>
        <widget class="HoverButton" name="wclab_copy">
         <property name="text">
@@ -251,7 +229,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="HoverButton" name="wclpb0">
+       <widget class="CommandButton" name="wclpb0">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -261,7 +239,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb1">
+       <widget class="CommandButton" name="wclpb1">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -271,7 +249,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb2">
+       <widget class="CommandButton" name="wclpb2">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -281,7 +259,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb3">
+       <widget class="CommandButton" name="wclpb3">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -291,7 +269,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb4">
+       <widget class="CommandButton" name="wclpb4">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -301,7 +279,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb5">
+       <widget class="CommandButton" name="wclpb5">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -311,7 +289,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb6">
+       <widget class="CommandButton" name="wclpb6">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -321,7 +299,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb7">
+       <widget class="CommandButton" name="wclpb7">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -331,7 +309,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb8">
+       <widget class="CommandButton" name="wclpb8">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -341,7 +319,7 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wclpb9">
+       <widget class="CommandButton" name="wclpb9">
         <property name="text">
          <string>PushButton</string>
         </property>
@@ -360,6 +338,11 @@
    <class>HoverButton</class>
    <extends>QPushButton</extends>
    <header>hoverbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CommandButton</class>
+   <extends>QPushButton</extends>
+   <header>commandbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>
