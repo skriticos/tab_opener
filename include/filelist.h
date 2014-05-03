@@ -23,6 +23,7 @@ public:
 
 signals:
     void forwardPath(QString path);
+    void openOrEditClicked();
 
 public slots:
     void buttonSelected(QString path, FileButton *butt);

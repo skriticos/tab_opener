@@ -69,6 +69,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     this->sysTray->setContextMenu(m);
     connect(this->sysTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(systrayActivate(QSystemTrayIcon::ActivationReason)));
+
+    int pid = QApplication::applicationPid();
+    QFile pidFile(QDir::homePath() + QDir::separator() + ".tab_opener.pid");
+    pidFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&pidFile);
+    out << QString::number(pid);
+    pidFile.close();
+
+    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
 }
 
 void MainWindow::showSystray()
@@ -78,6 +87,7 @@ void MainWindow::showSystray()
 
 MainWindow::~MainWindow()
 {
+    QFile::remove(QDir::homePath() + QDir::separator() + ".tab_opener.pid");
     delete ui;
 }
 
@@ -190,6 +200,8 @@ void MainWindow::on_wpb_terminal_clicked()
     sl.removeAt(0);
     sl << this->path;
     p->start(cmd, QStringList() << sl);
+
+    this->hide();
 }
 
 void MainWindow::on_wpb_folder_clicked()
@@ -201,6 +213,8 @@ void MainWindow::on_wpb_folder_clicked()
     sl.removeAt(0);
     sl << this->path;
     p->start(cmd, QStringList() << sl);
+
+    this->hide();
 }
 
 void MainWindow::on_view_file_clicked()
@@ -226,6 +240,8 @@ void MainWindow::on_view_file_clicked()
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
     ui->wfileinner->update();
+
+    this->hide();
 }
 
 void MainWindow::on_edit_file_clicked()
@@ -251,6 +267,8 @@ void MainWindow::on_edit_file_clicked()
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
     ui->wfileinner->update();
+
+    this->hide();
 }
 
 // Execute command, read output and populate output window
@@ -324,7 +342,7 @@ void MainWindow::onMyProcessFinished(int exitCode)
 
 void MainWindow::systrayActivate(QSystemTrayIcon::ActivationReason a)
 {
-    if (a == QSystemTrayIcon::MiddleClick){
+    if (a == QSystemTrayIcon::Trigger){
         if (this->isHidden())
             this->show();
         else

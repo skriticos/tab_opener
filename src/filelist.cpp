@@ -107,6 +107,8 @@ void FileList::on_wflab_file_view_clicked()
 
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
+
+    emit this->openOrEditClicked();
 }
 
 void FileList::on_wflab_file_edit_clicked()
@@ -127,6 +129,8 @@ void FileList::on_wflab_file_edit_clicked()
 
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
+
+    emit this->openOrEditClicked();
 }
 
 void FileList::on_wflab_file_path_clicked()

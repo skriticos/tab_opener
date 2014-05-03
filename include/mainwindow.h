@@ -11,6 +11,8 @@
 #include <QSystemTrayIcon>
 #include <QMenu>
 #include <QAction>
+#include <QFile>
+#include <QIODevice>
 
 #include "datastore.h"
 #include "configwidget.h"
