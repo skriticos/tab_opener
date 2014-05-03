@@ -97,5 +97,6 @@ void CmdList::selected(QString cmd, QString wd, CommandButton *cb)
 
 void CmdList::on_wclab_copy_clicked()
 {
-
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(this->selectedCommandButton->getCommand());
 }

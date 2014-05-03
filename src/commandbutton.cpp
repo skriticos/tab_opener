@@ -18,6 +18,11 @@ void CommandButton::setCommand(QString cmd, QString wd)
     this->setText(btnLabel);
 }
 
+QString CommandButton::getCommand()
+{
+    return this->command;
+}
+
 void CommandButton::onToggled(bool down)
 {
     if (down){

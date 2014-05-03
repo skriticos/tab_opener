@@ -11,6 +11,7 @@ class CommandButton : public HoverButton
 public:
     explicit CommandButton(QWidget *parent = 0);
     void setCommand(QString cmd, QString wd);
+    QString getCommand();
 
 signals:
     void myToggled(QString command, QString workingDirectory, CommandButton *cb);
