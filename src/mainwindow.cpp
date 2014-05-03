@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     m->addAction(actQuit);
 
     this->sysTray = new QSystemTrayIcon(this);
-    this->sysTray->setIcon(QIcon(":rc/trayicon.png"));
+    this->sysTray->setIcon(QIcon(":rc/tray32.png"));
     this->sysTray->setContextMenu(m);
     connect(this->sysTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(systrayActivate(QSystemTrayIcon::ActivationReason)));
