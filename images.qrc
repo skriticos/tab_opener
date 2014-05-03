@@ -19,5 +19,8 @@
         <file>rc/media-seek-forward.png</file>
         <file>rc/gnome-control-center.png</file>
         <file>rc/kxkb.png</file>
+        <file>rc/trayicon.png</file>
+        <file>rc/trayicon.svg</file>
+        <file>rc/trayicon.xpm</file>
     </qresource>
 </RCC>

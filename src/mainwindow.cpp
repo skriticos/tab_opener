@@ -58,6 +58,22 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
             this, SLOT(setCommand(QString,QString)));
 
     this->processRunnning = false;
+
+    QMenu *m = new QMenu(this);
+    QAction *actQuit = new QAction("Quit", m);
+    connect(actQuit, SIGNAL(triggered()), this, SLOT(close()));
+    m->addAction(actQuit);
+
+    this->sysTray = new QSystemTrayIcon(this);
+    this->sysTray->setIcon(QIcon(":rc/trayicon.png"));
+    this->sysTray->setContextMenu(m);
+    connect(this->sysTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+            this, SLOT(systrayActivate(QSystemTrayIcon::ActivationReason)));
+}
+
+void MainWindow::showSystray()
+{
+    this->sysTray->show();
 }
 
 MainWindow::~MainWindow()
@@ -304,6 +320,16 @@ void MainWindow::onMyProcessFinished(int exitCode)
     this->ui->we_output->append("<span style=\"color:green\">done, exit code: "
                                 + QString::number(exitCode) + "</span>");
     this->guiCmdProcess = NULL;
+}
+
+void MainWindow::systrayActivate(QSystemTrayIcon::ActivationReason a)
+{
+    if (a == QSystemTrayIcon::MiddleClick){
+        if (this->isHidden())
+            this->show();
+        else
+            this->hide();
+    }
 }
 
 void MainWindow::on_wer_cmd_returnPressed()
