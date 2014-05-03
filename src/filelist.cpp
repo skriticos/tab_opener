@@ -67,6 +67,8 @@ void FileList::update()
     int count = 10;
     if (popularFileCount < 10)
         count = popularFileCount;
+    else
+        count = 10;
     for (int i=0; i<count; i++){
         QString path = ds->getPopularFile(i);
         this->popularButtons.at(i)->setPath(path);

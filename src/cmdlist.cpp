@@ -69,6 +69,15 @@ void CmdList::update()
     }
 
     // setup popular buttons
+    cnt = ds->getPopularCommandCount();
+    if (cnt > 10)
+        cnt = 10;
+    for (int i=0; i<cnt; i++){
+        RunEntry *re = ds->getPopularCommand(i);
+        QString cmd = re->command;
+        QString wd = re->execPath;
+        this->popularCommandButtons.at(i)->setCommand(cmd, wd);
+    }
 }
 
 CmdList::~CmdList()

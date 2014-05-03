@@ -37,6 +37,11 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
     }
 
+    if (!myDB.tables().contains("command_usage")){
+        myDB.exec("CREATE TABLE command_usage "
+                  "(id INTEGER PRIMARY KEY ASC, command TEXT, working_directory TEXT, usage_count INTEGER)");
+    }
+
     loadData();
 }
 
@@ -100,6 +105,18 @@ void DataStore::loadData()
         QString path = qRecentCommands.value(1).toString();
         RunEntry *re = new RunEntry(command, path);
         this->recentCommands.append(re);
+    }
+
+    // command usage
+    QSqlQuery qCommandUsage = myDB.exec("SELECT command, working_directory, usage_count FROM command_usage");
+    while (qCommandUsage.next()){
+        QString cmd = qCommandUsage.value(0).toString();
+        QString wd = qCommandUsage.value(1).toString();
+        int uc = qCommandUsage.value(2).toInt();
+        RunEntry *re = new RunEntry(cmd, wd);
+        re->usageCount = uc;
+        this->commandIndex[cmd] = re;
+        this->commandLog.append(re);
     }
 }
 
@@ -176,6 +193,22 @@ void DataStore::saveData()
         qRecentCommands.bindValue(":command", re->command);
         qRecentCommands.bindValue(":path", re->execPath);
         qRecentCommands.exec();
+    }
+
+    // command usage
+    myDB.exec("DROP TABLE command_usage");
+    myDB.exec("CREATE TABLE command_usage "
+              "(id INTEGER PRIMARY KEY ASC, command TEXT, working_directory TEXT, usage_count INTEGER)");
+    QSqlQuery qCommandUsage;
+    qCommandUsage.prepare("INSERT INTO command_usage (command, working_directory, usage_count) "
+                          "VALUES (:cmd, :wd, :uc)");
+    int cmdCnt = this->commandIndex.size();
+    for (int i=0; i < cmdCnt; i++){
+        RunEntry *re = this->commandLog.at(i);
+        qCommandUsage.bindValue(":cmd", re->command);
+        qCommandUsage.bindValue(":wd", re->execPath);
+        qCommandUsage.bindValue(":uc", re->usageCount);
+        qCommandUsage.exec();
     }
 }
 
@@ -337,6 +370,28 @@ void DataStore::pushRecentCommand(QString command, QString path)
         if (this->recentCommands.size() > 10)
             this->recentCommands.removeLast();
     }
+
+    // update usage records
+    if (this->commandIndex.contains(command)){
+        this->commandIndex[command]->usageCount++;
+    } else {
+        RunEntry *re = new RunEntry(command, path);
+        this->commandLog.prepend(re);
+        this->commandIndex[command] = re;
+    }
+
+    // sort usage records
+    qStableSort(this->commandLog.begin(), this->commandLog.end(), RunEntry::isMore);
+}
+
+RunEntry *DataStore::getPopularCommand(int pos)
+{
+    return this->commandLog.at(pos);
+}
+
+int DataStore::getPopularCommandCount()
+{
+    return this->commandLog.size();
 }
 
 QString DataStore::getPopularFile(int pos)
@@ -366,4 +421,9 @@ RunEntry::RunEntry(QString command, QString path)
     this->command = command;
     this->execPath = path;
     this->usageCount = 1;
+}
+
+bool RunEntry::isMore(RunEntry *a, RunEntry *b)
+{
+    return a->usageCount > b->usageCount;
 }

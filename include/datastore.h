@@ -29,6 +29,7 @@ public:
     int usageCount;
 
     explicit RunEntry(QString command, QString path);
+    static bool isMore(RunEntry *a, RunEntry *b);
 };
 
 class DataStore : public QObject
@@ -73,12 +74,15 @@ public:
     int getRecentFileCount();
     void pushRecentFile(QString path);
 
+    QString getPopularFile(int pos);
+    int getPopularFileCount();
+
     RunEntry* getRecentCommand(int pos);
     int getRecentCommandCount();
     void pushRecentCommand(QString command, QString path);
 
-    QString getPopularFile(int pos);
-    int getPopularFileCount();
+    RunEntry* getPopularCommand(int pos);
+    int getPopularCommandCount();
 
 signals:
 
@@ -100,6 +104,12 @@ private:
     QMap<QString, FileEntry*> fileEntryIndex; //inde of path of file entries
 
     QList<RunEntry*> recentCommands;
+
+    // note that we don't keep multiple copies of commands for different paths
+    // if a command is run in a new path, we are updating the path and increment
+    // the command count
+    QMap<QString, RunEntry*> commandIndex;
+    QList<RunEntry*> commandLog; // sorted list of commands by count
 
 
     QSqlDatabase myDB;
