@@ -70,12 +70,14 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(this->sysTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
             this, SLOT(systrayActivate(QSystemTrayIcon::ActivationReason)));
 
-    int pid = QApplication::applicationPid();
-    QFile pidFile(QDir::homePath() + QDir::separator() + ".tab_opener.pid");
-    pidFile.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream out(&pidFile);
-    out << QString::number(pid);
-    pidFile.close();
+    // create / clear com file
+    QFile comFile(QDir::homePath() + QDir::separator() + ".tab_opener.com");
+    comFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    comFile.close();
+
+    QFileSystemWatcher *fswatcher = new QFileSystemWatcher(this);
+    fswatcher->addPath(QDir::homePath() + QDir::separator() + ".tab_opener.com");
+    connect(fswatcher, SIGNAL(fileChanged(QString)), this, SLOT(comFileChanged(QString)));
 
     connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
 }
@@ -87,7 +89,6 @@ void MainWindow::showSystray()
 
 MainWindow::~MainWindow()
 {
-    QFile::remove(QDir::homePath() + QDir::separator() + ".tab_opener.pid");
     delete ui;
 }
 
@@ -348,6 +349,21 @@ void MainWindow::systrayActivate(QSystemTrayIcon::ActivationReason a)
         else
             this->hide();
     }
+}
+
+void MainWindow::comFileChanged(QString path)
+{
+    path = path;
+    QFile comFile(QDir::homePath() + QDir::separator() + ".tab_opener.com");
+    comFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream in(&comFile);
+    QString msg = in.readLine();
+    comFile.close();
+
+    if (msg == "show")
+        this->show();
+    if (msg == "hide")
+        this->hide();
 }
 
 void MainWindow::on_wer_cmd_returnPressed()
