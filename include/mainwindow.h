@@ -8,12 +8,6 @@
 #include <QLabel>
 #include <QProcess>
 #include <QMessageBox>
-#include <QSystemTrayIcon>
-#include <QMenu>
-#include <QAction>
-#include <QFile>
-#include <QIODevice>
-#include <QFileSystemWatcher>
 
 #include "datastore.h"
 #include "configwidget.h"
@@ -30,7 +24,6 @@ class MainWindow : public QWidget
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void showSystray();
 
     ~MainWindow();
 
@@ -55,10 +48,6 @@ private slots:
     void onMyStderrReadReady();
     void onMyProcessFinished(int exitCode);
 
-    void systrayActivate(QSystemTrayIcon::ActivationReason a);
-
-    void comFileChanged(QString path);
-
 private:
     Ui::MainWindow *ui;
     QString path;
@@ -67,7 +56,6 @@ private:
     QFileSystemModel *dirmodel, *filemodel;
     ConfigWidget *wconfig;
     DataStore *ds;
-    QSystemTrayIcon *sysTray;
 
     QList<CharmButton*> cblist;
     QList<QLabel*> cllist;

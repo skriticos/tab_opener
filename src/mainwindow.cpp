@@ -59,32 +59,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
     this->processRunnning = false;
 
-    QMenu *m = new QMenu(this);
-    QAction *actQuit = new QAction("Quit", m);
-    connect(actQuit, SIGNAL(triggered()), this, SLOT(close()));
-    m->addAction(actQuit);
-
-    this->sysTray = new QSystemTrayIcon(this);
-    this->sysTray->setIcon(QIcon(":rc/tray32.png"));
-    this->sysTray->setContextMenu(m);
-    connect(this->sysTray, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
-            this, SLOT(systrayActivate(QSystemTrayIcon::ActivationReason)));
-
-    // create / clear com file
-    QFile comFile(QDir::homePath() + QDir::separator() + ".tab_opener.com");
-    comFile.open(QIODevice::WriteOnly | QIODevice::Text);
-    comFile.close();
-
-    QFileSystemWatcher *fswatcher = new QFileSystemWatcher(this);
-    fswatcher->addPath(QDir::homePath() + QDir::separator() + ".tab_opener.com");
-    connect(fswatcher, SIGNAL(fileChanged(QString)), this, SLOT(comFileChanged(QString)));
-
     connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
-}
-
-void MainWindow::showSystray()
-{
-    this->sysTray->show();
 }
 
 MainWindow::~MainWindow()
@@ -202,7 +177,7 @@ void MainWindow::on_wpb_terminal_clicked()
     sl << this->path;
     p->start(cmd, QStringList() << sl);
 
-    this->hide();
+    this->close();
 }
 
 void MainWindow::on_wpb_folder_clicked()
@@ -339,34 +314,6 @@ void MainWindow::onMyProcessFinished(int exitCode)
     this->ui->we_output->append("<span style=\"color:green\">done, exit code: "
                                 + QString::number(exitCode) + "</span>");
     this->guiCmdProcess = NULL;
-}
-
-void MainWindow::systrayActivate(QSystemTrayIcon::ActivationReason a)
-{
-    if (a == QSystemTrayIcon::Trigger){
-        if (this->isHidden())
-            this->show();
-        else
-            this->hide();
-    }
-}
-
-void MainWindow::comFileChanged(QString path)
-{
-    path = path;
-    QFile comFile(QDir::homePath() + QDir::separator() + ".tab_opener.com");
-    comFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream in(&comFile);
-    QString msg = in.readLine();
-    comFile.close();
-
-    if (msg == "show"){
-        this->show();
-        this->activateWindow();
-        this->setFocus();
-    }
-    if (msg == "hide")
-        this->hide();
 }
 
 void MainWindow::on_wer_cmd_returnPressed()
