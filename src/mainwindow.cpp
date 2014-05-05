@@ -360,8 +360,11 @@ void MainWindow::comFileChanged(QString path)
     QString msg = in.readLine();
     comFile.close();
 
-    if (msg == "show")
+    if (msg == "show"){
         this->show();
+        this->activateWindow();
+        this->setFocus();
+    }
     if (msg == "hide")
         this->hide();
 }
