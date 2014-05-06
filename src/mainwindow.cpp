@@ -439,3 +439,11 @@ void MainWindow::on_actionScmCommit_triggered()
         }
     }
 }
+
+/**
+ * @brief Perform SCM push
+ */
+void MainWindow::on_actionScmPush_triggered()
+{
+    this->exec(QStringList() << "/usr/bin/git" << "push" << "--all");
+}

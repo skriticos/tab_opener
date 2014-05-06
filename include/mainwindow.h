@@ -55,6 +55,8 @@ private slots:
 
     void on_actionScmCommit_triggered();
 
+    void on_actionScmPush_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString path;
