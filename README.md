@@ -105,6 +105,8 @@ Other structural elements:
 Roadmap
 -------
 
+* improve code documentation
+* terminal command history is off, check what's up there
 * make notes file specific
 * rememmber last location on close and restore on open
 * layout currently is designed for 1080p, should be more flexible
@@ -115,6 +117,7 @@ Roadmap
 * tweak terminal, combine quoted arguments
 * simple git integration
 * add a cheat sheet button
+* add preview
 
 
 License

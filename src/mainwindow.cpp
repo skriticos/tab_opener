@@ -1,40 +1,73 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+/**
+ * @brief Initializes the main window
+ *
+ * - sets up variables
+ * - sets up the datastore
+ * - sets up the preferences widget (configwidget, this->wconfig)
+ * - sets up the file navigation widgets (ui->wb_folders, ui->wb_files)
+ * - sets up the presets (bookmarks)
+ * - sets up the global notes
+ * - connects signals
+ */
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow)
 {
+    // window
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
 
-    ds = new DataStore(this);
-    setPresets();
-    wconfig = new ConfigWidget(ds, this);
-    connect(wconfig, SIGNAL(accepted()), this, SLOT(setPresets()));
+    // datastore
+    this->ds = new DataStore(this);
 
-    shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
+    // variables
+    this->processRunnning = false;
+
+    // keyboard shortcuts
+    this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(close()));
 
-    // setup navi
+    // file navigation
     QString homePath = QDir::homePath();
-    dirmodel = new QFileSystemModel(this);
-    filemodel = new QFileSystemModel(this);
-    dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
-    filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-    // setup location
+    this->dirmodel = new QFileSystemModel(this);
+    this->filemodel = new QFileSystemModel(this);
+    this->dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
+    this->filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+
     ui->wb_folders->setModel(dirmodel);
     ui->wb_files->setModel(filemodel);
     ui->wb_folders->setRootIndex(dirmodel->setRootPath("/"));
     ui->wb_folders->setCurrentIndex(dirmodel->index(homePath));
     ui->wb_files->setRootIndex(filemodel->setRootPath(homePath));
-    // setup view properties
+
     ui->wb_folders->setExpanded(dirmodel->index(homePath), true);
     ui->wb_folders->hideColumn(3);
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
 
-    setPath(QDir::homePath());
-
+    this->setPath(QDir::homePath());
     connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+
+    // file and command quicklists
+    ui->wfileinner->init(ds);
+    connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
+    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
+
+    ui->wcmdinner->init(ds);
+    connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
+            this, SLOT(setCommand(QString,QString)));
+
+    // notes
+    ui->we_notes->setPlainText(ds->getNotes());
+    connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
+
+    // configuration widget (preferences)
+    this->wconfig = new ConfigWidget(ds, this);
+
+    // presets
+    this->connect(wconfig, SIGNAL(accepted()), this, SLOT(updatePresets()));
+    this->updatePresets();
 
     connect(ui->wprb0, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb1, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
@@ -46,20 +79,6 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->wprb7, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb8, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
-
-    ui->we_notes->setPlainText(ds->getNotes());
-    connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
-
-    ui->wfileinner->init(ds);
-    connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
-
-    ui->wcmdinner->init(ds);
-    connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
-            this, SLOT(setCommand(QString,QString)));
-
-    this->processRunnning = false;
-
-    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
 }
 
 MainWindow::~MainWindow()
@@ -67,7 +86,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setPresets()
+void MainWindow::updatePresets()
 {
     ui->wprb0->setText(ds->getPreset(0));
     ui->wprb1->setText(ds->getPreset(1));

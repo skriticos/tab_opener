@@ -28,7 +28,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void setPresets();
+    void updatePresets();
     void setRootPath();
     void setPath(QString path);
     void setCommand(QString cmd, QString path);
