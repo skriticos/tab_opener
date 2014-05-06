@@ -448,5 +448,5 @@ void MainWindow::on_actionScmCommit_triggered()
  */
 void MainWindow::on_actionScmPush_triggered()
 {
-    this->exec(QStringList() << "/usr/bin/git" << "push" << "--all");
+    this->exec(QStringList() << "/usr/bin/git" << "push" << "all" << "--all");
 }
