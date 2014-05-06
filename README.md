@@ -112,6 +112,9 @@ Roadmap
 * properly sort recent files / commands (last file / command should be first,
   not just in the list)
 * might want to have preset specific recent files / commands ?
+* tweak terminal, combine quoted arguments
+* simple git integration
+* add a cheat sheet button
 
 
 License
