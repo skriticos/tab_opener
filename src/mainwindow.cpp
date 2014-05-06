@@ -146,7 +146,7 @@ void MainWindow::multiExec(QList<QStringList> commands)
         this->ui->we_output->append(proc->readAll());
         int exitCode = proc->exitCode();
         delete proc;
-        if (exitCode)
+        if (exitCode != 0)
             break;
     }
 
