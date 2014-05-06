@@ -21,5 +21,9 @@
         <file>rc/kxkb.png</file>
         <file>rc/tray16.png</file>
         <file>rc/tray32.png</file>
+        <file>rc/scm-commit.png</file>
+        <file>rc/scm-pull.png</file>
+        <file>rc/scm-push.png</file>
+        <file>rc/help.png</file>
     </qresource>
 </RCC>

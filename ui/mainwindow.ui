@@ -45,6 +45,26 @@
       </size>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="7">
+       <widget class="HoverButton" name="btnScmCommit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SCM Add + Commit&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/scm-commit.png</normaloff>:/images/rc/scm-commit.png</iconset>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="5">
        <widget class="HoverButton" name="wpb_folder">
         <property name="sizePolicy">
@@ -52,6 +72,9 @@
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Open file browser at current location&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string/>
@@ -70,6 +93,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Edit file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -87,6 +113,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;View file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -96,7 +125,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" rowspan="2" colspan="7">
+      <item row="2" column="1" rowspan="2" colspan="14">
        <widget class="QListView" name="wb_files">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -106,7 +135,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="7">
+      <item row="0" column="1" colspan="14">
        <widget class="QWidget" name="wpath" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -238,29 +267,15 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Open terminal at current location&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="../images.qrc">
           <normaloff>:/images/rc/terminal.png</normaloff>:/images/rc/terminal.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="HoverButton" name="config_presets">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../images.qrc">
-          <normaloff>:/images/rc/configure.png</normaloff>:/images/rc/configure.png</iconset>
         </property>
        </widget>
       </item>
@@ -272,6 +287,9 @@
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go to home&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -281,7 +299,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="7">
+      <item row="1" column="14">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -296,6 +314,86 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="1" column="8">
+       <widget class="HoverButton" name="btnScmPush">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SCM Push&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/scm-push.png</normaloff>:/images/rc/scm-push.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="9">
+       <widget class="HoverButton" name="config_presets">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Preferences&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/configure.png</normaloff>:/images/rc/configure.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="HoverButton" name="btnScmPull">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;SCM Pull&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/scm-pull.png</normaloff>:/images/rc/scm-pull.png</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="10">
+       <widget class="HoverButton" name="btnHelp">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CheetSheet&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../images.qrc">
+          <normaloff>:/images/rc/help.png</normaloff>:/images/rc/help.png</iconset>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -573,6 +671,26 @@ p, li { white-space: pre-wrap; }
     </widget>
    </item>
   </layout>
+  <action name="actionScmPull">
+   <property name="text">
+    <string>scmPull</string>
+   </property>
+  </action>
+  <action name="actionScmCommit">
+   <property name="text">
+    <string>scmCommit</string>
+   </property>
+  </action>
+  <action name="actionScmPush">
+   <property name="text">
+    <string>scmPush</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>help</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -601,5 +719,70 @@ p, li { white-space: pre-wrap; }
  <resources>
   <include location="../images.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>btnScmPull</sender>
+   <signal>clicked()</signal>
+   <receiver>actionScmPull</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>507</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnScmCommit</sender>
+   <signal>clicked()</signal>
+   <receiver>actionScmCommit</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>541</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnScmPush</sender>
+   <signal>clicked()</signal>
+   <receiver>actionScmPush</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>575</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnHelp</sender>
+   <signal>clicked()</signal>
+   <receiver>actionHelp</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>643</x>
+     <y>60</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>643</x>
+     <y>60</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

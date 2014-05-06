@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QProcess>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "datastore.h"
 #include "configwidget.h"
@@ -24,6 +25,8 @@ class MainWindow : public QWidget
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void exec(QStringList cmd);
+    void multiExec(QList<QStringList> commands);
 
     ~MainWindow();
 
@@ -47,6 +50,10 @@ private slots:
     void onMyStdoutReadyRead();
     void onMyStderrReadReady();
     void onMyProcessFinished(int exitCode);
+
+    void on_actionScmPull_triggered();
+
+    void on_actionScmCommit_triggered();
 
 private:
     Ui::MainWindow *ui;

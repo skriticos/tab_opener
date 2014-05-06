@@ -111,6 +111,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8b244be8b7b7db1b08de2a2acb9409db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_main_window.html#a8b244be8b7b7db1b08de2a2acb9409db">MainWindow</a> (QWidget *parent=0)</td></tr>
 <tr class="memdesc:a8b244be8b7b7db1b08de2a2acb9409db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes the main window.  <a href="#a8b244be8b7b7db1b08de2a2acb9409db">More...</a><br/></td></tr>
 <tr class="separator:a8b244be8b7b7db1b08de2a2acb9409db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00efedd3990bd028cd2a930c23618e47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_main_window.html#a00efedd3990bd028cd2a930c23618e47">exec</a> (QStringList cmd)</td></tr>
+<tr class="memdesc:a00efedd3990bd028cd2a930c23618e47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience method to execute commands.  <a href="#a00efedd3990bd028cd2a930c23618e47">More...</a><br/></td></tr>
+<tr class="separator:a00efedd3990bd028cd2a930c23618e47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae98d00a93bc118200eeef9f9bba1dba7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_main_window.html#ae98d00a93bc118200eeef9f9bba1dba7">~MainWindow</a> ()</td></tr>
 <tr class="separator:ae98d00a93bc118200eeef9f9bba1dba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -152,6 +155,9 @@ Private Slots</h2></td></tr>
 <tr class="separator:ac6173f3a63f07ed026b5efc447944085"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a802ff355aa5609762b93c2bb317babd8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_main_window.html#a802ff355aa5609762b93c2bb317babd8">onMyProcessFinished</a> (int exitCode)</td></tr>
 <tr class="separator:a802ff355aa5609762b93c2bb317babd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf64aa97adf2b0efeb214b4209557a6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_main_window.html#acf64aa97adf2b0efeb214b4209557a6d">on_actionScmPull_triggered</a> ()</td></tr>
+<tr class="memdesc:acf64aa97adf2b0efeb214b4209557a6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Perform SCM pull action at current path.  <a href="#acf64aa97adf2b0efeb214b4209557a6d">More...</a><br/></td></tr>
+<tr class="separator:acf64aa97adf2b0efeb214b4209557a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -234,7 +240,7 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00084">84</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00117">117</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -261,7 +267,34 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00163">163</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00196">196</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a00efedd3990bd028cd2a930c23618e47"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MainWindow::exec </td>
+          <td>(</td>
+          <td class="paramtype">QStringList&#160;</td>
+          <td class="paramname"><em>cmd</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convenience method to execute commands. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cmd</td><td>command and arguments that are to be executed</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>example: <a class="el" href="class_main_window.html#a00efedd3990bd028cd2a930c23618e47" title="Convenience method to execute commands. ">MainWindow::exec</a>(QStringList() &lt;&lt; "/bin/ls" &lt;&lt; "/home/me"); </p>
+
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00090">90</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -286,7 +319,34 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00184">184</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00217">217</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="acf64aa97adf2b0efeb214b4209557a6d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MainWindow::on_actionScmPull_triggered </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span><span class="mlabel">slot</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Perform SCM pull action at current path. </p>
+
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00379">379</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -311,7 +371,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00158">158</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00191">191</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -336,7 +396,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00242">242</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00275">275</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -361,7 +421,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00215">215</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00248">248</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -387,7 +447,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00173">173</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00206">206</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -412,7 +472,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00338">338</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00371">371</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -437,7 +497,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00270">270</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00303">303</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -462,7 +522,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00202">202</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00235">235</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -487,7 +547,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00168">168</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00201">201</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -512,7 +572,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00189">189</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00222">222</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -538,7 +598,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00330">330</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00363">363</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +623,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00318">318</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00351">351</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -588,7 +648,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00306">306</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00339">339</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -624,7 +684,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00152">152</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00185">185</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -650,7 +710,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00108">108</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00141">141</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -675,7 +735,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00103">103</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00136">136</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -700,7 +760,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00089">89</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8cpp_source.html#l00122">122</a> of file <a class="el" href="mainwindow_8cpp_source.html">mainwindow.cpp</a>.</p>
 
 </div>
 </div>
@@ -723,7 +783,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00060">60</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00063">63</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -745,7 +805,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00054">54</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00057">57</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -767,7 +827,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00061">61</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00064">64</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -789,7 +849,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00056">56</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00059">59</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -811,7 +871,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00058">58</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00061">61</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -833,7 +893,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00056">56</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00059">59</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -855,7 +915,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00062">62</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00065">65</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -877,7 +937,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00053">53</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00056">56</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -899,7 +959,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00063">63</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00066">66</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -921,7 +981,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00055">55</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00058">58</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -943,7 +1003,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00052">52</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00055">55</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -965,7 +1025,7 @@ Private Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00057">57</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
+<p>Definition at line <a class="el" href="mainwindow_8h_source.html#l00060">60</a> of file <a class="el" href="mainwindow_8h_source.html">mainwindow.h</a>.</p>
 
 </div>
 </div>
@@ -976,7 +1036,7 @@ Private Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue May 6 2014 11:09:37 for tab_opener by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Tue May 6 2014 12:19:01 for tab_opener by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

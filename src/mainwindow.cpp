@@ -81,6 +81,78 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
 }
 
+/**
+ * @brief Convenience method to execute commands
+ * @param cmd command and arguments that are to be executed
+ *
+ * example: MainWindow::exec(QStringList() << "/bin/ls" << "/home/me");
+ */
+void MainWindow::exec(QStringList cmd)
+{
+    if (this->processRunnning)
+        QMessageBox::warning(this, "Previous command still running",
+                             "Refusing to execute command while previous command is still running",
+                             QMessageBox::Ok);
+
+    // prepare command
+    QString prog = cmd.at(0);
+    QStringList args = cmd;
+    args.removeFirst();
+
+    // crear terminal output
+    this->ui->we_output->clear();
+    this->ui->we_output->append(cmd.join(" "));
+
+    // run process
+    QProcess *process = new QProcess(this);
+    this->guiCmdProcess = process;
+    connect(process, SIGNAL(readyReadStandardOutput()), this, SLOT(onMyStdoutReadyRead()));
+    connect(process, SIGNAL(readyReadStandardError()), this, SLOT(onMyStderrReadReady()));
+    connect(process, SIGNAL(finished(int)), this, SLOT(onMyProcessFinished(int)));
+    this->processRunnning = true;
+    this->ui->wer_cmd->clear();
+    process->setWorkingDirectory(this->path);
+
+    this->ui->wcmdinner->update();
+
+    process->start(prog, args);
+    // rest is handled by callbacks
+}
+
+/**
+ * @brief Execute multiple commands in a row
+ * @param commands list of commands that are to be executed
+ *
+ * This method executes multiple commands in a row and writes output to we_output.
+ * It is blocking. Each process has 1 minute to finish.
+ */
+void MainWindow::multiExec(QList<QStringList> commands)
+{
+    if (this->processRunnning)
+        QMessageBox::warning(this, "Previous command still running",
+                             "Refusing to execute command while previous command is still running",
+                             QMessageBox::Ok);
+
+    this->ui->we_output->clear();
+    this->ui->we_output->append("executing multiple commands..");
+    for (int i=0; i<commands.size(); i++){
+        this->ui->we_output->append("% " + commands.at(i).join(" "));
+        QProcess *proc = new QProcess(this);
+        QString cmd = commands.at(i).at(0);
+        QStringList args = commands.at(i); args.removeFirst();
+        proc->setWorkingDirectory(this->path);
+        proc->start(cmd, args);
+        proc->waitForFinished(60000);
+        this->ui->we_output->append(proc->readAll());
+        int exitCode = proc->exitCode();
+        delete proc;
+        if (exitCode)
+            break;
+    }
+
+    this->ui->we_output->append("done");
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -338,4 +410,32 @@ void MainWindow::onMyProcessFinished(int exitCode)
 void MainWindow::on_wer_cmd_returnPressed()
 {
     this->on_werb_exec_clicked();
+}
+
+/**
+ * @brief Perform SCM pull action at current path
+ */
+void MainWindow::on_actionScmPull_triggered()
+{
+    this->exec(QStringList() << "/usr/bin/git" << "pull");
+}
+
+/**
+ * @brief Perform SCM add all + commit action
+ */
+void MainWindow::on_actionScmCommit_triggered()
+{
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Commit message"),
+                                         tr("Commit message:"), QLineEdit::Normal, "", &ok);
+    if (ok){
+        if (!text.isEmpty()){
+            QList <QStringList> commands;
+            commands.append(QStringList() << "/usr/bin/git" << "add" << "--all");
+            commands.append(QStringList() << "/usr/bin/git" << "commit" << "-am" << text);
+            this->multiExec(commands);
+        } else {
+            QMessageBox::warning(this, "Abortig commit", "No commit message, aborting..", QMessageBox::Ok);
+        }
+    }
 }
