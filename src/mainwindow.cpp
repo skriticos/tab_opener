@@ -144,10 +144,13 @@ void MainWindow::multiExec(QList<QStringList> commands)
         proc->start(cmd, args);
         proc->waitForFinished(60000);
         this->ui->we_output->append(proc->readAll());
+        this->ui->we_output->append(proc->readAllStandardError());
         int exitCode = proc->exitCode();
         delete proc;
-        if (exitCode != 0)
+        if (exitCode != 0) {
+            this->ui->we_output->append("aborting, exit code " + QString::number(exitCode));
             break;
+        }
     }
 
     this->ui->we_output->append("done");
