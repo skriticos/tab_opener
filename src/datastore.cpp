@@ -19,6 +19,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         myDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
         myDB.exec("INSERT INTO general (key, value) VALUES ('fileBrowser', '/usr/bin/dolphin')");
         myDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
+        myDB.exec("INSERT INTO general (key, value) VALUES ('navigatorPath', '" + QDir::homePath() + "')");
     }
 
     if(!myDB.tables().contains("extensions")) {
@@ -68,6 +69,8 @@ void DataStore::loadData()
             this->fileBrowser = qGeneral.value(1).toString();
         if(qGeneral.value(0).toString() == "terminalEmulator")
             this->terminalEmulator = qGeneral.value(1).toString();
+        if(qGeneral.value(0).toString() == "navigatorPath")
+            this->navigatorPath = qGeneral.value(1).toString();
     }
 
     QSqlQuery qExtensions = myDB.exec("SELECT ext, open, edit FROM extensions");
@@ -134,14 +137,20 @@ void DataStore::saveData()
     qNotes.bindValue(":note", notes);
     qNotes.exec();
 
+    // general settings
     QSqlQuery qGeneral(myDB);
     qGeneral.prepare("UPDATE general SET value=:value WHERE key=:key");
+
     qGeneral.bindValue(":key", "fileBrowser");
     qGeneral.bindValue(":value", this->fileBrowser);
     qGeneral.exec();
-    qGeneral.prepare("UPDATE general SET value=:value WHERE key=:key");
+
     qGeneral.bindValue(":key", "terminalEmulator");
     qGeneral.bindValue(":value", this->terminalEmulator);
+    qGeneral.exec();
+
+    qGeneral.bindValue(":key", "navigatorPath");
+    qGeneral.bindValue(":value", this->navigatorPath);
     qGeneral.exec();
 
     // reset extensions table
@@ -400,6 +409,16 @@ int DataStore::getPopularCommandCount()
 {
     return this->commandLog.size();
 }
+QString DataStore::getNavigatorPath() const
+{
+    return navigatorPath;
+}
+
+void DataStore::setNavigatorPath(const QString &value)
+{
+    navigatorPath = value;
+}
+
 
 QString DataStore::getPopularFile(int pos)
 {

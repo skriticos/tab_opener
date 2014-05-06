@@ -52,9 +52,7 @@ private slots:
     void onMyProcessFinished(int exitCode);
 
     void on_actionScmPull_triggered();
-
     void on_actionScmCommit_triggered();
-
     void on_actionScmPush_triggered();
 
 private:

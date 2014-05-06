@@ -23,30 +23,23 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
 
     // variables
     this->processRunnning = false;
+    this->filemodel = NULL;
 
     // keyboard shortcuts
     this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(close()));
 
     // file navigation
-    QString homePath = QDir::homePath();
     this->dirmodel = new QFileSystemModel(this);
-    this->filemodel = new QFileSystemModel(this);
     this->dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
-    this->filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-
     ui->wb_folders->setModel(dirmodel);
-    ui->wb_files->setModel(filemodel);
     ui->wb_folders->setRootIndex(dirmodel->setRootPath("/"));
-    ui->wb_folders->setCurrentIndex(dirmodel->index(homePath));
-    ui->wb_files->setRootIndex(filemodel->setRootPath(homePath));
-
-    ui->wb_folders->setExpanded(dirmodel->index(homePath), true);
     ui->wb_folders->hideColumn(3);
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
 
-    this->setPath(QDir::homePath());
+    this->setPath(ds->getNavigatorPath());
+
     connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
 
     // file and command quicklists
@@ -79,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->wprb7, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb8, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
+
 }
 
 /**
@@ -183,13 +177,20 @@ void MainWindow::setRootPath()
 void MainWindow::setPath(QString path)
 {
     this->path = path;
+    ds->setNavigatorPath(path);
 
     // split path into directories
     QStringList charmParts = path.split(QDir::separator());
 
+    if (this->filemodel) delete this->filemodel;
+    this->filemodel = new QFileSystemModel(this);
+    this->filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+
+    ui->wb_files->setModel(filemodel);
     ui->wb_folders->setCurrentIndex(dirmodel->index(path));
-    ui->wb_files->setRootIndex(filemodel->setRootPath(path));
     ui->wb_folders->setExpanded(dirmodel->index(path), true);
+    ui->wb_files->setRootIndex(filemodel->setRootPath(path));
+
 
     // clear previous buttons and labels
     for (int i=cblist.size()-1; i>=0; i--){
@@ -248,11 +249,6 @@ void MainWindow::on_wpb_home_clicked()
 void MainWindow::on_wb_folders_clicked(const QModelIndex &index)
 {
    QString path = dirmodel->fileInfo(index).absoluteFilePath();
-   delete filemodel;
-   filemodel = new QFileSystemModel(this);
-   ui->wb_files->setModel(filemodel);
-   filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-   ui->wb_files->setRootIndex(filemodel->setRootPath(path));
    this->setPath(path);
 }
 

@@ -84,11 +84,15 @@ public:
     RunEntry* getPopularCommand(int pos);
     int getPopularCommandCount();
 
+    QString getNavigatorPath() const;
+    void setNavigatorPath(const QString &value);
+
 signals:
 
 public slots:
 
 private:
+    QString navigatorPath;
     QString presets[10];
     QString notes;
     QString fileBrowser;
