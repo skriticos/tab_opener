@@ -320,13 +320,20 @@ int DataStore::getRecentFileCount()
     return this->recentFiles.size();
 }
 
+/**
+ * @brief Push a file path to the recent files stack
+ * @param path
+ */
 void DataStore::pushRecentFile(QString path)
 {
+    // update recent files stack
     if(!recentFiles.contains(path)){
-        this->recentFiles.prepend(path);
-        if (this->recentFiles.size() > 10)
+        if (this->recentFiles.size() > 9)
             this->recentFiles.removeLast();
+    } else {
+        this->recentFiles.removeOne(path);
     }
+    this->recentFiles.prepend(path);
 
     // update usage record
     FileEntry *e;

@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     // file and command quicklists
     ui->wfileinner->init(ds);
     connect(ui->wfileinner, SIGNAL(forwardPath(QString)), this, SLOT(setPath(QString)));
-    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(hide()));
+    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(close()));
 
     ui->wcmdinner->init(ds);
     connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
@@ -284,7 +284,7 @@ void MainWindow::on_wpb_folder_clicked()
     sl << this->path;
     p->start(cmd, QStringList() << sl);
 
-    this->hide();
+    this->close();
 }
 
 void MainWindow::on_view_file_clicked()
@@ -311,7 +311,7 @@ void MainWindow::on_view_file_clicked()
     ds->pushRecentFile(selectedFilePath);
     ui->wfileinner->update();
 
-    this->hide();
+    this->close();
 }
 
 void MainWindow::on_edit_file_clicked()
@@ -338,7 +338,7 @@ void MainWindow::on_edit_file_clicked()
     ds->pushRecentFile(selectedFilePath);
     ui->wfileinner->update();
 
-    this->hide();
+    this->close();
 }
 
 // Execute command, read output and populate output window

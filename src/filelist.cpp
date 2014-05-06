@@ -95,15 +95,12 @@ void FileList::on_wflab_file_view_clicked()
     QString extension = selectedFilePath.split(".").last();
 
     // prepare command string and arguments
-    QString tmp = ds->getOpenAppsItem(extension);
-    QString cmd = tmp.split(" ").at(0);
-    QStringList tmp2 = tmp.split(" ");
-    tmp2.removeFirst();
-    QStringList args = QStringList() << tmp2 << selectedFilePath;
+    QStringList rawCmd = ds->getOpenAppsItem(extension).split(" ");
+    QString prog = rawCmd.first();
+    QStringList args = rawCmd.mid(1);
 
     // execute open command
-    QProcess *p = new QProcess(this);
-    p->start(cmd, args);
+    QProcess p; p.startDetached(prog, args);
 
     // push file to stack
     ds->pushRecentFile(selectedFilePath);

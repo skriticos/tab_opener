@@ -111,8 +111,7 @@ Roadmap
 * rememmber last location on close and restore on open
 * layout currently is designed for 1080p, should be more flexible
 * disable control elements when no file is selected
-* properly sort recent files / commands (last file / command should be first,
-  not just in the list)
+* ~~properly sort recent files / commands (last file / command should be first, not just in the list)~~
 * might want to have preset specific recent files / commands ?
 * tweak terminal, combine quoted arguments
 * ~~simple git integration~~

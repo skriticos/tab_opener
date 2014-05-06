@@ -30,7 +30,8 @@ SOURCES += \
     src/charmbutton.cpp \
     src/presetbutton.cpp \
 	src/filebutton.cpp \
-    src/commandbutton.cpp
+    src/commandbutton.cpp \
+    src/util.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -42,7 +43,8 @@ HEADERS  += \
     include/charmbutton.h \
     include/presetbutton.h \
 	include/filebutton.h \
-    include/commandbutton.h
+    include/commandbutton.h \
+    include/util.h
 
 FORMS    += \
     ui/filelist.ui \
@@ -52,3 +54,6 @@ FORMS    += \
 
 RESOURCES += \
     images.qrc
+
+OTHER_FILES += \
+    README.md
