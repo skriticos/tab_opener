@@ -8,13 +8,6 @@ QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG(release, debug|release) {
-    #This is a release build
-    DEFINES += QT_NO_DEBUG_OUTPUT
-} else {
-    #This is a debug build
-}
-
 TARGET = tab_opener
 TEMPLATE = app
 INCLUDEPATH += include
@@ -31,7 +24,8 @@ SOURCES += \
     src/presetbutton.cpp \
 	src/filebutton.cpp \
     src/commandbutton.cpp \
-    src/util.cpp
+    src/util.cpp \
+    src/dstable.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -44,7 +38,8 @@ HEADERS  += \
     include/presetbutton.h \
 	include/filebutton.h \
     include/commandbutton.h \
-    include/util.h
+    include/util.h \
+    include/dstable.h
 
 FORMS    += \
     ui/filelist.ui \

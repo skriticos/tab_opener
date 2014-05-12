@@ -1,69 +1,187 @@
 #include "datastore.h"
 
+void DataStore::testDsTable()
+{
+    qDebug() << "testing DsTable..";
+
+    bool result;
+
+    QString testTblName = "tblTest";
+    QString valExt, valPri, valSec;
+    QSqlQuery query;
+    DsTable::Record testRecord0;
+
+    // create test database in memory
+    QSqlDatabase testDB = QSqlDatabase::addDatabase("QSQLITE", "connTest");
+    testDB.setDatabaseName(":memory:");
+    testDB.open();
+
+    // setup schema
+    DsTable::SchemaField ext       = {"extension",     DsTable::TEXT};
+    DsTable::SchemaField primary   = {"act_primary",   DsTable::TEXT};
+    DsTable::SchemaField secondary = {"act_secondary", DsTable::TEXT};
+
+    QList<DsTable::SchemaField> testSchema;
+    testSchema << ext << primary << secondary;
+
+    // create first DsTable class
+    DsTable *testTbl1 = new DsTable(testTblName, testSchema, testDB, this);
+
+    testRecord0["foo"] = "bar";
+    result = testTbl1->insertRecord(testRecord0);
+    if(result)
+        qFatal("TEST FAILED: DsTable::insertRecord() returned true for invalid record");
+
+    // insert records
+    DsTable::Record testRecord1;
+    testRecord1["extension"] = "html";
+    testRecord1["act_primary"] = "/foo/html";
+    testRecord1["act_secondary"] = "/bar/html";
+    result = testTbl1->insertRecord(testRecord1);
+    if(!result)
+        qFatal("TEST FAILED: DsTable::insertRecord() returned false)");
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.first();
+    valExt = query.value(0).toString();
+    valPri = query.value(1).toString();
+    valSec = query.value(2).toString();
+
+    if(valExt != "html")
+        qFatal("TEST FAILED: ext should be 'html' but is '%s'", valExt.toUtf8().data());
+    if(valPri != "/foo/html")
+        qFatal("TEST FAILED: act_primary should be '/foo/html' but is '%s'", valPri.toUtf8().data());
+    if(valSec != "/bar/html")
+        qFatal("TEST FAILED: act_secondary should be '/bar/html' but is '%s'", valSec.toUtf8().data());
+
+    DsTable::Record testRecord2;
+    testRecord2["extension"] = "svg";
+    testRecord2["act_primary"] = "/foo/svg";
+    testRecord2["act_secondary"] = "/bar/svg";
+    result = testTbl1->insertRecord(testRecord2);
+    if(!result)
+        qFatal("TEST FAILED: DsTable::insertRecord() returned false)");
+
+    int cnt = testTbl1->getRecordCount();
+    if(cnt != 2)
+        qFatal("TEST DsTable::getRecordCount() failed");
+
+    testRecord1["act_primary"] = "/foo/changed/html";
+    testRecord1["act_secondary"] = "/bar/changed/html";
+    result = testTbl1->insertRecord(testRecord1);
+    if(!result)
+        qFatal("TEST FAILED: DsTable::insertRecord() returned false)");
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.first();
+    valExt = query.value(0).toString();
+    valPri = query.value(1).toString();
+    valSec = query.value(2).toString();
+
+    if(valExt != "html")
+        qFatal("TEST FAILED: ext should be 'html' but is '%s'", valExt.toUtf8().data());
+    if(valPri != "/foo/changed/html")
+        qFatal("TEST FAILED: act_primary should be '/foo/changed/html' but is '%s'", valPri.toUtf8().data());
+    if(valSec != "/bar/changed/html")
+        qFatal("TEST FAILED: act_secondary should be '/bar/changed/html' but is '%s'", valSec.toUtf8().data());
+
+    query.next();
+    valExt = query.value(0).toString();
+    valPri = query.value(1).toString();
+    valSec = query.value(2).toString();
+
+    if(valExt != "svg")
+        qFatal("TEST FAILED: ext should be 'svg' but is '%s'", valExt.toUtf8().data());
+    if(valPri != "/foo/svg")
+        qFatal("TEST FAILED: act_primary should be '/foo/svg' but is '%s'", valPri.toUtf8().data());
+    if(valSec != "/bar/svg")
+        qFatal("TEST FAILED: act_secondary should be '/bar/svg' but is '%s'", valSec.toUtf8().data());
+
+    // create second DsTable class (should load database tables)
+    DsTable *testTbl2 = new DsTable(testTblName, testSchema, testDB, this);
+    DsTable::Record record = testTbl2->getRecord("html");
+
+    if(record.value("extension").toString() != "html")
+        qFatal("TEST FAILED: loading table data from exisitng database");
+    if(record.value("act_primary").toString() != "/foo/changed/html")
+        qFatal("TEST FAILED: loading table data from exisitng database");
+    if(record.value("act_secondary").toString() != "/bar/changed/html")
+        qFatal("TEST FAILED: loading table data from exisitng database");
+
+    // test clear database
+
+    testDB.close();
+
+    qDebug() << "testing DsTable passed!";
+}
+
 DataStore::DataStore(QObject *parent) : QObject(parent)
 {
-    myDB = QSqlDatabase::addDatabase("QSQLITE");
-    myDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
-    myDB.open();
+    dsDB = QSqlDatabase::addDatabase("QSQLITE");
+    dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
+    dsDB.open();
 
-    if(!myDB.tables().contains("presets")) {
-        myDB.exec("CREATE TABLE presets (id INTEGER PRIMARY KEY ASC, path TEXT)");
+    if(!dsDB.tables().contains("presets")) {
+        dsDB.exec("CREATE TABLE presets (id INTEGER PRIMARY KEY ASC, path TEXT)");
         for (int i=0; i<10; i++)
-            myDB.exec("INSERT INTO presets (path) VALUES ('')");
+            dsDB.exec("INSERT INTO presets (path) VALUES ('')");
     }
-    if(!myDB.tables().contains("notes")) {
-        myDB.exec("CREATE TABLE notes (id INTEGER PRIMARY KEY ASC, note TEXT)");
-        myDB.exec("INSERT INTO notes (note) VALUES ('notes')");
+    if(!dsDB.tables().contains("notes")) {
+        dsDB.exec("CREATE TABLE notes (id INTEGER PRIMARY KEY ASC, note TEXT)");
+        dsDB.exec("INSERT INTO notes (note) VALUES ('notes')");
     }
-    if(!myDB.tables().contains("general")) {
-        myDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
-        myDB.exec("INSERT INTO general (key, value) VALUES ('fileBrowser', '/usr/bin/dolphin')");
-        myDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
-        myDB.exec("INSERT INTO general (key, value) VALUES ('navigatorPath', '" + QDir::homePath() + "')");
-    }
-
-    if(!myDB.tables().contains("extensions")) {
-        myDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
+    if(!dsDB.tables().contains("general")) {
+        dsDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
+        dsDB.exec("INSERT INTO general (key, value) VALUES ('fileBrowser', '/usr/bin/dolphin')");
+        dsDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
+        dsDB.exec("INSERT INTO general (key, value) VALUES ('navigatorPath', '" + QDir::homePath() + "')");
     }
 
-    if(!myDB.tables().contains("recent_files")) {
-        myDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
+    if(!dsDB.tables().contains("extensions")) {
+        dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
     }
 
-    if(!myDB.tables().contains("file_usage")) {
-        myDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
+    if(!dsDB.tables().contains("recent_files")) {
+        dsDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
     }
 
-    if(!myDB.tables().contains("recent_commands")){
-        myDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
+    if(!dsDB.tables().contains("file_usage")) {
+        dsDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
     }
 
-    if (!myDB.tables().contains("command_usage")){
-        myDB.exec("CREATE TABLE command_usage "
+    if(!dsDB.tables().contains("recent_commands")){
+        dsDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
+    }
+
+    if (!dsDB.tables().contains("command_usage")){
+        dsDB.exec("CREATE TABLE command_usage "
                   "(id INTEGER PRIMARY KEY ASC, command TEXT, working_directory TEXT, usage_count INTEGER)");
     }
 
     loadData();
+
+    if(qApp->arguments().contains("--test"))
+        this->testDsTable();
 }
 
 DataStore::~DataStore()
 {
     this->saveData();
-    myDB.close();
+    dsDB.close();
 }
 
 void DataStore::loadData()
 {
-    QSqlQuery qPreset = myDB.exec("SELECT path FROM presets");
+    QSqlQuery qPreset = dsDB.exec("SELECT path FROM presets");
     for (int i=0; i<10; i++){
         qPreset.next();
         this->presets[i] = qPreset.value(0).toString();
     }
-    QSqlQuery qNotes = myDB.exec("SELECT note FROM notes");
+    QSqlQuery qNotes = dsDB.exec("SELECT note FROM notes");
     qNotes.next();
     this->notes = qNotes.value(0).toString();
 
-    QSqlQuery qGeneral = myDB.exec("SELECT key, value FROM general");
+    QSqlQuery qGeneral = dsDB.exec("SELECT key, value FROM general");
     while(qGeneral.next()){
         if(qGeneral.value(0).toString() == "fileBrowser")
             this->fileBrowser = qGeneral.value(1).toString();
@@ -73,7 +191,7 @@ void DataStore::loadData()
             this->navigatorPath = qGeneral.value(1).toString();
     }
 
-    QSqlQuery qExtensions = myDB.exec("SELECT ext, open, edit FROM extensions");
+    QSqlQuery qExtensions = dsDB.exec("SELECT ext, open, edit FROM extensions");
     while (qExtensions.next()){
         QString ext = qExtensions.value(0).toString();
         QString open = qExtensions.value(1).toString();
@@ -84,14 +202,14 @@ void DataStore::loadData()
     }
 
     // recent files
-    QSqlQuery qRecentFiles = myDB.exec("SELECT path FROM recent_files");
+    QSqlQuery qRecentFiles = dsDB.exec("SELECT path FROM recent_files");
     while (qRecentFiles.next()) {
         QString path = qRecentFiles.value(0).toString();
         this->recentFiles.append(path);
     }
 
     // file usage
-    QSqlQuery qFileUsage = myDB.exec("SELECT path, usage_count FROM file_usage");
+    QSqlQuery qFileUsage = dsDB.exec("SELECT path, usage_count FROM file_usage");
     while (qFileUsage.next()){
         QString path = qFileUsage.value(0).toString();
         int usage_count = qFileUsage.value(1).toInt();
@@ -102,7 +220,7 @@ void DataStore::loadData()
     }
 
     // recent commands
-    QSqlQuery qRecentCommands = myDB.exec("SELECT command, path FROM recent_commands");
+    QSqlQuery qRecentCommands = dsDB.exec("SELECT command, path FROM recent_commands");
     while (qRecentCommands.next()){
         QString command = qRecentCommands.value(0).toString();
         QString path = qRecentCommands.value(1).toString();
@@ -111,7 +229,7 @@ void DataStore::loadData()
     }
 
     // command usage
-    QSqlQuery qCommandUsage = myDB.exec("SELECT command, working_directory, usage_count FROM command_usage");
+    QSqlQuery qCommandUsage = dsDB.exec("SELECT command, working_directory, usage_count FROM command_usage");
     while (qCommandUsage.next()){
         QString cmd = qCommandUsage.value(0).toString();
         QString wd = qCommandUsage.value(1).toString();
@@ -125,20 +243,20 @@ void DataStore::loadData()
 
 void DataStore::saveData()
 {
-    QSqlQuery qPreset(myDB);
+    QSqlQuery qPreset(dsDB);
     qPreset.prepare("UPDATE presets SET path=:path WHERE id=:id");
     for (int i=0; i<10; i++){
         qPreset.bindValue(":path", presets[i]);
         qPreset.bindValue(":id", i+1);
         qPreset.exec();
     }
-    QSqlQuery qNotes(myDB);
+    QSqlQuery qNotes(dsDB);
     qNotes.prepare("UPDATE notes SET note=:note WHERE id=1");
     qNotes.bindValue(":note", notes);
     qNotes.exec();
 
     // general settings
-    QSqlQuery qGeneral(myDB);
+    QSqlQuery qGeneral(dsDB);
     qGeneral.prepare("UPDATE general SET value=:value WHERE key=:key");
 
     qGeneral.bindValue(":key", "fileBrowser");
@@ -154,8 +272,8 @@ void DataStore::saveData()
     qGeneral.exec();
 
     // reset extensions table
-    myDB.exec("DROP TABLE extensions");
-    myDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
+    dsDB.exec("DROP TABLE extensions");
+    dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
     QSqlQuery qExtensions;
     qExtensions.prepare("INSERT INTO extensions (ext, open, edit) "
                         "VALUES (:ext, :open, :edit)");
@@ -169,8 +287,8 @@ void DataStore::saveData()
     }
 
     // recent files
-    myDB.exec("DROP TABLE recent_files");
-    myDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
+    dsDB.exec("DROP TABLE recent_files");
+    dsDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
     QSqlQuery qRecentFiles;
     qRecentFiles.prepare("INSERT INTO recent_files (path) VALUES (:path)");
     int recentFileCount = this->getRecentFileCount();
@@ -180,8 +298,8 @@ void DataStore::saveData()
     }
 
     // file usage
-    myDB.exec("DROP TABLE file_usage");
-    myDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
+    dsDB.exec("DROP TABLE file_usage");
+    dsDB.exec("CREATE TABLE file_usage (id INTEGER PRIMARY KEY ASC, path TEXT, usage_count INTEGER)");
     QSqlQuery qFileUsage;
     qFileUsage.prepare("INSERT INTO file_usage (path, usage_count) VALUES (:path, :usage_count)");
     int fileEntryCount = this->fileEntryIndex.size();
@@ -193,8 +311,8 @@ void DataStore::saveData()
     }
 
     // recent commands
-    myDB.exec("DROP TABLE recent_commands");
-    myDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
+    dsDB.exec("DROP TABLE recent_commands");
+    dsDB.exec("CREATE TABLE recent_commands (id INTEGER PRIMARY KEY ASC, command TEXT, path TEXT)");
     QSqlQuery qRecentCommands;
     qRecentCommands.prepare("INSERT INTO recent_commands (command, path) VALUES (:command, :path)");
     for (int i=0; i<this->recentCommands.size(); i++){
@@ -205,8 +323,8 @@ void DataStore::saveData()
     }
 
     // command usage
-    myDB.exec("DROP TABLE command_usage");
-    myDB.exec("CREATE TABLE command_usage "
+    dsDB.exec("DROP TABLE command_usage");
+    dsDB.exec("CREATE TABLE command_usage "
               "(id INTEGER PRIMARY KEY ASC, command TEXT, working_directory TEXT, usage_count INTEGER)");
     QSqlQuery qCommandUsage;
     qCommandUsage.prepare("INSERT INTO command_usage (command, working_directory, usage_count) "

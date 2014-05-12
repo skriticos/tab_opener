@@ -25,5 +25,6 @@
         <file>rc/scm-pull.png</file>
         <file>rc/scm-push.png</file>
         <file>rc/help.png</file>
+        <file>rc/icon2.png</file>
     </qresource>
 </RCC>

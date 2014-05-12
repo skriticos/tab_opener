@@ -21,7 +21,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../images.qrc">
-    <normaloff>:/images/rc/fileicon.png</normaloff>:/images/rc/fileicon.png</iconset>
+    <normaloff>:/images/rc/icon2.png</normaloff>:/images/rc/icon2.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QPushButton#wpc_root,#wpc_subselect {
@@ -779,8 +779,8 @@ p, li { white-space: pre-wrap; }
      <y>60</y>
     </hint>
     <hint type="destinationlabel">
-     <x>643</x>
-     <y>60</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>

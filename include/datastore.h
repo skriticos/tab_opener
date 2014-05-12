@@ -10,6 +10,8 @@
 #include <QDebug>
 #include <QListWidgetItem>
 
+#include "dstable.h"
+
 class FileEntry
 {
 public:
@@ -36,6 +38,9 @@ class DataStore : public QObject
 {
     Q_OBJECT
 public:
+
+    void testDsTable();
+
     explicit DataStore(QObject *parent = 0);
     ~DataStore();
     void loadData();
@@ -116,7 +121,7 @@ private:
     QList<RunEntry*> commandLog; // sorted list of commands by count
 
 
-    QSqlDatabase myDB;
+    QSqlDatabase dsDB;
 };
 
 #endif // DATASTORE_H
