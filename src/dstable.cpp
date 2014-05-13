@@ -1,26 +1,225 @@
 #include "dstable.h"
 
 /**
+ * @brief DsTable::testClass
+ */
+void DsTable::testClass()
+{
+    qDebug() << "testing DsTable..";
+
+    // declare variables
+    bool result; // used to test insertRecord return values
+    QSqlDatabase testDB; // in-memory database for testing
+    QSqlQuery query; // re-used query to verify database changes made by DsTable
+    QString testTblName; // name of the table that is used for testing
+    DsTable testTblUninitialized, testTbl1, testTbl2, testTblInvalid;
+    DsTable::SchemaField ext, primary, secondary, tertiary, keyword; // table schema fields
+    QList<DsTable::SchemaField> testSchema, invalidSchema; // table schema for initialization
+    DsTable::Record record, invalidRecord, record1, record2; // records that are used to perform testing
+
+    // initialize variables
+    testTblName = "tblTest";
+
+    ext       = {"extension",     DsTable::TEXT};
+    primary   = {"act_primary",   DsTable::TEXT};
+    secondary = {"act_secondary", DsTable::TEXT};
+    tertiary  = {"act_tertiary",  DsTable::INTEGER};
+    testSchema << ext << primary << secondary << tertiary;
+
+    keyword = {"primary", DsTable::TEXT};
+    invalidSchema << keyword;
+
+    invalidRecord["foo"] = "bar";
+
+    record1["extension"] = "html"; // valid record
+    record1["act_primary"] = "/foo/html";
+    record1["act_secondary"] = "/bar/html";
+    record1["act_tertiary"] = 17;
+
+    record2["extension"] = "svg"; // valid record
+    record2["act_primary"] = "/foo/svg";
+    record2["act_secondary"] = "/bar/svg";
+    record2["act_tertiary"] = 17;
+
+    // PREPARE TEST DATABASE
+    testDB = QSqlDatabase::addDatabase("QSQLITE", "connTest");
+    testDB.setDatabaseName(":memory:");
+    testDB.open();
+
+    // TEST TABLE INITIALIZATION
+    result = testTblInvalid.initTable("none", invalidSchema, testDB);
+    Q_ASSERT(!result);
+
+    result = testTbl1.initTable(testTblName, testSchema, testDB);
+    Q_ASSERT(result);
+
+    // TEST METHOD   DsTable::insertRecord()
+    result = testTblUninitialized.insertRecord(record1);
+    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for uninitialized table");
+
+    result = testTbl1.insertRecord(invalidRecord); // missing fields
+    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for invalid record");
+
+    invalidRecord["extension"] = true; // does not mach schema
+    invalidRecord["act_primary"] = "/foo/html";
+    invalidRecord["act_secondary"] = "/bar/html";
+    invalidRecord["act_tertiary"] = 17;
+
+    result = testTbl1.insertRecord(invalidRecord);
+    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for invalid record");
+
+    result = testTbl1.insertRecord(record1);
+    Q_ASSERT_X(result == true, "DsTable::insertRecord()", "returned false for valid record");
+
+    result = testTbl1.insertRecord(record2);
+    Q_ASSERT(result == true);
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.first();
+
+    Q_ASSERT(query.value(0) == "html");
+    Q_ASSERT(query.value(1) == "/foo/html");
+    Q_ASSERT(query.value(2) == "/bar/html");
+
+    query.next();
+
+    Q_ASSERT(query.value(0) == "svg");
+    Q_ASSERT(query.value(1) == "/foo/svg");
+    Q_ASSERT(query.value(2) == "/bar/svg");
+
+    record1["act_primary"] = "/foo/changed/html";
+    record1["act_secondary"] = "/bar/changed/html";
+
+    result = testTbl1.insertRecord(record1);
+    Q_ASSERT(result == true);
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.first();
+
+    Q_ASSERT(query.value(0) == "html");
+    Q_ASSERT(query.value(1) == "/foo/changed/html");
+    Q_ASSERT(query.value(2) == "/bar/changed/html");
+
+    // SECOND TEST CONSTRUCTOR: LOAD DATA FROM DATABASE
+    result = testTbl2.initTable(testTblName, testSchema, testDB);
+    Q_ASSERT(result);
+
+    record = testTbl2.getRecord("html");
+
+    Q_ASSERT(record.value("extension") == "html");
+    Q_ASSERT(record.value("act_primary") == "/foo/changed/html");
+    Q_ASSERT(record.value("act_secondary") == "/bar/changed/html");
+    Q_ASSERT(record.value("act_tertiary") == 17);
+
+    record = testTbl2.getRecord("svg");
+
+    Q_ASSERT(record.value("extension") == "svg");
+    Q_ASSERT(record.value("act_primary") == "/foo/svg");
+    Q_ASSERT(record.value("act_secondary") == "/bar/svg");
+
+    // TEST DsTable::recordExists()
+    Q_ASSERT(testTbl2.recordExists("html"));
+    Q_ASSERT(!testTbl2.recordExists("foobar"));
+
+    // TEST METHOD   DsTable::getRecordCount()
+    Q_ASSERT(testTbl2.getRecordCount() == 2);
+
+    // DETELING RECORD
+    result = testTbl2.deleteRecord("html");
+    Q_ASSERT(result);
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.last();
+
+    Q_ASSERT(query.at()+1 == 1); // note: SQLite driver does not support query.size(), but this works
+    Q_ASSERT(query.value(0) == "svg");
+    Q_ASSERT(query.value(1) == "/foo/svg");
+    Q_ASSERT(query.value(2) == "/bar/svg");
+
+    // TEST CLEAR DATABASE
+    testTbl2.clearRecords();
+
+    Q_ASSERT(testTbl2.getRecordCount() == 0);
+
+    query = testDB.exec("SELECT * FROM " + testTblName);
+    query.last();
+    Q_ASSERT(query.at() == QSql::AfterLastRow || query.at() == QSql::BeforeFirstRow);
+
+    // CLEANUP
+    testDB.close();
+
+    qDebug() << "testing DsTable passed!";
+}
+
+/**
  * @brief DsTable::DsTable
+ * @param parent
+ */
+DsTable::DsTable(QObject *parent) : QObject(parent)
+{
+    this->tableInitialized = false;
+}
+
+/**
+ * @brief DsTable::initTable
  * @param tableName
  * @param fieldSchema
  * @param db
- * @param parent
+ * @return
  */
-DsTable::DsTable(QString tableName,
-                 QList<DsTable::SchemaField> fieldSchema,
-                 QSqlDatabase db,
-                 QObject *parent) : QObject(parent)
+bool DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
 {
+    bool result;
+    QString fieldKey;
+    QStringList reservedSqliteKeywords;
+
+    result = true;
+    reservedSqliteKeywords
+        << "ABORT" << "ACTION" << "ADD" << "AFTER" << "ALL" << "ALTER" << "ANALYZE"
+        << "AND" << "AS" << "ASC" << "ATTACH" << "AUTOINCREMENT" << "BEFORE" << "BEGIN"
+        << "BETWEEN" << "BY" << "CASCADE" << "CASE" << "CAST" << "CHECK" << "COLLATE"
+        << "COLUMN" << "COMMIT" << "CONFLICT" << "CONSTRAINT" << "CREATE" << "CROSS"
+        << "CURRENT_DATE" << "CURRENT_TIME" << "CURRENT_TIMESTAMP" << "DATABASE"
+        << "DEFAULT" << "DEFERRABLE" << "DEFERRED" << "DELETE" << "DESC" << "DETACH"
+        << "DISTINCT" << "DROP" << "EACH" << "ELSE" << "END" << "ESCAPE" << "EXCEPT"
+        << "EXCLUSIVE" << "EXISTS" << "EXPLAIN" << "FAIL" << "FOR" << "FOREIGN"
+        << "FROM" << "FULL" << "GLOB" << "GROUP" << "HAVING" << "IF" << "IGNORE"
+        << "IMMEDIATE" << "IN" << "INDEX" << "INDEXED" << "INITIALLY" << "INNER"
+        << "INSERT" << "INSTEAD" << "INTERSECT" << "INTO" << "IS" << "ISNULL"
+        << "JOIN" << "KEY" << "LEFT" << "LIKE" << "LIMIT" << "MATCH" << "NATURAL"
+        << "NO" << "NOT" << "NOTNULL" << "NULL" << "OF" << "OFFSET" << "ON" << "OR"
+        << "ORDER" << "OUTER" << "PLAN" << "PRAGMA" << "PRIMARY" << "QUERY" << "RAISE"
+        << "RECURSIVE" << "REFERENCES" << "REGEXP" << "REINDEX" << "RELEASE"
+        << "RENAME" << "REPLACE" << "RESTRICT" << "RIGHT" << "ROLLBACK" << "ROW"
+        << "SAVEPOINT" << "SELECT" << "SET" << "TABLE" << "TEMP" << "TEMPORARY"
+        << "THEN" << "TO" << "TRANSACTION" << "TRIGGER" << "UNION" << "UNIQUE"
+        << "UPDATE" << "USING" << "VACUUM" << "VALUES" << "VIEW" << "VIRTUAL"
+        << "WHEN" << "WHERE" << "WITH" << "WITHOUT";
+
+    if(tableName == "") return false;
+    if(!db.isOpen())    return false;
+
+    for(int i=0; i<fieldSchema.size(); i++){
+
+        fieldKey = fieldSchema.at(i).fieldName.toUpper();
+        // yes, I had this problem and spent too much time to debug it
+        if(reservedSqliteKeywords.contains(fieldKey))
+            return false;
+    }
+
     this->tableName = tableName;
     this->schema = fieldSchema;
     this->lookupKey = fieldSchema.first().fieldName;
     this->db = db;
 
     if(this->db.tables().contains(tableName))
-        this->loadTable();
+        result = this->loadTable();
     else
-        this->createTable();
+        result = this->createTable();
+
+    this->tableInitialized = true;
+
+    return result;
 }
 
 /**
@@ -29,18 +228,32 @@ DsTable::DsTable(QString tableName,
  */
 bool DsTable::insertRecord(Record record)
 {
-    bool result = true;
+    bool result;
     QString lKey; // lookup key value
     QSqlQuery query(this->db);
     QStringList fieldNames, fieldPlaceholderNames;
+    QMetaType::Type metaType;
 
-    // verify record field names contain schema fields (type not checked yet)
+    if(!this->tableInitialized) return false;
+
+    // verify record field names contain schema fields
+    // note: we don't care about additional fields as long as the schema fields are properly populated
     for(int i=0; i<this->schema.size(); i++){
+
         QString fieldName = this->schema.at(i).fieldName;
-        if(!record.contains(fieldName)){
-            qDebug() << "DsTable::insertRecord(): missing fieldname detected: " << fieldName;
-            result = false;
-            goto end;
+        FieldType fieldType = this->schema.at(i).fieldType;
+
+        // verify schema field is present
+        if(!record.contains(fieldName))                     return false;
+
+        // verify schema field has correct type
+        metaType = (QMetaType::Type)record.value(fieldName).type();
+        switch(fieldType){
+        case TEXT:    if(metaType != QMetaType::QString)    return false; break;
+        case INTEGER: if(metaType != QMetaType::Int)        return false; break;
+        case REAL:    if(metaType != QMetaType::Float)      return false; break;
+        case BOOLEAN: if(metaType != QMetaType::Bool)       return false; break;
+        case BLOB:    if(metaType != QMetaType::QByteArray) return false; break;
         }
     }
 
@@ -82,13 +295,34 @@ bool DsTable::insertRecord(Record record)
     }
 
     result = query.exec();
+    if(!result)
+        return false;
 
     // insert record into runtime database
-    if(result)
-        this->records.insert(lKey, record);
+    this->records.insert(lKey, record);
 
-end:
-    return result;
+    return true;
+}
+
+/**
+ * @brief DsTable::deleteRecord
+ * @param lKey
+ * @return
+ */
+bool DsTable::deleteRecord(QString lKey)
+{
+    QSqlQuery query(this->db);
+
+    if(!this->records.contains(lKey))
+        return false;
+
+    query.prepare("DELETE FROM " + this->tableName + " WHERE " + this->lookupKey + "='html'");
+    if(!query.exec())
+        return false;
+
+    this->records.remove(lKey);
+
+    return true;
 }
 
 /**
@@ -125,32 +359,62 @@ DsTable::Record DsTable::getRecord(QString lookupKey)
  */
 void DsTable::clearRecords()
 {
+    if(!this->tableInitialized) return;
     this->records.clear();
     this->db.exec("DELETE FROM " + this->tableName);
 }
 
 /**
  * @brief DsTable::loadTable
+ *
+ * Notice: we don't assume that anything nefarious is going on in the database,
+ *         so the query input is not verified. Hm, maybe we should verify the
+ *         query data?
  */
-void DsTable::loadTable()
+bool DsTable::loadTable()
 {
-    QSqlQuery query = this->db.exec("SELECT * FROM " + this->tableName);
+    QSqlQuery query;
+    QString fieldName;
+    QVariant fieldValue;
+    Record record;
 
-    // TODO: continue here
+    query = this->db.exec("SELECT * FROM " + this->tableName);
+    if(query.lastError().number() != -1)
+        return false;
+
+    // read records
+    while (query.next()){
+
+        record.clear();
+
+        // iterate through schema fields
+        for(int i=0; i<this->schema.size(); i++){
+
+            fieldName = this->schema.at(i).fieldName;
+            fieldValue = query.value(i);
+
+            record.insert(fieldName, fieldValue);
+        }
+        // commit record
+        records.insert(query.value(0).toString(), record);
+    }
+
+    return true;
 }
 
 /**
  * @brief DsTable::createTable
  */
-void DsTable::createTable()
+bool DsTable::createTable()
 {
     QStringList fieldDeclarations;
+    QString strFieldType;
+    QSqlQuery query;
+    SchemaField schemaField;
 
     for(int i=0; i<this->schema.size(); i++){
 
-        SchemaField schemaField = this->schema.at(i);
-        QString strFieldType;
-
+        schemaField = this->schema.at(i);
         switch(schemaField.fieldType){
             case TEXT:    strFieldType = "TEXT";    break;
             case INTEGER: strFieldType = "INTEGER"; break;
@@ -161,6 +425,10 @@ void DsTable::createTable()
         fieldDeclarations << schemaField.fieldName + " " + strFieldType;
     }
 
-    QSqlQuery result =
-        this->db.exec("CREATE TABLE " + this->tableName + " (" + fieldDeclarations.join(", ") + ")");
+    query = this->db.exec("CREATE TABLE " + this->tableName + " (" + fieldDeclarations.join(", ") + ")");
+
+    if(query.lastError().number() != -1)
+        return false;
+
+    return true;
 }

@@ -2,12 +2,15 @@
 #define DSTABLE_H
 
 #include <QtCore>
+#include <QtDebug>
 #include <QtSql>
 
 class DsTable : public QObject{
     Q_OBJECT
 
 public:
+    static void testClass();
+
     typedef QHash<QString, QVariant> Record;
 
     enum FieldType { TEXT, INTEGER, REAL, BOOLEAN, BLOB };
@@ -17,21 +20,24 @@ public:
         DsTable::FieldType fieldType;
     };
 
-    explicit DsTable(QString tableName,
-                     QList<SchemaField> fieldSchema,
-                     QSqlDatabase db,
-                     QObject *parent = 0);
+    explicit DsTable(QObject *parent = 0);
+    bool initTable(QString            tableName,
+                   QList<SchemaField> fieldSchema,
+                   QSqlDatabase       db);
+
 
     bool recordExists(QString lookupKey);
     void clearRecords();
     bool insertRecord(Record record);
+    bool deleteRecord(QString lKey);
     int getRecordCount();
     Record getRecord(QString lookupKey);
 
 private:
-    void loadTable();
-    void createTable();
+    bool loadTable();
+    bool createTable();
 
+    bool tableInitialized;
     QString tableName;
     QString lookupKey;
     QList<SchemaField> schema;

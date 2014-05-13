@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui sql
+QMAKE_CXXFLAGS += -std=c++0x
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +26,8 @@ SOURCES += \
 	src/filebutton.cpp \
     src/commandbutton.cpp \
     src/util.cpp \
-    src/dstable.cpp
+    src/dstable.cpp \
+    src/test.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -39,7 +41,8 @@ HEADERS  += \
 	include/filebutton.h \
     include/commandbutton.h \
     include/util.h \
-    include/dstable.h
+    include/dstable.h \
+    include/test.h
 
 FORMS    += \
     ui/filelist.ui \

@@ -38,9 +38,6 @@ class DataStore : public QObject
 {
     Q_OBJECT
 public:
-
-    void testDsTable();
-
     explicit DataStore(QObject *parent = 0);
     ~DataStore();
     void loadData();
