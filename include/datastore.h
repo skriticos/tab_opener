@@ -54,12 +54,6 @@ public:
     QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
 
-    QString getFileBrowser() const;
-    void setFileBrowser(const QString &value);
-
-    QString getTerminalEmulator() const;
-    void setTerminalEmulator(const QString &value);
-
     QListWidgetItem* getExtMapItem(QString key);
     int getExtMapSize();
     void setExtMapItem(QString key, QListWidgetItem *widget);
@@ -89,18 +83,12 @@ public:
     RunEntry* getPopularCommand(int pos);
     int getPopularCommandCount();
 
-    QString getNavigatorPath() const;
-    void setNavigatorPath(const QString &value);
-
 signals:
 
 public slots:
 
 private:
-    QString navigatorPath;
     QString presets[10];
-    QString fileBrowser;
-    QString terminalEmulator;
 
     // extension configuration data
     QMap<QString, QListWidgetItem*> extMap;

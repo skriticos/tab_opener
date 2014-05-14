@@ -38,7 +38,10 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
 
-    this->setPath(ds->getNavigatorPath());
+    if(ds->tblGeneral->recordExists("navigator_path"))
+        this->setPath(ds->getGeneralValue("navigator_path"));
+    else
+        this->setPath(QDir::homePath());
 
     connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
 
@@ -178,7 +181,7 @@ void MainWindow::setRootPath()
 void MainWindow::setPath(QString path)
 {
     this->path = path;
-    ds->setNavigatorPath(path);
+    ds->setGeneralValue("navigator_path", path);
 
     // split path into directories
     QStringList charmParts = path.split(QDir::separator());
@@ -262,7 +265,7 @@ void MainWindow::on_wpb_terminal_clicked()
 {
     QProcess *p = new QProcess(this);
     QStringList sl;
-    sl = ds->getTerminalEmulator().split(" ");
+    sl = ds->getGeneralValue("terminal_emulator").split(" ");
     QString cmd = sl.at(0);
     sl.removeAt(0);
     sl << this->path;
@@ -275,7 +278,7 @@ void MainWindow::on_wpb_folder_clicked()
 {
     QProcess *p = new QProcess(this);
     QStringList sl;
-    sl = ds->getFileBrowser().split(" ");
+    sl = ds->getGeneralValue("file_browser").split(" ");
     QString cmd = sl.at(0);
     sl.removeAt(0);
     sl << this->path;

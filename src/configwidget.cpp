@@ -33,8 +33,8 @@ void ConfigWidget::showEvent(QShowEvent *event){
         this->ui->preset8->setText(ds->getPreset(8));
         this->ui->preset9->setText(ds->getPreset(9));
 
-        this->ui->filemanager->setText(ds->getFileBrowser());
-        this->ui->terminal->setText(ds->getTerminalEmulator());
+        this->ui->filemanager->setText(ds->getGeneralValue("file_browser"));
+        this->ui->terminal->setText(ds->getGeneralValue("terminal_emulator"));
     }
 }
 
@@ -51,8 +51,8 @@ void ConfigWidget::on_ConfigWidget_accepted()
     ds->setPreset(8, ui->preset8->text());
     ds->setPreset(9, ui->preset9->text());
 
-    ds->setFileBrowser(ui->filemanager->text());
-    ds->setTerminalEmulator(ui->terminal->text());
+    ds->setGeneralValue("file_browser", this->ui->filemanager->text());
+    ds->setGeneralValue("terminal_emulator", this->ui->terminal->text());
 }
 
 void ConfigWidget::on_btnCommit_clicked()

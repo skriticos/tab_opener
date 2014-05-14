@@ -19,12 +19,6 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
         for (int i=0; i<10; i++)
             dsDB.exec("INSERT INTO presets (path) VALUES ('')");
     }
-    if(!dsDB.tables().contains("general")) {
-        dsDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
-        dsDB.exec("INSERT INTO general (key, value) VALUES ('fileBrowser', '/usr/bin/dolphin')");
-        dsDB.exec("INSERT INTO general (key, value) VALUES ('terminalEmulator', '/usr/bin/konsole --workdir')");
-        dsDB.exec("INSERT INTO general (key, value) VALUES ('navigatorPath', '" + QDir::homePath() + "')");
-    }
 
     if(!dsDB.tables().contains("extensions")) {
         dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
@@ -62,16 +56,6 @@ void DataStore::loadData()
     for (int i=0; i<10; i++){
         qPreset.next();
         this->presets[i] = qPreset.value(0).toString();
-    }
-
-    QSqlQuery qGeneral = dsDB.exec("SELECT key, value FROM general");
-    while(qGeneral.next()){
-        if(qGeneral.value(0).toString() == "fileBrowser")
-            this->fileBrowser = qGeneral.value(1).toString();
-        if(qGeneral.value(0).toString() == "terminalEmulator")
-            this->terminalEmulator = qGeneral.value(1).toString();
-        if(qGeneral.value(0).toString() == "navigatorPath")
-            this->navigatorPath = qGeneral.value(1).toString();
     }
 
     QSqlQuery qExtensions = dsDB.exec("SELECT ext, open, edit FROM extensions");
@@ -133,22 +117,6 @@ void DataStore::saveData()
         qPreset.bindValue(":id", i+1);
         qPreset.exec();
     }
-
-    // general settings
-    QSqlQuery qGeneral(dsDB);
-    qGeneral.prepare("UPDATE general SET value=:value WHERE key=:key");
-
-    qGeneral.bindValue(":key", "fileBrowser");
-    qGeneral.bindValue(":value", this->fileBrowser);
-    qGeneral.exec();
-
-    qGeneral.bindValue(":key", "terminalEmulator");
-    qGeneral.bindValue(":value", this->terminalEmulator);
-    qGeneral.exec();
-
-    qGeneral.bindValue(":key", "navigatorPath");
-    qGeneral.bindValue(":value", this->navigatorPath);
-    qGeneral.exec();
 
     // reset extensions table
     dsDB.exec("DROP TABLE extensions");
@@ -241,25 +209,6 @@ void DataStore::setPreset(int pos, QString path)
 QString DataStore::getPreset(int pos)
 {
     return this->presets[pos];
-}
-
-QString DataStore::getFileBrowser() const
-{
-    return fileBrowser;
-}
-
-void DataStore::setFileBrowser(const QString &value)
-{
-    fileBrowser = value;
-}
-QString DataStore::getTerminalEmulator() const
-{
-    return terminalEmulator;
-}
-
-void DataStore::setTerminalEmulator(const QString &value)
-{
-    terminalEmulator = value;
 }
 
 QListWidgetItem* DataStore::getExtMapItem(QString key)
@@ -412,16 +361,6 @@ int DataStore::getPopularCommandCount()
 {
     return this->commandLog.size();
 }
-QString DataStore::getNavigatorPath() const
-{
-    return navigatorPath;
-}
-
-void DataStore::setNavigatorPath(const QString &value)
-{
-    navigatorPath = value;
-}
-
 
 QString DataStore::getPopularFile(int pos)
 {
