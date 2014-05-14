@@ -43,13 +43,13 @@ public:
     void loadData();
     void saveData();
 
+    DsTable *tblGeneral; // general key (text) -> value (text) table for settings, state and notes
+
     // getters and setters follow
 
     void setPreset(int pos, QString path);
     QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
-    QString getNotes();
-    void setNotes(QString notes);
 
     QString getFileBrowser() const;
     void setFileBrowser(const QString &value);
@@ -96,7 +96,6 @@ public slots:
 private:
     QString navigatorPath;
     QString presets[10];
-    QString notes;
     QString fileBrowser;
     QString terminalEmulator;
 

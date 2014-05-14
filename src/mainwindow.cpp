@@ -52,7 +52,8 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
             this, SLOT(setCommand(QString,QString)));
 
     // notes
-    ui->we_notes->setPlainText(ds->getNotes());
+    if(ds->tblGeneral->recordExists("notes"))
+        ui->we_notes->setPlainText(ds->tblGeneral->getRecord("notes").value("gval").toString());
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 
     // configuration widget (preferences)
@@ -254,7 +255,10 @@ void MainWindow::on_wb_folders_clicked(const QModelIndex &index)
 
 void MainWindow::notesChanged()
 {
-    ds->setNotes(ui->we_notes->toPlainText());
+    DsTable::Record record;
+    record.insert("gkey", "notes");
+    record.insert("gval", ui->we_notes->toPlainText());
+    ds->tblGeneral->insertRecord(record);
 }
 
 void MainWindow::on_wpb_terminal_clicked()

@@ -6,14 +6,18 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
     dsDB.open();
 
+    // table for notes, settings and state that have generic key -> value structure
+    DsTable::SchemaField noteKey = {"gkey", DsTable::TEXT};
+    DsTable::SchemaField noteVal = {"gval", DsTable::TEXT};
+    QList<DsTable::SchemaField> noteSchema; noteSchema << noteKey << noteVal;
+
+    this->tblGeneral = new DsTable(this);
+    this->tblGeneral->initTable("tblGeneral", noteSchema, dsDB);
+
     if(!dsDB.tables().contains("presets")) {
         dsDB.exec("CREATE TABLE presets (id INTEGER PRIMARY KEY ASC, path TEXT)");
         for (int i=0; i<10; i++)
             dsDB.exec("INSERT INTO presets (path) VALUES ('')");
-    }
-    if(!dsDB.tables().contains("notes")) {
-        dsDB.exec("CREATE TABLE notes (id INTEGER PRIMARY KEY ASC, note TEXT)");
-        dsDB.exec("INSERT INTO notes (note) VALUES ('notes')");
     }
     if(!dsDB.tables().contains("general")) {
         dsDB.exec("CREATE TABLE general (id INTEGER PRIMARY KEY ASC, key TEXT, value TEXT)");
@@ -59,9 +63,6 @@ void DataStore::loadData()
         qPreset.next();
         this->presets[i] = qPreset.value(0).toString();
     }
-    QSqlQuery qNotes = dsDB.exec("SELECT note FROM notes");
-    qNotes.next();
-    this->notes = qNotes.value(0).toString();
 
     QSqlQuery qGeneral = dsDB.exec("SELECT key, value FROM general");
     while(qGeneral.next()){
@@ -132,10 +133,6 @@ void DataStore::saveData()
         qPreset.bindValue(":id", i+1);
         qPreset.exec();
     }
-    QSqlQuery qNotes(dsDB);
-    qNotes.prepare("UPDATE notes SET note=:note WHERE id=1");
-    qNotes.bindValue(":note", notes);
-    qNotes.exec();
 
     // general settings
     QSqlQuery qGeneral(dsDB);
@@ -231,15 +228,6 @@ QString DataStore::getPreset(int pos)
     return this->presets[pos];
 }
 
-QString DataStore::getNotes()
-{
-    return this->notes;
-}
-
-void DataStore::setNotes(QString notes)
-{
-    this->notes = notes;
-}
 QString DataStore::getFileBrowser() const
 {
     return fileBrowser;

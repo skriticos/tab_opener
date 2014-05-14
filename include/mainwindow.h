@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
+#include "dstable.h"
 #include "datastore.h"
 #include "configwidget.h"
 #include "charmbutton.h"
