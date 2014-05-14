@@ -43,7 +43,10 @@ public:
     void loadData();
     void saveData();
 
-    DsTable *tblGeneral; // general key (text) -> value (text) table for settings, state and notes
+    DsTable *tblGeneral;
+    QString getGeneralValue(QString key);
+    bool    setGeneralValue(QString key, QString value);
+
 
     // getters and setters follow
 

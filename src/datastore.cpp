@@ -6,7 +6,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
     dsDB.open();
 
-    // table for notes, settings and state that have generic key -> value structure
+
     DsTable::SchemaField noteKey = {"gkey", DsTable::TEXT};
     DsTable::SchemaField noteVal = {"gval", DsTable::TEXT};
     QList<DsTable::SchemaField> noteSchema; noteSchema << noteKey << noteVal;
@@ -216,6 +216,21 @@ void DataStore::saveData()
         qCommandUsage.bindValue(":uc", re->usageCount);
         qCommandUsage.exec();
     }
+}
+
+QString DataStore::getGeneralValue(QString key)
+{
+    if(tblGeneral->recordExists(key))
+        return tblGeneral->getRecord(key).value("gval").toString();
+    return QString();
+}
+
+bool DataStore::setGeneralValue(QString key, QString value)
+{
+    DsTable::Record record;
+    record.insert("gkey", key);
+    record.insert("gval", value);
+    return tblGeneral->insertRecord(record);
 }
 
 void DataStore::setPreset(int pos, QString path)
