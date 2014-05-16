@@ -6,13 +6,12 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
     dsDB.open();
 
-
-    DsTable::SchemaField noteKey = {"gkey", DsTable::TEXT};
-    DsTable::SchemaField noteVal = {"gval", DsTable::TEXT};
-    QList<DsTable::SchemaField> noteSchema; noteSchema << noteKey << noteVal;
+    DsTable::SchemaField generalKey = {"gkey", DsTable::TEXT}; // general lookup key
+    DsTable::SchemaField generalVal = {"gval", DsTable::TEXT}; // general value
+    QList<DsTable::SchemaField> generalSchema; generalSchema << generalKey << generalVal;
 
     this->tblGeneral = new DsTable(this);
-    this->tblGeneral->initTable("tblGeneral", noteSchema, dsDB);
+    this->tblGeneral->initTable("tblGeneral", generalSchema, dsDB);
 
 
 
