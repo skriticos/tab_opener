@@ -122,7 +122,7 @@ void DsTable::testClass()
     Q_ASSERT(!testTbl2.recordExists("foobar"));
 
     // TEST METHOD   DsTable::getRecordCount()
-    Q_ASSERT(testTbl2.getRecordCount() == 2);
+    Q_ASSERT(testTbl2.size() == 2);
 
     // DETELING RECORD
     result = testTbl2.deleteRecord("html");
@@ -139,7 +139,7 @@ void DsTable::testClass()
     // TEST CLEAR DATABASE
     testTbl2.clearRecords();
 
-    Q_ASSERT(testTbl2.getRecordCount() == 0);
+    Q_ASSERT(testTbl2.size() == 0);
 
     query = testDB.exec("SELECT * FROM " + testTblName);
     query.last();
@@ -361,7 +361,7 @@ bool DsTable::deleteRecord(QString lKey)
  * @brief DsTable::getRecordCount
  * @return
  */
-int DsTable::getRecordCount()
+int DsTable::size()
 {
     return this->records.size();
 }

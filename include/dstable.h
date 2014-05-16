@@ -30,7 +30,7 @@ public:
     void clearRecords();
     bool insertRecord(Record record);
     bool deleteRecord(QString lKey);
-    int getRecordCount();
+    int size();
     Record getRecord(QString lookupKey);
     QStringList getRecordKeys();
 
