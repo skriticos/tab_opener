@@ -54,4 +54,5 @@ RESOURCES += \
     images.qrc
 
 OTHER_FILES += \
-    README.md
+    README.md \
+    quicknotes.txt

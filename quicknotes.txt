@@ -1,0 +1,1 @@
+- rename DsTable::getRecordCount -> DsTable::size
