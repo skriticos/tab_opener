@@ -14,11 +14,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     this->tblGeneral = new DsTable(this);
     this->tblGeneral->initTable("tblGeneral", noteSchema, dsDB);
 
-    if(!dsDB.tables().contains("presets")) {
-        dsDB.exec("CREATE TABLE presets (id INTEGER PRIMARY KEY ASC, path TEXT)");
-        for (int i=0; i<10; i++)
-            dsDB.exec("INSERT INTO presets (path) VALUES ('')");
-    }
+
 
     if(!dsDB.tables().contains("extensions")) {
         dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
@@ -52,12 +48,6 @@ DataStore::~DataStore()
 
 void DataStore::loadData()
 {
-    QSqlQuery qPreset = dsDB.exec("SELECT path FROM presets");
-    for (int i=0; i<10; i++){
-        qPreset.next();
-        this->presets[i] = qPreset.value(0).toString();
-    }
-
     QSqlQuery qExtensions = dsDB.exec("SELECT ext, open, edit FROM extensions");
     while (qExtensions.next()){
         QString ext = qExtensions.value(0).toString();
@@ -110,14 +100,6 @@ void DataStore::loadData()
 
 void DataStore::saveData()
 {
-    QSqlQuery qPreset(dsDB);
-    qPreset.prepare("UPDATE presets SET path=:path WHERE id=:id");
-    for (int i=0; i<10; i++){
-        qPreset.bindValue(":path", presets[i]);
-        qPreset.bindValue(":id", i+1);
-        qPreset.exec();
-    }
-
     // reset extensions table
     dsDB.exec("DROP TABLE extensions");
     dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
@@ -201,14 +183,16 @@ bool DataStore::setGeneralValue(QString key, QString value)
     return tblGeneral->insertRecord(record);
 }
 
-void DataStore::setPreset(int pos, QString path)
+bool DataStore::setPreset(int pos, QString path)
 {
-    this->presets[pos] = path;
+    QString presetKey = "preset" + QString::number(pos);
+    return setGeneralValue(presetKey, path);
 }
 
 QString DataStore::getPreset(int pos)
 {
-    return this->presets[pos];
+    QString presetKey = "preset" + QString::number(pos);
+    return getGeneralValue(presetKey);
 }
 
 QListWidgetItem* DataStore::getExtMapItem(QString key)

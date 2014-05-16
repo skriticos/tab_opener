@@ -44,14 +44,15 @@ public:
     void saveData();
 
     DsTable *tblGeneral;
-    QString getGeneralValue(QString key);
+
     bool    setGeneralValue(QString key, QString value);
+    QString getGeneralValue(QString key);
+    QString getPreset(int pos);
+    bool    setPreset(int pos, QString path);
 
 
     // getters and setters follow
 
-    void setPreset(int pos, QString path);
-    QString getPreset(int pos);
     void setExtension(QString extension, QString openPath, QString editPath);
 
     QListWidgetItem* getExtMapItem(QString key);
@@ -88,8 +89,6 @@ signals:
 public slots:
 
 private:
-    QString presets[10];
-
     // extension configuration data
     QMap<QString, QListWidgetItem*> extMap;
     QMap<QString, QString> openApps; // ext -> open
