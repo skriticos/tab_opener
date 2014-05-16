@@ -151,7 +151,7 @@ void DataStore::saveData()
 //
 QString DataStore::getGeneralValue(QString key)
 {
-    if(tblGeneral->recordExists(key))
+    if(tblGeneral->contains(key))
         return tblGeneral->getRecord(key).value("gval").toString();
     return QString();
 }

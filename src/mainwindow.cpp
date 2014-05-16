@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wb_folders->hideColumn(2);
     ui->wb_folders->hideColumn(1);
 
-    if(ds->tblGeneral->recordExists("navigator_path"))
+    if(ds->tblGeneral->contains("navigator_path"))
         this->setPath(ds->getGeneralValue("navigator_path"));
     else
         this->setPath(QDir::homePath());
@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
             this, SLOT(setCommand(QString,QString)));
 
     // notes
-    if(ds->tblGeneral->recordExists("notes"))
+    if(ds->tblGeneral->contains("notes"))
         ui->we_notes->setPlainText(ds->getGeneralValue("notes"));
     connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 

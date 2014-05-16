@@ -25,14 +25,13 @@ public:
                    QList<SchemaField> fieldSchema,
                    QSqlDatabase       db);
 
-
-    bool recordExists(QString lookupKey);
-    void clearRecords();
-    bool insertRecord(Record record);
+    bool contains(QString lookupKey);
     bool deleteRecord(QString lKey);
+    bool insertRecord(Record record);
     int size();
-    Record getRecord(QString lookupKey);
     QStringList getRecordKeys();
+    Record getRecord(QString lookupKey);
+    void clearRecords();
 
 private:
     bool loadTable();

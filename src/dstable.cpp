@@ -118,8 +118,8 @@ void DsTable::testClass()
     Q_ASSERT(record.value("act_secondary") == "/bar/svg");
 
     // TEST DsTable::recordExists()
-    Q_ASSERT(testTbl2.recordExists("html"));
-    Q_ASSERT(!testTbl2.recordExists("foobar"));
+    Q_ASSERT(testTbl2.contains("html"));
+    Q_ASSERT(!testTbl2.contains("foobar"));
 
     // TEST METHOD   DsTable::getRecordCount()
     Q_ASSERT(testTbl2.size() == 2);
@@ -371,7 +371,7 @@ int DsTable::size()
  * @param lookupKey
  * @return
  */
-bool DsTable::recordExists(QString lookupKey)
+bool DsTable::contains(QString lookupKey)
 {
     return this->records.contains(lookupKey);
 }
