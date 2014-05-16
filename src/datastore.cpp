@@ -6,6 +6,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
     dsDB.open();
 
+    // tblGeneral setup
     DsTable::SchemaField generalKey = {"gkey", DsTable::TEXT}; // general lookup key
     DsTable::SchemaField generalVal = {"gval", DsTable::TEXT}; // general value
     QList<DsTable::SchemaField> generalSchema; generalSchema << generalKey << generalVal;
@@ -13,11 +14,14 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     this->tblGeneral = new DsTable(this);
     this->tblGeneral->initTable("tblGeneral", generalSchema, dsDB);
 
+    // tblExtension setup
+    DsTable::SchemaField extStr    = {"ext_str", DsTable::TEXT};     // extension string
+    DsTable::SchemaField extActPri = {"ext_act_pri", DsTable::TEXT}; // extension primary action
+    DsTable::SchemaField extActSec = {"ext_act_sec", DsTable::TEXT}; // extension secondary action
+    QList<DsTable::SchemaField> extSchema; extSchema << extStr << extActPri << extActSec;
 
-
-    if(!dsDB.tables().contains("extensions")) {
-        dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
-    }
+    this->tblExtensions = new DsTable(this);
+    this->tblExtensions->initTable("tblExtensions", extSchema, dsDB);
 
     if(!dsDB.tables().contains("recent_files")) {
         dsDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
@@ -47,16 +51,6 @@ DataStore::~DataStore()
 
 void DataStore::loadData()
 {
-    QSqlQuery qExtensions = dsDB.exec("SELECT ext, open, edit FROM extensions");
-    while (qExtensions.next()){
-        QString ext = qExtensions.value(0).toString();
-        QString open = qExtensions.value(1).toString();
-        QString edit = qExtensions.value(2).toString();
-        extMap[ext] = NULL;
-        openApps[ext] = open;
-        editApps[ext] = edit;
-    }
-
     // recent files
     QSqlQuery qRecentFiles = dsDB.exec("SELECT path FROM recent_files");
     while (qRecentFiles.next()) {
@@ -99,21 +93,6 @@ void DataStore::loadData()
 
 void DataStore::saveData()
 {
-    // reset extensions table
-    dsDB.exec("DROP TABLE extensions");
-    dsDB.exec("CREATE TABLE extensions (id INTEGER PRIMARY KEY ASC, ext TEXT, open TEXT, edit TEXT)");
-    QSqlQuery qExtensions;
-    qExtensions.prepare("INSERT INTO extensions (ext, open, edit) "
-                        "VALUES (:ext, :open, :edit)");
-    QStringList keys = extMap.keys();
-    for (int i=0; i<keys.size(); i++){
-        QString ext = keys.at(i);
-        qExtensions.bindValue(":ext", ext);
-        qExtensions.bindValue(":open", openApps[ext]);
-        qExtensions.bindValue(":edit", editApps[ext]);
-        qExtensions.exec();
-    }
-
     // recent files
     dsDB.exec("DROP TABLE recent_files");
     dsDB.exec("CREATE TABLE recent_files (id INTEGER PRIMARY KEY ASC, path TEXT)");
@@ -167,13 +146,15 @@ void DataStore::saveData()
     }
 }
 
+//
+// tblGeneral
+//
 QString DataStore::getGeneralValue(QString key)
 {
     if(tblGeneral->recordExists(key))
         return tblGeneral->getRecord(key).value("gval").toString();
     return QString();
 }
-
 bool DataStore::setGeneralValue(QString key, QString value)
 {
     DsTable::Record record;
@@ -182,77 +163,31 @@ bool DataStore::setGeneralValue(QString key, QString value)
     return tblGeneral->insertRecord(record);
 }
 
-bool DataStore::setPreset(int pos, QString path)
-{
+bool DataStore::setPreset(int pos, QString path) {
     QString presetKey = "preset" + QString::number(pos);
     return setGeneralValue(presetKey, path);
 }
-
 QString DataStore::getPreset(int pos)
 {
     QString presetKey = "preset" + QString::number(pos);
     return getGeneralValue(presetKey);
 }
 
-QListWidgetItem* DataStore::getExtMapItem(QString key)
+//
+// tblExtensions
+//
+bool DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
 {
-    return this->extMap[key];
+    DsTable::Record record;
+    record.insert("ext_str", extStr);
+    record.insert("ext_act_pri", extActPri);
+    record.insert("ext_act_sec", extActSec);
+    qDebug() << tblExtensions->insertRecord(record);
+    return true;
 }
 
-int DataStore::getExtMapSize()
-{
-    return this->extMap.size();
-}
 
-void DataStore::setExtMapItem(QString key, QListWidgetItem *widget)
-{
-    this->extMap[key] = widget;
-}
 
-void DataStore::deleteExtMapItem(QString key)
-{
-    this->extMap.remove(key);
-}
-
-bool DataStore::extMapContains(QString key)
-{
-    return this->extMap.contains(key);
-}
-
-QStringList DataStore::getExtMapKeys()
-{
-    return extMap.keys();
-}
-
-QString DataStore::getOpenAppsItem(QString key)
-{
-    return this->openApps[key];
-}
-
-void DataStore::setOpenAppsItem(QString key, QString value)
-{
-    this->openApps[key] = value;
-}
-
-void DataStore::deleteOpenAppsItem(QString key)
-{
-    this->openApps.remove(key);
-}
-
-QString DataStore::getEditMapItem(QString key)
-{
-    return this->editApps[key];
-}
-
-void DataStore::setEditMapItem(QString key, QString value)
-{
-    this->editApps[key] = value;
-}
-
-void DataStore::deleteEditMapItem(QString key)
-{
-    this->editApps.remove(key);
-}
 
 QString DataStore::getRecentFile(int pos)
 {

@@ -294,18 +294,19 @@ void MainWindow::on_view_file_clicked()
     QString selectedFilePath = filemodel->fileInfo(index).absoluteFilePath();
 
     // extract filetype
-    QString extension = selectedFilePath.split(".").last();
+    QString extStr = selectedFilePath.split(".").last();
+
+    DsTable::Record record = ds->tblExtensions->getRecord(extStr);
+    QString extActPri = record.value("ext_act_pri").toString();
 
     // prepare command string and arguments
-    QString tmp = ds->getOpenAppsItem(extension);
-    QString cmd = tmp.split(" ").at(0);
-    QStringList tmp2 = tmp.split(" ");
-    tmp2.removeFirst();
-    QStringList args = QStringList() << tmp2 << selectedFilePath;
+    QStringList rawCmd = extActPri.split(" ");
+    QString prog = rawCmd.first();
+    QStringList args = rawCmd.mid(1) << selectedFilePath;
 
     // execute open command
     QProcess *p = new QProcess(this);
-    p->start(cmd, args);
+    p->start(prog, args);
 
     // push file to stack
     ds->pushRecentFile(selectedFilePath);
@@ -321,18 +322,18 @@ void MainWindow::on_edit_file_clicked()
     QString selectedFilePath = filemodel->fileInfo(index).absoluteFilePath();
 
     // extract filetype
-    QString extension = selectedFilePath.split(".").last();
+    QString extStr = selectedFilePath.split(".").last();
 
     // prepare command string and arguments
-    QString tmp = ds->getEditMapItem(extension);
-    QString cmd = tmp.split(" ").at(0);
-    QStringList tmp2 = tmp.split(" ");
-    tmp2.removeFirst();
-    QStringList args = QStringList() << tmp2 << selectedFilePath;
+    DsTable::Record record = ds->tblExtensions->getRecord(extStr);
+    QString extActSec = record.value("ext_act_sec").toString();
+
+    QString prog = extActSec.split(" ").at(0);
+    QStringList args = QStringList() << extActSec.split(" ").mid(1) << selectedFilePath;
 
     // execute open command
     QProcess *p = new QProcess(this);
-    p->start(cmd, args);
+    p->start(prog, args);
 
     // push file to stack
     ds->pushRecentFile(selectedFilePath);

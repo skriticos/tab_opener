@@ -234,7 +234,10 @@ bool DsTable::insertRecord(Record record)
     QStringList fieldNames, fieldPlaceholderNames;
     QMetaType::Type metaType;
 
-    if(!this->tableInitialized) return false;
+    if(!this->tableInitialized){
+        qDebug() << "DsTable::insertRecord():" << "table not initialized";
+        return false;
+    }
 
     // verify record field names contain schema fields
     // note: we don't care about additional fields as long as the schema fields are properly populated
@@ -244,16 +247,43 @@ bool DsTable::insertRecord(Record record)
         FieldType fieldType = this->schema.at(i).fieldType;
 
         // verify schema field is present
-        if(!record.contains(fieldName))                     return false;
+        if(!record.contains(fieldName)){
+            qDebug() << "DsTable::insertRecord():" << "record missing schema field" << fieldName;
+            return false;
+        }
 
         // verify schema field has correct type
         metaType = (QMetaType::Type)record.value(fieldName).type();
         switch(fieldType){
-        case TEXT:    if(metaType != QMetaType::QString)    return false; break;
-        case INTEGER: if(metaType != QMetaType::Int)        return false; break;
-        case REAL:    if(metaType != QMetaType::Float)      return false; break;
-        case BOOLEAN: if(metaType != QMetaType::Bool)       return false; break;
-        case BLOB:    if(metaType != QMetaType::QByteArray) return false; break;
+        case TEXT:
+            if(metaType != QMetaType::QString){
+                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
+                return false;
+            }
+            break;
+        case INTEGER:
+            if(metaType != QMetaType::Int){
+                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
+                return false;
+            }
+            break;
+        case REAL:
+            if(metaType != QMetaType::Float){
+                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
+                return false;
+            }
+            break;
+        case BOOLEAN:
+            if(metaType != QMetaType::Bool){
+                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
+                return false;
+            }
+            break;
+        case BLOB:
+            if(metaType != QMetaType::QByteArray){
+                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
+                return false;
+            }
         }
     }
 
@@ -295,8 +325,10 @@ bool DsTable::insertRecord(Record record)
     }
 
     result = query.exec();
-    if(!result)
+    if(!result){
+        qDebug() << "DsTable::insertRecord():" << "SQL query failed" << query.lastError();
         return false;
+    }
 
     // insert record into runtime database
     this->records.insert(lKey, record);

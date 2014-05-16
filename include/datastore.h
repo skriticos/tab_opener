@@ -44,31 +44,16 @@ public:
     void saveData();
 
     DsTable *tblGeneral;
+    DsTable *tblExtensions;
 
+    bool    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
     bool    setGeneralValue(QString key, QString value);
+    bool    setPreset(int pos, QString path);
     QString getGeneralValue(QString key);
     QString getPreset(int pos);
-    bool    setPreset(int pos, QString path);
 
 
-    // getters and setters follow
 
-    void setExtension(QString extension, QString openPath, QString editPath);
-
-    QListWidgetItem* getExtMapItem(QString key);
-    int getExtMapSize();
-    void setExtMapItem(QString key, QListWidgetItem *widget);
-    void deleteExtMapItem(QString key);
-    bool extMapContains(QString key);
-    QStringList getExtMapKeys();
-
-    QString getOpenAppsItem(QString key);
-    void setOpenAppsItem(QString key, QString value);
-    void deleteOpenAppsItem(QString key);
-
-    QString getEditMapItem(QString key);
-    void setEditMapItem(QString key, QString value);
-    void deleteEditMapItem(QString key);
 
     QString getRecentFile(int pos);
     int getRecentFileCount();
@@ -89,11 +74,6 @@ signals:
 public slots:
 
 private:
-    // extension configuration data
-    QMap<QString, QListWidgetItem*> extMap;
-    QMap<QString, QString> openApps; // ext -> open
-    QMap<QString, QString> editApps; // ext -> edit
-
     QStringList recentFiles;
     QList<FileEntry*> fileLog; // sorted list of file entries based on usage count
     QMap<QString, FileEntry*> fileEntryIndex; //inde of path of file entries

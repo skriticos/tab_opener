@@ -7,11 +7,9 @@ ConfigWidget::ConfigWidget(DataStore *ds, QWidget *parent) : QDialog(parent), ui
     this->ds = ds;
     this->deleting_item = false;
 
-    QStringList keys = ds->getExtMapKeys();
-    for(int i=0; i<keys.size(); i++){
-        QString ext = keys.at(i);
-        QListWidgetItem *w = new QListWidgetItem(ext, ui->extensionlist);
-        ds->setExtMapItem(ext, w);
+    for(QString lKey : ds->tblExtensions->getRecordKeys()){
+        QListWidgetItem *w = new QListWidgetItem(lKey, ui->extensionlist);
+        this->extWidgetMap.insert(lKey, w);
     }
 }
 
@@ -58,20 +56,19 @@ void ConfigWidget::on_ConfigWidget_accepted()
 void ConfigWidget::on_btnCommit_clicked()
 {
     // commit new extension mapping
-    QString ext = ui->extension->text();
-    QString open = ui->viewerpath->text();
-    QString edit = ui->editorPath->text();
+    QString extStr = ui->extension->text();
+    QString extActPri = ui->viewerpath->text();
+    QString extActSec = ui->editorPath->text();
 
     QListWidgetItem *w;
-    if(!ds->extMapContains(ext)) {
-        w = new QListWidgetItem(ext, ui->extensionlist);
-        ds->setExtMapItem(ext, w);
-
-    } else { // existing extension
-        w = ds->getExtMapItem(ext);
+    if(this->extWidgetMap.contains(extStr)){
+        w = this->extWidgetMap.value(extStr);
+    } else {
+        w = new QListWidgetItem(extStr, ui->extensionlist);
+        this->extWidgetMap.insert(extStr, w);
     }
-    ds->setOpenAppsItem(ext, open);
-    ds->setEditMapItem(ext, edit);
+    qDebug() << "commiting extension" << extStr << extActPri << extActSec;
+    ds->setExtensionValues(extStr, extActPri, extActSec);
     ui->extensionlist->setCurrentItem(w);
 }
 
@@ -80,32 +77,40 @@ void ConfigWidget::on_extensionlist_currentItemChanged(QListWidgetItem *current,
     if (this->deleting_item)
         return;
     previous = previous; // I'm not unused, ha!
-    QString ext = current->text();
-    ui->extension->setText(ext);
-    ui->viewerpath->setText(ds->getOpenAppsItem(ext));
-    ui->editorPath->setText(ds->getEditMapItem(ext));
+    QString extStr = current->text();
+    ui->extension->setText(extStr);
+    DsTable::Record record = ds->tblExtensions->getRecord(extStr);
+    ui->viewerpath->setText(record.value("ext_act_pri").toString());
+    ui->editorPath->setText(record.value("ext_act_sec").toString());
 }
 
 void ConfigWidget::on_btnDelete_clicked()
 {
-    if(ds->getExtMapSize() == 0)
+    if(ui->extensionlist->selectedItems().size() != 1)
         return;
+
     this->deleting_item = true;
+
     QListWidgetItem *w = ui->extensionlist->selectedItems().at(0);
-    QString ext = w->text();
+    QString extStr = w->text();
+
     delete w;
-    ds->deleteOpenAppsItem(ext);
-    ds->deleteEditMapItem(ext);
-    ds->deleteExtMapItem(ext);
+    ds->tblExtensions->deleteRecord(extStr);
+
     ui->extension->clear();
     ui->viewerpath->clear();
     ui->editorPath->clear();
+
     this->deleting_item = false;
-    if(ds->getExtMapSize() > 0) {
-        ext = ui->extensionlist->selectedItems().at(0)->text();
-        ui->extension->setText(ext);
-        ui->viewerpath->setText(ds->getOpenAppsItem(ext));
-        ui->editorPath->setText(ds->getEditMapItem(ext));
+
+    if(ui->extensionlist->count() > 0){
+        extStr = ui->extensionlist->selectedItems().at(0)->text();
+        ui->extension->setText(extStr);
+
+        DsTable::Record record = ds->tblExtensions->getRecord(extStr);
+
+        ui->viewerpath->setText(record.value("ext_act_pri").toString());
+        ui->editorPath->setText(record.value("ext_act_sec").toString());
     }
 }
 

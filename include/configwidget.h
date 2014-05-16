@@ -26,6 +26,8 @@ private slots:
     void on_btnDelete_clicked();
 
 private:
+    QMap<QString, QListWidgetItem*> extWidgetMap;
+
     void showEvent(QShowEvent *event);
 
     Ui::ConfigWidget *ui;
