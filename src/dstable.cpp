@@ -354,6 +354,11 @@ DsTable::Record DsTable::getRecord(QString lookupKey)
     return this->records.value(lookupKey);
 }
 
+QStringList DsTable::getRecordKeys()
+{
+    return this->records.keys();
+}
+
 /**
  * @brief DsTable::clearRecords
  */

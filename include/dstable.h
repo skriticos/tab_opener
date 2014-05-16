@@ -32,6 +32,7 @@ public:
     bool deleteRecord(QString lKey);
     int getRecordCount();
     Record getRecord(QString lookupKey);
+    QStringList getRecordKeys();
 
 private:
     bool loadTable();
