@@ -33,7 +33,7 @@ public:
     Record getRecord(QString lookupKey);
     void clearRecords();
 
-private:
+protected:
     bool loadTable();
     virtual bool createTable();
 
@@ -41,7 +41,7 @@ private:
     QString tableName;
     QString lookupKey;
     QList<SchemaField> schema;
-    QHash<QString, Record> records;
+    QHash<QString, Record> records; // runtime copy of records, might want to get rid of it
 
     QSqlDatabase db;
 };

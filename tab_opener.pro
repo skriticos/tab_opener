@@ -27,7 +27,8 @@ SOURCES += \
     src/commandbutton.cpp \
     src/util.cpp \
     src/dstable.cpp \
-    src/test.cpp
+    src/test.cpp \
+    src/dstablefav.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -42,7 +43,8 @@ HEADERS  += \
     include/commandbutton.h \
     include/util.h \
     include/dstable.h \
-    include/test.h
+    include/test.h \
+    include/dstablefav.h
 
 FORMS    += \
     ui/filelist.ui \

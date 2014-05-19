@@ -265,7 +265,7 @@ bool DsTable::insertRecord(Record record)
             }
             break;
         case INTEGER:
-            if(metaType != QMetaType::Int){
+            if(metaType != QMetaType::Int && metaType != QMetaType::Long && metaType != QMetaType::LongLong){
                 qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
