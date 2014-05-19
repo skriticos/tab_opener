@@ -88,9 +88,11 @@ void FileList::on_wflab_file_view_clicked()
     QStringList rawCmd = extActPri.split(" ");
     QString prog = rawCmd.first();
     QStringList args = rawCmd.mid(1);
+    args << selectedFilePath;
 
     // execute open command
-    QProcess p; p.startDetached(prog, args);
+    QProcess p;
+    p.startDetached(prog, args);
 
     // push file to stack
     ds->setFile(selectedFilePath, "");
@@ -111,7 +113,7 @@ void FileList::on_wflab_file_edit_clicked()
 
     // execute open command
     QProcess *p = new QProcess(this);
-    p->start(prog, args);
+    p->startDetached(prog, args);
 
     // push file to stack
     ds->setFile(selectedFilePath, "");
