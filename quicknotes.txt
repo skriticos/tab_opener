@@ -6,8 +6,8 @@ DsTableFav
 tblFiles:    | path    | counter (i) | timestamp (i) | notes |
 tblCommands: | command | counter (i) | timestamp (i) | path  | notes |
 
--> DsTable::insertRecord() has to be virtual
--> DsTable::createTable() has to be virtual
+-> [done] DsTable::insertRecord() has to be virtual
+-> [done] DsTable::createTable() has to be virtual
 -> DsTableFav::insertRecord() has to set timestamp and increment counter
 -> DsTableFav::createTable() hast to set indexes on counter and timestamp, verify schema
 -> DsTableFav::getTop10() new sqlQuery

@@ -27,7 +27,7 @@ public:
 
     bool contains(QString lookupKey);
     bool deleteRecord(QString lKey);
-    bool insertRecord(Record record);
+    virtual bool insertRecord(Record record);
     int size();
     QStringList getRecordKeys();
     Record getRecord(QString lookupKey);
@@ -35,7 +35,7 @@ public:
 
 private:
     bool loadTable();
-    bool createTable();
+    virtual bool createTable();
 
     bool tableInitialized;
     QString tableName;
