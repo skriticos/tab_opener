@@ -46,33 +46,20 @@ void FileList::init(DataStore *ds)
 
 void FileList::update()
 {
-    // update file list (invoked in main after opening / editing a file from browser or from this for the same)
-    // we start off by clearing all the labels
-
-    // setup recent files
-    for (int i=0; i<10; i++)
+    // clear all buttons
+    for(int i=0; i<10; i++){
         this->recentButtons.at(i)->setPath("");
-
-    int recentFileCount = ds->getRecentFileCount();
-    for (int i=0; i<recentFileCount; i++) {
-        QString path = ds->getRecentFile(i);
-        this->recentButtons.at(i)->setPath(path);
-    }
-
-    // setup popular files
-    for (int i=0; i<10; i++)
         this->popularButtons.at(i)->setPath("");
-
-    int popularFileCount = ds->getPopularFileCount();
-    int count = 10;
-    if (popularFileCount < 10)
-        count = popularFileCount;
-    else
-        count = 10;
-    for (int i=0; i<count; i++){
-        QString path = ds->getPopularFile(i);
-        this->popularButtons.at(i)->setPath(path);
     }
+
+    // read database and set button labels
+    QList<DsTable::Record> recent = ds->tblFiles->getRecent10();
+    QList<DsTable::Record> top    = ds->tblFiles->getTop10();
+
+    for(int i=0; i<recent.size(); i++)
+        this->recentButtons.at(i)->setPath(recent.at(i).value("path").toString());
+    for(int i=0; i<top.size(); i++)
+        this->popularButtons.at(i)->setPath(top.at(i).value("path").toString());
 }
 
 FileList::~FileList()
@@ -106,7 +93,7 @@ void FileList::on_wflab_file_view_clicked()
     QProcess p; p.startDetached(prog, args);
 
     // push file to stack
-    ds->pushRecentFile(selectedFilePath);
+    ds->setFile(selectedFilePath, "");
 
     emit this->openOrEditClicked();
 }
@@ -127,7 +114,7 @@ void FileList::on_wflab_file_edit_clicked()
     p->start(prog, args);
 
     // push file to stack
-    ds->pushRecentFile(selectedFilePath);
+    ds->setFile(selectedFilePath, "");
 
     emit this->openOrEditClicked();
 }

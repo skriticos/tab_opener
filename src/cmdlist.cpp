@@ -53,29 +53,24 @@ void CmdList::init(DataStore *ds)
 
 void CmdList::update()
 {
-    // clear buttons
-    for (int i=0; i<10; i++){
+    // clear all buttons
+    for(int i=0; i<10; i++){
         this->recentCommandButtons.at(i)->setCommand("", "");
         this->popularCommandButtons.at(i)->setCommand("", "");
     }
 
-    // setup recent buttons
-    int cnt = ds->getRecentCommandCount();
-    for (int i=0; i<cnt; i++) {
-        RunEntry *runEntry = ds->getRecentCommand(i);
-        QString cmd = runEntry->command;
-        QString wd = runEntry->execPath;
+    // read database and set button labels
+    QList<DsTable::Record> recent = ds->tblCommands->getRecent10();
+    QList<DsTable::Record> top    = ds->tblCommands->getTop10();
+
+    for(int i=0; i<recent.size(); i++){
+        QString cmd = recent.at(i).value("command").toString();
+        QString wd = recent.at(i).value("working_directory").toString();
         this->recentCommandButtons.at(i)->setCommand(cmd, wd);
     }
-
-    // setup popular buttons
-    cnt = ds->getPopularCommandCount();
-    if (cnt > 10)
-        cnt = 10;
-    for (int i=0; i<cnt; i++){
-        RunEntry *re = ds->getPopularCommand(i);
-        QString cmd = re->command;
-        QString wd = re->execPath;
+    for(int i=0; i<top.size(); i++){
+        QString cmd = top.at(i).value("command").toString();
+        QString wd = top.at(i).value("working_directory").toString();
         this->popularCommandButtons.at(i)->setCommand(cmd, wd);
     }
 }

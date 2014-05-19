@@ -309,7 +309,7 @@ void MainWindow::on_view_file_clicked()
     p->start(prog, args);
 
     // push file to stack
-    ds->pushRecentFile(selectedFilePath);
+    ds->setFile(selectedFilePath, "");
     ui->wfileinner->update();
 
     this->close();
@@ -336,7 +336,7 @@ void MainWindow::on_edit_file_clicked()
     p->start(prog, args);
 
     // push file to stack
-    ds->pushRecentFile(selectedFilePath);
+    ds->setFile(selectedFilePath, "");
     ui->wfileinner->update();
 
     this->close();
@@ -371,7 +371,7 @@ void MainWindow::on_werb_exec_clicked()
     this->ui->we_output->append(raw);
     process->setWorkingDirectory(this->path);
 
-    ds->pushRecentCommand(raw, this->path);
+    ds->setCommand(raw, this->path, "");
     this->ui->wcmdinner->update();
 
     process->start(prog, args);

@@ -1,8 +1,8 @@
 #ifndef FILELIST_H
 #define FILELIST_H
 
-#include <QWidget>
-#include <QClipboard>
+#include <QtCore>
+#include <QtGui>
 
 #include "filebutton.h"
 #include "datastore.h"
