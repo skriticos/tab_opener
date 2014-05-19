@@ -1,160 +1,6 @@
 #include "dstable.h"
 
 /**
- * @brief DsTable::testClass
- */
-void DsTable::testClass()
-{
-    qDebug() << "testing DsTable..";
-
-    // declare variables
-    bool result; // used to test insertRecord return values
-    QSqlDatabase testDB; // in-memory database for testing
-    QSqlQuery query; // re-used query to verify database changes made by DsTable
-    QString testTblName; // name of the table that is used for testing
-    DsTable testTblUninitialized, testTbl1, testTbl2, testTblInvalid;
-    DsTable::SchemaField ext, primary, secondary, tertiary, keyword; // table schema fields
-    QList<DsTable::SchemaField> testSchema, invalidSchema; // table schema for initialization
-    DsTable::Record record, invalidRecord, record1, record2; // records that are used to perform testing
-
-    result = true;
-    if(result) result = result; // remove compiler warn. for unsued variable (macros don't seem to count as being used)
-
-    // initialize variables
-    testTblName = "tblTest";
-
-    ext       = {"extension",     DsTable::TEXT};
-    primary   = {"act_primary",   DsTable::TEXT};
-    secondary = {"act_secondary", DsTable::TEXT};
-    tertiary  = {"act_tertiary",  DsTable::INTEGER};
-    testSchema << ext << primary << secondary << tertiary;
-
-    keyword = {"primary", DsTable::TEXT};
-    invalidSchema << keyword;
-
-    invalidRecord["foo"] = "bar";
-
-    record1["extension"] = "html"; // valid record
-    record1["act_primary"] = "/foo/html";
-    record1["act_secondary"] = "/bar/html";
-    record1["act_tertiary"] = 17;
-
-    record2["extension"] = "svg"; // valid record
-    record2["act_primary"] = "/foo/svg";
-    record2["act_secondary"] = "/bar/svg";
-    record2["act_tertiary"] = 17;
-
-    // PREPARE TEST DATABASE
-    testDB = QSqlDatabase::addDatabase("QSQLITE", "connTest");
-    testDB.setDatabaseName(":memory:");
-    testDB.open();
-
-    // TEST TABLE INITIALIZATION
-    result = testTblInvalid.initTable("none", invalidSchema, testDB);
-    Q_ASSERT(!result);
-
-    result = testTbl1.initTable(testTblName, testSchema, testDB);
-    Q_ASSERT(result);
-
-    // TEST METHOD   DsTable::insertRecord()
-    result = testTblUninitialized.insertRecord(record1);
-    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for uninitialized table");
-
-    result = testTbl1.insertRecord(invalidRecord); // missing fields
-    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for invalid record");
-
-    invalidRecord["extension"] = true; // does not mach schema
-    invalidRecord["act_primary"] = "/foo/html";
-    invalidRecord["act_secondary"] = "/bar/html";
-    invalidRecord["act_tertiary"] = 17;
-
-    result = testTbl1.insertRecord(invalidRecord);
-    Q_ASSERT_X(result == false, "DsTable::insertRecord()", "returned true for invalid record");
-
-    result = testTbl1.insertRecord(record1);
-    Q_ASSERT_X(result == true, "DsTable::insertRecord()", "returned false for valid record");
-
-    result = testTbl1.insertRecord(record2);
-    Q_ASSERT(result == true);
-
-    query = testDB.exec("SELECT * FROM " + testTblName);
-    query.first();
-
-    Q_ASSERT(query.value(0) == "html");
-    Q_ASSERT(query.value(1) == "/foo/html");
-    Q_ASSERT(query.value(2) == "/bar/html");
-
-    query.next();
-
-    Q_ASSERT(query.value(0) == "svg");
-    Q_ASSERT(query.value(1) == "/foo/svg");
-    Q_ASSERT(query.value(2) == "/bar/svg");
-
-    record1["act_primary"] = "/foo/changed/html";
-    record1["act_secondary"] = "/bar/changed/html";
-
-    result = testTbl1.insertRecord(record1);
-    Q_ASSERT(result == true);
-
-    query = testDB.exec("SELECT * FROM " + testTblName);
-    query.first();
-
-    Q_ASSERT(query.value(0) == "html");
-    Q_ASSERT(query.value(1) == "/foo/changed/html");
-    Q_ASSERT(query.value(2) == "/bar/changed/html");
-
-    // SECOND TEST CONSTRUCTOR: LOAD DATA FROM DATABASE
-    result = testTbl2.initTable(testTblName, testSchema, testDB);
-    Q_ASSERT(result);
-
-    record = testTbl2.getRecord("html");
-
-    Q_ASSERT(record.value("extension") == "html");
-    Q_ASSERT(record.value("act_primary") == "/foo/changed/html");
-    Q_ASSERT(record.value("act_secondary") == "/bar/changed/html");
-    Q_ASSERT(record.value("act_tertiary") == 17);
-
-    record = testTbl2.getRecord("svg");
-
-    Q_ASSERT(record.value("extension") == "svg");
-    Q_ASSERT(record.value("act_primary") == "/foo/svg");
-    Q_ASSERT(record.value("act_secondary") == "/bar/svg");
-
-    // TEST DsTable::recordExists()
-    Q_ASSERT(testTbl2.contains("html"));
-    Q_ASSERT(!testTbl2.contains("foobar"));
-
-    // TEST METHOD   DsTable::getRecordCount()
-    Q_ASSERT(testTbl2.size() == 2);
-
-    // DETELING RECORD
-    result = testTbl2.deleteRecord("html");
-    Q_ASSERT(result);
-
-    query = testDB.exec("SELECT * FROM " + testTblName);
-    query.last();
-
-    Q_ASSERT(query.at()+1 == 1); // note: SQLite driver does not support query.size(), but this works
-    Q_ASSERT(query.value(0) == "svg");
-    Q_ASSERT(query.value(1) == "/foo/svg");
-    Q_ASSERT(query.value(2) == "/bar/svg");
-
-    // TEST CLEAR DATABASE
-    testTbl2.clearRecords();
-
-    Q_ASSERT(testTbl2.size() == 0);
-
-    query = testDB.exec("SELECT * FROM " + testTblName);
-    query.last();
-    Q_ASSERT(query.at() == QSql::AfterLastRow || query.at() == QSql::BeforeFirstRow);
-
-    // CLEANUP
-    testDB.close();
-
-    qDebug() << "testing DsTable passed!";
-}
-
-/**
  * @brief DsTable::DsTable
  * @param parent
  */
@@ -238,7 +84,6 @@ bool DsTable::insertRecord(Record record)
     QMetaType::Type metaType;
 
     if(!this->tableInitialized){
-        qDebug() << "DsTable::insertRecord():" << "table not initialized";
         return false;
     }
 
@@ -251,7 +96,6 @@ bool DsTable::insertRecord(Record record)
 
         // verify schema field is present
         if(!record.contains(fieldName)){
-            qDebug() << "DsTable::insertRecord():" << "record missing schema field" << fieldName;
             return false;
         }
 
@@ -260,31 +104,26 @@ bool DsTable::insertRecord(Record record)
         switch(fieldType){
         case TEXT:
             if(metaType != QMetaType::QString){
-                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
             break;
         case INTEGER:
             if(metaType != QMetaType::Int && metaType != QMetaType::Long && metaType != QMetaType::LongLong){
-                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
             break;
         case REAL:
             if(metaType != QMetaType::Float){
-                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
             break;
         case BOOLEAN:
             if(metaType != QMetaType::Bool){
-                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
             break;
         case BLOB:
             if(metaType != QMetaType::QByteArray){
-                qDebug() << "DsTable::insertRecord():" << "field validation failed" << fieldName;
                 return false;
             }
         }
@@ -328,10 +167,7 @@ bool DsTable::insertRecord(Record record)
     }
 
     result = query.exec();
-    if(!result){
-        qDebug() << "DsTable::insertRecord():" << "SQL query failed" << query.lastError();
-        return false;
-    }
+    Q_ASSERT(result);
 
     // insert record into runtime database
     this->records.insert(lKey, record);

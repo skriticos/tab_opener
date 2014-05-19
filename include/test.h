@@ -16,6 +16,7 @@ public:
     void run();
 
 private slots:
+    void testDsTable();
     void testDsTableFav();
 };
 

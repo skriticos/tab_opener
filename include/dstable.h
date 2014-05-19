@@ -9,8 +9,6 @@ class DsTable : public QObject{
     Q_OBJECT
 
 public:
-    static void testClass();
-
     typedef QHash<QString, QVariant> Record;
 
     enum FieldType { TEXT, INTEGER, REAL, BOOLEAN, BLOB };

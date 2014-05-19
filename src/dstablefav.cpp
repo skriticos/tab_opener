@@ -20,7 +20,8 @@ bool DsTableFav::insertRecord(DsTable::Record record)
     query.prepare("SELECT EXISTS ( SELECT 1 FROM " + this->tableName + " WHERE "
                   + this->lookupKey + "=:l_key LIMIT 1 )");
     query.bindValue(":l_key", record.value(this->lookupKey));
-    result = query.exec(); Q_ASSERT(result);
+    result = query.exec();
+    Q_ASSERT(result);
     query.next();
     query.value(0).toLongLong() == 1 ? recordExists = true : recordExists = false;
 
@@ -29,7 +30,8 @@ bool DsTableFav::insertRecord(DsTable::Record record)
         // read record values
         query.prepare("SELECT * FROM " + this->tableName + " WHERE " + this->lookupKey + " =:l_key");
         query.bindValue(":l_key", record.value(this->lookupKey));
-        result = query.exec(); Q_ASSERT(result);
+        result = query.exec();
+        Q_ASSERT(result);
         query.next();
         int fieldCount = this->schema.size();
         for(int i=0; i<fieldCount; i++){
