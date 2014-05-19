@@ -117,6 +117,7 @@ Roadmap
 * ~~simple git integration~~
 * add a cheat sheet button
 * add preview
+* add time tracker
 
 
 License

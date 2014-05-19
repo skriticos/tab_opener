@@ -1,1 +1,25 @@
-- rename DsTable::recordExists -> DsTable::contains
+********************************************************************************
+- add timestamp to all files and commands entries
+
+DsTableFav
+
+tblFiles:    | path    | counter (i) | timestamp (i) | notes |
+tblCommands: | command | counter (i) | timestamp (i) | path  | notes |
+
+-> DsTable::insertRecord() has to be virtual
+-> DsTable::createTable() has to be virtual
+-> DsTableFav::insertRecord() has to set timestamp and increment counter
+-> DsTableFav::createTable() hast to set indexes on counter and timestamp, verify schema
+-> DsTableFav::getTop10() new sqlQuery
+-> DsTableFav::getRecent10() new sqlQuery
+-> timestamp -> unix timestamp
+-> counter -> int
+
+SELECT * FROM tblFiles ORDER BY timestamp DESC LIMIT 10;
+SELECT * FROM tblFiles ORDER BY counter DESC LIMIT 10;
+
+********************************************************************************
+
+verify database schema in DsTable::loadTable()
+create proper testing
+  http://stackoverflow.com/questions/12194256/qt-how-to-organize-unit-test-with-more-than-one-class
