@@ -2,8 +2,10 @@
 #define TEST_H
 
 #include <QtCore>
+#include <QtTest>
 
 #include "dstable.h"
+#include "dstablefav.h"
 
 class Test : public QObject
 {
@@ -13,10 +15,8 @@ public:
     explicit Test(QObject *parent = 0);
     void run();
 
-signals:
-
-public slots:
-
+private slots:
+    void testDsTableFav();
 };
 
 #endif // TEST_H
