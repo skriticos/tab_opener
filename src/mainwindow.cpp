@@ -306,7 +306,7 @@ void MainWindow::on_view_file_clicked()
 
     // execute open command
     QProcess *p = new QProcess(this);
-    p->start(prog, args);
+    p->startDetached(prog, args);
 
     // push file to stack
     ds->setFile(selectedFilePath, "");
@@ -333,7 +333,7 @@ void MainWindow::on_edit_file_clicked()
 
     // execute open command
     QProcess *p = new QProcess(this);
-    p->start(prog, args);
+    p->startDetached(prog, args);
 
     // push file to stack
     ds->setFile(selectedFilePath, "");
@@ -374,7 +374,7 @@ void MainWindow::on_werb_exec_clicked()
     ds->setCommand(raw, this->path, "");
     this->ui->wcmdinner->update();
 
-    process->start(prog, args);
+    process->startDetached(prog, args);
     // rest is handled by callbacks
 }
 
