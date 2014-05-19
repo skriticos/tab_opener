@@ -23,3 +23,4 @@ SELECT * FROM tblFiles ORDER BY counter DESC LIMIT 10;
 verify database schema in DsTable::loadTable()
 create proper testing
   http://stackoverflow.com/questions/12194256/qt-how-to-organize-unit-test-with-more-than-one-class
+move DsTable::initTable -> DsTable constructor

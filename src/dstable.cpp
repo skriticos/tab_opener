@@ -17,6 +17,7 @@ void DsTable::testClass()
     QList<DsTable::SchemaField> testSchema, invalidSchema; // table schema for initialization
     DsTable::Record record, invalidRecord, record1, record2; // records that are used to perform testing
 
+    result = true;
     if(result) result = result; // remove compiler warn. for unsued variable (macros don't seem to count as being used)
 
     // initialize variables
