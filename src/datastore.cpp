@@ -25,9 +25,8 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
 
     // tblFiles setup
     DsTable::SchemaField filePath  = {"path", DsTable::TEXT};
-    DsTable::SchemaField fileNotes = {"notes", DsTable::TEXT};
     QList<DsTable::SchemaField> fileSchema;
-    fileSchema << filePath << fileNotes;
+    fileSchema << filePath;
 
     this->tblFiles = new DsTableFav(this);
     this->tblFiles->initTable("tblFiles", fileSchema, this->dsDB);
@@ -35,12 +34,29 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     // tblCommands setup
     DsTable::SchemaField cmdCommand = {"command", DsTable::TEXT};
     DsTable::SchemaField cmdPath    = {"working_directory", DsTable::TEXT};
-    DsTable::SchemaField cmdNotes   = {"notes", DsTable::TEXT};
     QList<DsTable::SchemaField> cmdSchema;
-    cmdSchema << cmdCommand << cmdPath << cmdNotes;
+    cmdSchema << cmdCommand << cmdPath;
 
     this->tblCommands = new DsTableFav(this);
     this->tblCommands->initTable("tblCommands", cmdSchema, this->dsDB);
+
+    // tblFileNotes setup
+    DsTable::SchemaField fnPath  = {"path", DsTable::TEXT};
+    DsTable::SchemaField fnNote  = {"note", DsTable::TEXT};
+    QList<DsTable::SchemaField> fileNoteSchema;
+    fileNoteSchema << fnPath << fnNote;
+
+    this->tblFileNotes = new DsTable(this);
+    this->tblFileNotes->initTable("tblFileNotes", fileNoteSchema, this->dsDB);
+
+    // tblCommandNotes setup
+    DsTable::SchemaField cnCmd  = {"command", DsTable::TEXT};
+    DsTable::SchemaField cnNote = {"note", DsTable::TEXT};
+    QList<DsTable::SchemaField> commandNoteSchema;
+    commandNoteSchema << cnCmd << cnNote;
+
+    this->tblCommandNotes = new DsTable(this);
+    this->tblCommandNotes->initTable("tblCommandNotes", commandNoteSchema, this->dsDB);
 }
 
 DataStore::~DataStore()
@@ -48,12 +64,11 @@ DataStore::~DataStore()
     this->dsDB.close();
 }
 
-bool DataStore::setCommand(QString cmd, QString path, QString notes)
+bool DataStore::setCommand(QString cmd, QString path)
 {
     DsTable::Record record;
     record.insert("command", cmd);
     record.insert("path", path);
-    record.insert("notes", notes);
     return tblCommands->insertRecord(record);
 }
 
@@ -83,6 +98,32 @@ QString DataStore::getPreset(int pos)
     return getGeneralValue(presetKey);
 }
 
+QString DataStore::getFileNote(QString filePath)
+{
+    return tblFileNotes->getRecord(filePath).value("note").toString();
+}
+
+QString DataStore::getCommandNote(QString command)
+{
+    return tblCommandNotes->getRecord(command).value("note").toString();
+}
+
+bool DataStore::setFileNote(QString filePath, QString note)
+{
+    DsTable::Record record;
+    record.insert("path", filePath);
+    record.insert("note", note);
+    return tblFileNotes->insertRecord(record);
+}
+
+bool DataStore::setCommandNote(QString command, QString note)
+{
+    DsTable::Record record;
+    record.insert("command", command);
+    record.insert("note", note);
+    return tblCommandNotes->insertRecord(record);
+}
+
 bool DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
 {
     DsTable::Record record;
@@ -92,10 +133,9 @@ bool DataStore::setExtensionValues(QString extStr, QString extActPri, QString ex
     return tblExtensions->insertRecord(record);
 }
 
-bool DataStore::setFile(QString path, QString notes)
+bool DataStore::setFile(QString path)
 {
     DsTable::Record record;
     record.insert("path", path);
-    record.insert("notes", notes);
     return tblFiles->insertRecord(record);
 }

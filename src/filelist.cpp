@@ -95,7 +95,7 @@ void FileList::on_wflab_file_view_clicked()
     p.startDetached(prog, args);
 
     // push file to stack
-    ds->setFile(selectedFilePath, "");
+    ds->setFile(selectedFilePath);
 
     emit this->openOrEditClicked();
 }
@@ -116,7 +116,7 @@ void FileList::on_wflab_file_edit_clicked()
     p->startDetached(prog, args);
 
     // push file to stack
-    ds->setFile(selectedFilePath, "");
+    ds->setFile(selectedFilePath);
 
     emit this->openOrEditClicked();
 }
