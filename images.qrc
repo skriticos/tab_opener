@@ -26,5 +26,6 @@
         <file>rc/scm-push.png</file>
         <file>rc/help.png</file>
         <file>rc/icon2.png</file>
+        <file>rc/edit-clear.png</file>
     </qresource>
 </RCC>

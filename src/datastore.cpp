@@ -100,12 +100,20 @@ QString DataStore::getPreset(int pos)
 
 QString DataStore::getFileNote(QString filePath)
 {
-    return tblFileNotes->getRecord(filePath).value("note").toString();
+    if(filePath.isEmpty())
+        return "";
+    if(tblFileNotes->contains(filePath))
+        return tblFileNotes->getRecord(filePath).value("note").toString();
+    return "";
 }
 
 QString DataStore::getCommandNote(QString command)
 {
-    return tblCommandNotes->getRecord(command).value("note").toString();
+    if(command.isEmpty())
+        return "";
+    if(tblCommandNotes->contains(command))
+        return tblCommandNotes->getRecord(command).value("note").toString();
+    return "";
 }
 
 bool DataStore::setFileNote(QString filePath, QString note)

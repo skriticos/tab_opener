@@ -14,6 +14,8 @@
  */
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow)
 {
+    this->isInit = true;
+
     // window
     ui->setupUi(this);
     this->setWindowFlags(Qt::FramelessWindowHint);
@@ -29,21 +31,7 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(close()));
 
-    // file navigation
-    this->dirmodel = new QFileSystemModel(this);
-    this->dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
-    ui->wb_folders->setModel(dirmodel);
-    ui->wb_folders->setRootIndex(dirmodel->setRootPath("/"));
-    ui->wb_folders->hideColumn(3);
-    ui->wb_folders->hideColumn(2);
-    ui->wb_folders->hideColumn(1);
-
-    if(ds->tblGeneral->contains("navigator_path"))
-        this->setPath(ds->getGeneralValue("navigator_path"));
-    else
-        this->setPath(QDir::homePath());
-
-    connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+    this->wfInitBrowser();
 
     // file and command quicklists
     ui->wfileinner->init(ds);
@@ -53,11 +41,6 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     ui->wcmdinner->init(ds);
     connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
             this, SLOT(setCommand(QString,QString)));
-
-    // notes
-    if(ds->tblGeneral->contains("notes"))
-        ui->we_notes->setPlainText(ds->getGeneralValue("notes"));
-    connect(ui->we_notes, SIGNAL(textChanged()), this, SLOT(notesChanged()));
 
     // configuration widget (preferences)
     this->wconfig = new ConfigWidget(ds, this);
@@ -77,6 +60,19 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->wprb8, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), this, SLOT(setPath(QString)));
 
+    this->ui->notesWidget->initWidget(this->ds);
+
+    if(ds->tblGeneral->contains("selected_file")){
+        QString filePath = ds->getGeneralValue("selected_file");
+        if(!filePath.isEmpty()){
+            ui->wb_files->setCurrentIndex(this->filemodel->index(filePath));
+        }
+    }
+    if(ds->tblGeneral->contains("current_command")){
+        ui->wer_cmd->setText(ds->getGeneralValue("current_command"));
+    }
+
+    this->isInit = false;
 }
 
 /**
@@ -182,19 +178,17 @@ void MainWindow::setPath(QString path)
 {
     this->path = path;
     ds->setGeneralValue("navigator_path", path);
+    if(!this->isInit){
+        ds->setGeneralValue("selected_file", "");
+        ui->notesWidget->selectedFileChanged("");
+    }
 
     // split path into directories
     QStringList charmParts = path.split(QDir::separator());
 
-    if (this->filemodel) delete this->filemodel;
-    this->filemodel = new QFileSystemModel(this);
-    this->filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
-
-    ui->wb_files->setModel(filemodel);
     ui->wb_folders->setCurrentIndex(dirmodel->index(path));
     ui->wb_folders->setExpanded(dirmodel->index(path), true);
     ui->wb_files->setRootIndex(filemodel->setRootPath(path));
-
 
     // clear previous buttons and labels
     for (int i=cblist.size()-1; i>=0; i--){
@@ -254,11 +248,6 @@ void MainWindow::on_wb_folders_clicked(const QModelIndex &index)
 {
    QString path = dirmodel->fileInfo(index).absoluteFilePath();
    this->setPath(path);
-}
-
-void MainWindow::notesChanged()
-{
-    ds->setGeneralValue("notes", ui->we_notes->toPlainText());
 }
 
 void MainWindow::on_wpb_terminal_clicked()
@@ -367,7 +356,6 @@ void MainWindow::on_werb_exec_clicked()
     connect(process, SIGNAL(readyReadStandardError()), this, SLOT(onMyStderrReadReady()));
     connect(process, SIGNAL(finished(int)), this, SLOT(onMyProcessFinished(int)));
     this->processRunnning = true;
-    this->ui->wer_cmd->clear();
     this->ui->we_output->append(raw);
     process->setWorkingDirectory(this->path);
 
@@ -450,4 +438,53 @@ void MainWindow::on_actionScmCommit_triggered()
 void MainWindow::on_actionScmPush_triggered()
 {
     this->exec(QStringList() << "/usr/bin/git" << "push" << "all" << "--all");
+}
+
+void MainWindow::onFileSelected(QItemSelection selected)
+{
+    QModelIndex index = selected.indexes().first();
+    QString selectedFilePath = dirmodel->fileInfo(index).absoluteFilePath();
+    ds->setGeneralValue("selected_file", selectedFilePath);
+
+    ui->notesWidget->selectedFileChanged(selectedFilePath);
+}
+
+void MainWindow::wfInitBrowser()
+{
+    this->dirmodel = new QFileSystemModel(this);
+    this->filemodel = new QFileSystemModel(this);
+
+    this->dirmodel->setFilter(QDir::NoDotAndDotDot | QDir::Dirs);
+    this->filemodel->setFilter(QDir::NoDotAndDotDot | QDir::Files);
+
+    ui->wb_folders->setModel(dirmodel);
+    ui->wb_files->setModel(filemodel);
+
+    ui->wb_folders->setRootIndex(dirmodel->setRootPath("/"));
+    ui->wb_folders->hideColumn(3);
+    ui->wb_folders->hideColumn(2);
+    ui->wb_folders->hideColumn(1);
+
+    if(ds->tblGeneral->contains("navigator_path"))
+        this->setPath(ds->getGeneralValue("navigator_path"));
+    else
+        this->setPath(QDir::homePath());
+
+    QItemSelectionModel *fileSelectionModel = ui->wb_files->selectionModel();
+    connect(ui->wpc_root, SIGNAL(clicked()), this, SLOT(setRootPath()));
+    connect(fileSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(onFileSelected(QItemSelection)));
+}
+
+void MainWindow::on_btnClearCommand_clicked()
+{
+    ui->wer_cmd->clear();
+    ds->setGeneralValue("current_command", "");
+    ui->notesWidget->commandChanged("");
+}
+
+void MainWindow::on_wer_cmd_textEdited(const QString &arg1)
+{
+    ds->setGeneralValue("current_command", arg1);
+    ui->notesWidget->commandChanged(arg1);
 }

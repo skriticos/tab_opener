@@ -417,14 +417,23 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <item>
-       <widget class="QPlainTextEdit" name="we_notes">
-        <property name="plainText">
-         <string>notes</string>
+       <widget class="NotesWidget" name="notesWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>2</verstretch>
+         </sizepolicy>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QTextEdit" name="we_output">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>1</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <family>Ubuntu Mono</family>
@@ -471,6 +480,17 @@ p, li { white-space: pre-wrap; }
            <property name="icon">
             <iconset resource="../images.qrc">
              <normaloff>:/images/rc/debug-run.png</normaloff>:/images/rc/debug-run.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="HoverButton" name="btnClearCommand">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../images.qrc">
+             <normaloff>:/images/rc/edit-clear.png</normaloff>:/images/rc/edit-clear.png</iconset>
            </property>
           </widget>
          </item>
@@ -715,74 +735,15 @@ p, li { white-space: pre-wrap; }
    <extends>QPushButton</extends>
    <header location="global">presetbutton.h</header>
   </customwidget>
+  <customwidget>
+   <class>NotesWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">noteswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
   <include location="../images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>btnScmPull</sender>
-   <signal>clicked()</signal>
-   <receiver>actionScmPull</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>507</x>
-     <y>60</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnScmCommit</sender>
-   <signal>clicked()</signal>
-   <receiver>actionScmCommit</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>541</x>
-     <y>60</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnScmPush</sender>
-   <signal>clicked()</signal>
-   <receiver>actionScmPush</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>575</x>
-     <y>60</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>btnHelp</sender>
-   <signal>clicked()</signal>
-   <receiver>actionHelp</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>643</x>
-     <y>60</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
