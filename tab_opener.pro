@@ -30,7 +30,8 @@ SOURCES += \
     src/test.cpp \
     src/dstablefav.cpp \
     src/noteswidget.cpp \
-    src/filebrowser.cpp
+    src/filebrowser.cpp \
+    src/commandwidget.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -48,7 +49,8 @@ HEADERS  += \
     include/test.h \
     include/dstablefav.h \
     include/noteswidget.h \
-    include/filebrowser.h
+    include/filebrowser.h \
+    include/commandwidget.h
 
 FORMS    += \
     ui/filelist.ui \
@@ -56,7 +58,8 @@ FORMS    += \
     ui/mainwindow.ui \
     ui/configwidget.ui \
     ui/noteswidget.ui \
-    ui/filebrowser.ui
+    ui/filebrowser.ui \
+    ui/commandwidget.ui
 
 RESOURCES += \
     images.qrc
