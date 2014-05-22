@@ -73,6 +73,10 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     }
 
     this->isInit = false;
+
+    this->fb = new FileBrowser();
+    this->fb->initFileBrowser(this->ds);
+    this->fb->show();
 }
 
 /**

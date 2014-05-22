@@ -16,6 +16,7 @@
 #include "charmbutton.h"
 #include "presetbutton.h"
 #include "noteswidget.h"
+#include "filebrowser.h"
 
 namespace Ui {
 class MainWindow;
@@ -64,6 +65,8 @@ private slots:
     void on_wer_cmd_textEdited(const QString &arg1);
 
 private:
+    FileBrowser *fb;
+
     Ui::MainWindow *ui;
     QString path;
     QList<QPushButton> charmButtons;

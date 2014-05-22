@@ -24,10 +24,7 @@
     <normaloff>:/images/rc/icon2.png</normaloff>:/images/rc/icon2.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QPushButton#wpc_root,#wpc_subselect {
-	min-width: 0px;
-	padding: 2px;
-}</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0">
