@@ -49,6 +49,7 @@ signals:
     void folderSelected(QString folderPath);
     void fileSelected(QString filePath);
     void configChanged();
+    void actPriSecTriggered();
 
 private:
     Ui::FileBrowser *ui;

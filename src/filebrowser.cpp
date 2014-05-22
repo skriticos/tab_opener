@@ -186,6 +186,8 @@ void FileBrowser::on_btnActPrimary_clicked()
 
     command = ds->getExtActPri(extension) + " " + selectedFile;
     Util::execDetachedCommand(command);
+
+    emit this->actPriSecTriggered();
 }
 
 void FileBrowser::on_btnActSecondary_clicked()
@@ -197,6 +199,8 @@ void FileBrowser::on_btnActSecondary_clicked()
 
     command = ds->getExtActSec(extension) + " " + selectedFile;
     Util::execDetachedCommand(command);
+
+    emit this->actPriSecTriggered();
 }
 
 void FileBrowser::on_btnHome_clicked()

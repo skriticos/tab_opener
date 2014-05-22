@@ -74,6 +74,8 @@ void FileList::buttonSelected(QString path, FileButton *butt)
     }
     this->selectedFilePath = path;
     this->selectedButton = butt;
+
+    emit this->fileSelected(path);
 }
 
 void FileList::on_wflab_file_view_clicked()

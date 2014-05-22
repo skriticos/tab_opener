@@ -59,6 +59,12 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::MainWindow
     connect(ui->fileBrowser, SIGNAL(fileSelected(QString)),
             ui->notesWidget, SLOT  (selectedFileChanged(QString)));
 
+    connect(ui->fileBrowser, SIGNAL(actPriSecTriggered()),
+            this,            SLOT  (close()));
+
+    connect(ui->wfileinner,  SIGNAL(fileSelected(QString)),
+            ui->fileBrowser, SLOT  (setSelectedFile(QString)));
+
     if(ds->tblGeneral->contains("current_command"))
         ui->wer_cmd->setText(ds->getGeneralValue("current_command"));
 
