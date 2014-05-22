@@ -3,6 +3,7 @@
 
 #include <QtWidgets>
 
+#include "util.h"
 #include "configwidget.h"
 #include "charmbutton.h"
 #include "datastore.h"
@@ -31,10 +32,23 @@ public slots:
 private slots:
     void onFileSelected();
     void onFolderSeleced();
+    void onConfigAccepted();
+
+    void on_btnActPrimary_clicked();
+    void on_btnActSecondary_clicked();
+    void on_btnHome_clicked();
+    void on_btnTerminal_clicked();
+    void on_btnExtFileBrowser_clicked();
+    void on_btnPreferences_clicked();
+    void on_btnScmPull_clicked();
+    void on_btnScmCommit_clicked();
+    void on_btnScmPush_clicked();
+    void on_btnHelp_clicked();
 
 signals:
     void folderSelected(QString folderPath);
     void fileSelected(QString filePath);
+    void configChanged();
 
 private:
     Ui::FileBrowser *ui;
@@ -42,10 +56,10 @@ private:
     bool isInit;
 
     QFileSystemModel *dirmodel, *filemodel;
-    ConfigWidget *wconfig;
+    ConfigWidget *configWidget;
     QList<QPushButton> charmButtons;
-    QList<CharmButton*> cblist;
-    QList<QLabel*> cllist;
+    QList<CharmButton *> charmButtonList;
+    QList<QLabel *> charmLabelList;
 };
 
 #endif // FILEBROWSER_H

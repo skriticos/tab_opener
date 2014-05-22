@@ -446,11 +446,13 @@ void MainWindow::on_actionScmPush_triggered()
 
 void MainWindow::onFileSelected(QItemSelection selected)
 {
+    /*
     QModelIndex index = selected.indexes().first();
     QString selectedFilePath = dirmodel->fileInfo(index).absoluteFilePath();
     ds->setGeneralValue("selected_file", selectedFilePath);
 
     ui->notesWidget->selectedFileChanged(selectedFilePath);
+    */
 }
 
 void MainWindow::wfInitBrowser()

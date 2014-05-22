@@ -10,6 +10,15 @@ void Test::run()
     QTest::qExec(this, 1, dummy_args);
 }
 
+void Test::testUtilExecDetachedCommand()
+{
+    QVERIFY(Util::execDetachedCommand("") == false);
+    QVERIFY(Util::execDetachedCommand("/bin/true") == true);
+    QVERIFY(Util::execDetachedCommand("/bin/true " + QDir::homePath()) == true);
+    QVERIFY(Util::execDetachedCommand("/bin/true", QDir::homePath()) == true);
+    QVERIFY(Util::execDetachedCommand("/bin/true \"foo bar\" baz") == true);
+}
+
 void Test::testDsTable()
 {
     // declare variables

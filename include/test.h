@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtTest>
 
+#include "util.h"
 #include "dstable.h"
 #include "dstablefav.h"
 
@@ -16,6 +17,7 @@ public:
     void run();
 
 private slots:
+    void testUtilExecDetachedCommand();
     void testDsTable();
     void testDsTableFav();
 };

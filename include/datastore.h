@@ -26,6 +26,8 @@ public:
     bool    setFile(QString path);
     bool    setGeneralValue(QString key, QString value);
     bool    setPreset(int pos, QString path);
+    QString getExtActPri(QString ext);
+    QString getExtActSec(QString ext);
     QString getGeneralValue(QString key);
     QString getPreset(int pos);
 

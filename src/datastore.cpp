@@ -92,6 +92,20 @@ bool DataStore::setPreset(int pos, QString path) {
     return setGeneralValue(presetKey, path);
 }
 
+QString DataStore::getExtActPri(QString ext)
+{
+    if(this->tblExtensions->contains(ext))
+        return this->tblExtensions->getRecord(ext).value("ext_act_pri").toString();
+    return QString();
+}
+
+QString DataStore::getExtActSec(QString ext)
+{
+    if(this->tblExtensions->contains(ext))
+        return this->tblExtensions->getRecord(ext).value("ext_act_sec").toString();
+    return QString();
+}
+
 QString DataStore::getPreset(int pos)
 {
     QString presetKey = "preset" + QString::number(pos);

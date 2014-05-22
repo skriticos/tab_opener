@@ -48,6 +48,11 @@ void FileBrowser::initFileBrowser(DataStore *ds)
     else
         this->setSelectedFolder(QDir::homePath());
 
+    // note: config is mostly working with datastore
+    //       in this class only the config changed signal is passed
+    this->configWidget = new ConfigWidget(ds, this);
+    connect(this->configWidget, SIGNAL(accepted()), this, SLOT(onConfigAccepted()));
+
     this->isInit = false;
 }
 
@@ -60,6 +65,9 @@ void FileBrowser::setSelectedFolder(QString folderPath)
 
 void FileBrowser::setSelectedFile(QString filePath)
 {
+    QString baseFolder = QFileInfo(filePath).absolutePath();
+    this->setSelectedFolder(baseFolder);
+
     if(!filePath.isEmpty()){
         ui->viewFiles->setCurrentIndex(this->filemodel->index(filePath));
     }
@@ -72,12 +80,13 @@ void FileBrowser::onFileSelected()
     if(!this->isInit)
         ds->setGeneralValue("selected_file", selectedFilePath);
     emit this->fileSelected(selectedFilePath);
-
-    qDebug() << "file selected" << selectedFilePath;
 }
 
 void FileBrowser::onFolderSeleced()
 {
+    CharmButton *charmButton;
+    QLabel      *charmLabel;
+
     QString selectedFolderPath = this->getSelectedFolder();
 
     // set folder index and file view root
@@ -85,24 +94,155 @@ void FileBrowser::onFolderSeleced()
     ui->viewFolders->setExpanded(dirmodel->index(selectedFolderPath), true);
     ui->viewFiles->setRootIndex(filemodel->setRootPath(selectedFolderPath));
 
-    // update charms
-    // TBD
+    // remove all charms
+    for(int i=0; i<ui->charmLayout->count(); i++)
+        ui->charmLayout->removeItem(ui->charmLayout->itemAt(i));
 
+    for(int i=0; i<this->charmButtonList.size(); i++)
+        charmButtonList.at(i)->deleteLater();
+    for(int i=0; i<this->charmLabelList.size(); i++)
+        charmLabelList.at(i)->deleteLater();
+
+    this->charmButtonList.clear();
+    this->charmLabelList.clear();
+
+    // add root charm
+    charmButton = new CharmButton(QDir::rootPath(), QDir::rootPath(), ui->charmContainer);
+    ui->charmLayout->addWidget(charmButton);
+    charmButtonList.append(charmButton);
+    connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(setSelectedFolder(QString)));
+
+    // add folder charms and separator labels
+    QStringList charmParts = selectedFolderPath.split(QDir::separator());
+    if (selectedFolderPath != QDir::rootPath()) {
+
+        for (int i=1; i<charmParts.size(); i++){
+
+            QStringList charmPartSL = charmParts.mid(1, i);
+            QString charmPath = QDir::rootPath() + charmPartSL.join(QDir::separator());
+
+            charmButton = new CharmButton(charmParts.at(i), charmPath, ui->charmContainer);
+            this->charmButtonList.append(charmButton);
+            connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(setSelectedFolder(QString)));
+
+            if(i>1){
+                charmLabel = new QLabel("/", ui->charmContainer);
+                ui->charmLayout->addWidget(charmLabel);
+                charmLabelList.append(charmLabel);
+            }
+
+            ui->charmLayout->addWidget(charmButton);
+            charmButtonList.append(charmButton);
+        }
+    }
+
+    // external interface
     if(!this->isInit)
         ds->setGeneralValue("navigator_path", selectedFolderPath);
     emit this->folderSelected(selectedFolderPath);
+}
 
-    qDebug() << "folder selected" << selectedFolderPath;
+void FileBrowser::onConfigAccepted()
+{
+    emit this->configChanged();
 }
 
 QString FileBrowser::getSelectedFolder()
 {
-    QModelIndex index = ui->viewFolders->selectionModel()->selectedIndexes().first();
-    return dirmodel->fileInfo(index).absoluteFilePath();
+    QModelIndex index;
+    QItemSelectionModel *selectionModel;
+
+    selectionModel = ui->viewFolders->selectionModel();
+
+    if(!selectionModel->selectedIndexes().isEmpty()){
+        index = selectionModel->selectedIndexes().first();
+        return dirmodel->fileInfo(index).absoluteFilePath();
+    } else {
+        return QString();
+    }
 }
 
 QString FileBrowser::getSelectedFile()
 {
-    QModelIndex index = ui->viewFiles->selectionModel()->selectedIndexes().first();
-    return filemodel->fileInfo(index).absoluteFilePath();
+    QModelIndex index;
+    QItemSelectionModel *selectionModel;
+
+    selectionModel = ui->viewFiles->selectionModel();
+
+    if(!selectionModel->selectedIndexes().isEmpty()) {
+        index = selectionModel->selectedIndexes().first();
+        return filemodel->fileInfo(index).absoluteFilePath();
+    } else {
+        return QString();
+    }
+}
+
+void FileBrowser::on_btnActPrimary_clicked()
+{
+    QString selectedFile, extension, command;
+
+    selectedFile = this->getSelectedFile();
+    extension = selectedFile.split(".").last();
+
+    command = ds->getExtActPri(extension) + " " + selectedFile;
+    Util::execDetachedCommand(command);
+}
+
+void FileBrowser::on_btnActSecondary_clicked()
+{
+    QString selectedFile, extension, command;
+
+    selectedFile = this->getSelectedFile();
+    extension = selectedFile.split(".").last();
+
+    command = ds->getExtActSec(extension) + " " + selectedFile;
+    Util::execDetachedCommand(command);
+}
+
+void FileBrowser::on_btnHome_clicked()
+{
+    this->setSelectedFolder(QDir::homePath());
+}
+
+void FileBrowser::on_btnTerminal_clicked()
+{
+    QString selectedFolder, command;
+
+    selectedFolder = this->getSelectedFolder();
+    command = ds->getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
+    Util::execDetachedCommand(command);
+}
+
+void FileBrowser::on_btnExtFileBrowser_clicked()
+{
+    QString selectedFolder, command;
+
+    selectedFolder = this->getSelectedFolder();
+    command = ds->getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
+    Util::execDetachedCommand(command);
+}
+
+void FileBrowser::on_btnPreferences_clicked()
+{
+    this->configWidget->show();
+}
+
+void FileBrowser::on_btnScmPull_clicked()
+{
+    qDebug() << "not yet implemented";
+}
+
+void FileBrowser::on_btnScmCommit_clicked()
+{
+    qDebug() << "not yet implemented";
+}
+
+void FileBrowser::on_btnScmPush_clicked()
+{
+    qDebug() << "not yet implemented";
+}
+
+void FileBrowser::on_btnHelp_clicked()
+{
+    qDebug() << "not yet implemented";
 }

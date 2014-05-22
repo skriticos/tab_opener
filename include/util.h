@@ -2,13 +2,14 @@
 #define UTIL_H
 
 #include <QtCore>
-#include <QtGui>
 
 class Util : public QObject
 {
     Q_OBJECT
 public:
     explicit Util(QObject *parent = 0);
+
+    static bool execDetachedCommand(QString cmdStr, QString wd = "");
 
 signals:
 
