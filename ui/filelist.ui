@@ -218,23 +218,6 @@
        </widget>
       </item>
       <item>
-       <widget class="HoverButton" name="wflab_file_path">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="../images.qrc">
-          <normaloff>:/images/rc/media-seek-forward.png</normaloff>:/images/rc/media-seek-forward.png</iconset>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="HoverButton" name="wflab_file_copy">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">

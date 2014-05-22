@@ -123,13 +123,6 @@ void FileList::on_wflab_file_edit_clicked()
     emit this->openOrEditClicked();
 }
 
-void FileList::on_wflab_file_path_clicked()
-{
-    QFileInfo fi = QFileInfo(this->selectedFilePath);
-    QString basePath = fi.absolutePath();
-    emit this->forwardPath(basePath);
-}
-
 void FileList::on_wflab_file_copy_clicked()
 {
     QClipboard *clipboard = QApplication::clipboard();
