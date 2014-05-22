@@ -29,7 +29,8 @@ SOURCES += \
     src/dstable.cpp \
     src/test.cpp \
     src/dstablefav.cpp \
-    src/noteswidget.cpp
+    src/noteswidget.cpp \
+    src/filebrowser.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -46,14 +47,16 @@ HEADERS  += \
     include/dstable.h \
     include/test.h \
     include/dstablefav.h \
-    include/noteswidget.h
+    include/noteswidget.h \
+    include/filebrowser.h
 
 FORMS    += \
     ui/filelist.ui \
     ui/cmdlist.ui \
     ui/mainwindow.ui \
     ui/configwidget.ui \
-    ui/noteswidget.ui
+    ui/noteswidget.ui \
+    ui/filebrowser.ui
 
 RESOURCES += \
     images.qrc
