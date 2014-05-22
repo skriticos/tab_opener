@@ -43,10 +43,15 @@ void FileBrowser::initFileBrowser(DataStore *ds)
 
     this->ds = ds;
 
-    if(ds->tblGeneral->contains("navigator_path"))
+    if(ds->tblGeneral->contains("selected_file")
+              && !ds->getGeneralValue("selected_file").isEmpty()){
+        this->setSelectedFile(ds->getGeneralValue("selected_file"));
+    } else if(ds->tblGeneral->contains("navigator_path")
+              && !ds->getGeneralValue("navigator_path").isEmpty()){
         this->setSelectedFolder(ds->getGeneralValue("navigator_path"));
-    else
+    } else {
         this->setSelectedFolder(QDir::homePath());
+    }
 
     // note: config is mostly working with datastore
     //       in this class only the config changed signal is passed
@@ -71,6 +76,8 @@ void FileBrowser::setSelectedFile(QString filePath)
     if(!filePath.isEmpty()){
         ui->viewFiles->setCurrentIndex(this->filemodel->index(filePath));
     }
+
+    emit this->fileSelected(filePath);
 }
 
 void FileBrowser::onFileSelected()
@@ -93,6 +100,8 @@ void FileBrowser::onFolderSeleced()
     ui->viewFolders->setCurrentIndex(dirmodel->index(selectedFolderPath));
     ui->viewFolders->setExpanded(dirmodel->index(selectedFolderPath), true);
     ui->viewFiles->setRootIndex(filemodel->setRootPath(selectedFolderPath));
+    ui->viewFiles->selectionModel()->clearSelection();
+    emit this->fileSelected("");
 
     // remove all charms
     for(int i=0; i<ui->charmLayout->count(); i++)
@@ -187,6 +196,8 @@ void FileBrowser::on_btnActPrimary_clicked()
     command = ds->getExtActPri(extension) + " " + selectedFile;
     Util::execDetachedCommand(command);
 
+    ds->setFile(selectedFile);
+
     emit this->actPriSecTriggered();
 }
 
@@ -199,6 +210,8 @@ void FileBrowser::on_btnActSecondary_clicked()
 
     command = ds->getExtActSec(extension) + " " + selectedFile;
     Util::execDetachedCommand(command);
+
+    ds->setFile(selectedFile);
 
     emit this->actPriSecTriggered();
 }
