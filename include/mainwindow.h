@@ -17,9 +17,10 @@
 #include "presetbutton.h"
 #include "noteswidget.h"
 #include "filebrowser.h"
+#include "commandwidget.h"
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QWidget

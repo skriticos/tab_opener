@@ -2,6 +2,8 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+#include "commandwidget.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -14,7 +16,9 @@ int main(int argc, char *argv[])
 
 
     MainWindow w;
-    w.show();
+    // w.show();
+    CommandWidget w2;
+    w2.show();
 
     return a.exec();
 }
