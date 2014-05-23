@@ -4,18 +4,17 @@ Util::Util(QObject *parent) : QObject(parent)
 {
 }
 
-bool Util::execDetachedCommand(QString cmdStr, QString wd)
+Util::ParsedCommand Util::parseCmdStr(QString cmdStr)
 {
-    QStringList cmdList, args, args2;
-    QString prog, argbuf;
+    ParsedCommand parsedCmd;
+    QStringList cmdList, args;
+    QString argbuf;
     bool quoted = false;
 
-    // empty command is bad
-    if(cmdStr.isEmpty())
-        return false;
+    Q_ASSERT(!cmdStr.isEmpty());
 
     cmdList = cmdStr.split(" ");
-    prog = cmdList.first();
+    parsedCmd.program = cmdList.first();
     if(cmdList.size()>1)
         args = cmdList.mid(1);
 
@@ -26,7 +25,7 @@ bool Util::execDetachedCommand(QString cmdStr, QString wd)
             argbuf += args.at(i).mid(1);
             if(args.at(i).endsWith("\"")){
                 argbuf.chop(1);
-                args2 << argbuf;
+                parsedCmd.args << argbuf;
                 argbuf.clear();
                 quoted = false;
             }
@@ -34,17 +33,28 @@ bool Util::execDetachedCommand(QString cmdStr, QString wd)
             argbuf += " " + args.at(i);
             if(args.at(i).endsWith("\"")){
                 argbuf.chop(1);
-                args2 << argbuf;
+                parsedCmd.args << argbuf;
                 argbuf.clear();
                 quoted = false;
             }
         } else {
-            args2 << args.at(i);
+            parsedCmd.args << args.at(i);
         }
     }
+
+    return parsedCmd;
+}
+
+bool Util::execDetachedCommand(QString cmdStr, QString wd)
+{
+    // empty command is bad
+    if(cmdStr.isEmpty())
+        return false;
+
+    ParsedCommand parsedCmd = Util::parseCmdStr(cmdStr);
 
     if(wd.isEmpty())
         wd = QDir::homePath();
 
-    return QProcess::startDetached(prog, args2, wd);
+    return QProcess::startDetached(parsedCmd.program, parsedCmd.args, wd);
 }
