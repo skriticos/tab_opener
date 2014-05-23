@@ -84,6 +84,7 @@ void CommandWidget::on_btnExecCommand_clicked()
     if(this->process->state() == QProcess::NotRunning){
         if(!ui->inputCommand->text().isEmpty()){
             emit this->manualCommandExecuted(ui->inputCommand->text());
+            this->ds->setCommand(ui->inputCommand->text(), this->workingDirectory);
             this->execCmd(ui->inputCommand->text());
         }
     } else { // process already running, aborting

@@ -68,7 +68,8 @@ bool DataStore::setCommand(QString cmd, QString path)
 {
     DsTable::Record record;
     record.insert("command", cmd);
-    record.insert("path", path);
+    record.insert("working_directory", path);
+    this->setGeneralValue("current_command", cmd);
     return tblCommands->insertRecord(record);
 }
 
