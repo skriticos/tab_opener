@@ -44,7 +44,7 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QWidget" name="wexec" native="true">
+    <widget class="QWidget" name="rightContainer" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -60,7 +60,7 @@
      <property name="styleSheet">
       <string notr="true"/>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="NotesWidget" name="notesWidget" native="true">
         <property name="sizePolicy">
@@ -72,84 +72,20 @@
        </widget>
       </item>
       <item>
-       <widget class="QTextEdit" name="we_output">
+       <widget class="CommandWidget" name="commandWidget" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>1</verstretch>
          </sizepolicy>
         </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu Mono</family>
-         </font>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-        <property name="html">
-         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu Mono'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Droid Sans [unknown]'; font-size:10pt;&quot;&gt;terminal output&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="acceptRichText">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QWidget" name="werun" native="true">
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="HoverButton" name="werb_exec">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../images.qrc">
-             <normaloff>:/images/rc/debug-run.png</normaloff>:/images/rc/debug-run.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="HoverButton" name="btnClearCommand">
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="../images.qrc">
-             <normaloff>:/images/rc/edit-clear.png</normaloff>:/images/rc/edit-clear.png</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="wer_cmd"/>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
    <item row="3" column="0" colspan="2">
-    <widget class="QWidget" name="wbottomcont" native="true">
+    <widget class="QWidget" name="bottomContainer" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <property name="spacing">
        <number>6</number>
@@ -359,11 +295,6 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>HoverButton</class>
-   <extends>QPushButton</extends>
-   <header>hoverbutton.h</header>
-  </customwidget>
-  <customwidget>
    <class>FileList</class>
    <extends>QWidget</extends>
    <header location="global">filelist.h</header>
@@ -390,6 +321,12 @@ p, li { white-space: pre-wrap; }
    <class>FileBrowser</class>
    <extends>QWidget</extends>
    <header location="global">filebrowser.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CommandWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">commandwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

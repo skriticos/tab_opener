@@ -27,6 +27,14 @@ void CommandWidget::initCommandWidget(DataStore *ds)
     }
 }
 
+bool CommandWidget::processExecuting()
+{
+    if(this->process->state() == QProcess::NotRunning)
+        return false;
+    else
+        return true;
+}
+
 void CommandWidget::selectedFolderChanged(QString selectedFolder)
 {
     this->workingDirectory = selectedFolder;
@@ -73,8 +81,10 @@ bool CommandWidget::execMultiCmds(QStringList cmdList)
 void CommandWidget::on_btnExecCommand_clicked()
 {
     if(this->process->state() == QProcess::NotRunning){
-        emit this->manualCommandExecuted(ui->inputCommand->text());
-        this->execCmd(ui->inputCommand->text());
+        if(!ui->inputCommand->text().isEmpty()){
+            emit this->manualCommandExecuted(ui->inputCommand->text());
+            this->execCmd(ui->inputCommand->text());
+        }
     } else { // process already running, aborting
         this->process->kill();
         this->process->waitForFinished();

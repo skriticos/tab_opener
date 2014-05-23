@@ -18,6 +18,7 @@ public:
     explicit CommandWidget(QWidget *parent = 0);
     ~CommandWidget();
     void initCommandWidget(DataStore *ds);
+    bool processExecuting();
 
 public slots:
     void selectedFolderChanged(QString selectedFolder);
