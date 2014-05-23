@@ -31,7 +31,8 @@ SOURCES += \
     src/dstablefav.cpp \
     src/noteswidget.cpp \
     src/filebrowser.cpp \
-    src/commandwidget.cpp
+    src/commandwidget.cpp \
+    src/cmdexecbutton.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -50,7 +51,8 @@ HEADERS  += \
     include/dstablefav.h \
     include/noteswidget.h \
     include/filebrowser.h \
-    include/commandwidget.h
+    include/commandwidget.h \
+    include/cmdexecbutton.h
 
 FORMS    += \
     ui/filelist.ui \

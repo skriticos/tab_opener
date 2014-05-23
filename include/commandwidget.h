@@ -3,8 +3,10 @@
 
 #include <QWidget>
 
+#include "datastore.h"
+
 namespace Ui {
-class CommandWidget;
+    class CommandWidget;
 }
 
 class CommandWidget : public QWidget

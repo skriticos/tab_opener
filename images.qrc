@@ -27,5 +27,9 @@
         <file>rc/help.png</file>
         <file>rc/icon2.png</file>
         <file>rc/edit-clear.png</file>
+        <file>rc/play.png</file>
+        <file>rc/media-playback-stop.png</file>
+        <file>rc/loader.gif</file>
+        <file>rc/exec.gif</file>
     </qresource>
 </RCC>
