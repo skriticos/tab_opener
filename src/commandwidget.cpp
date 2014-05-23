@@ -45,7 +45,7 @@ void CommandWidget::historyCommandChanged(QString cmdStr)
     ui->inputCommand->setText(cmdStr);
 }
 
-void CommandWidget::execCmd(QString cmdStr)
+void CommandWidget::execCmd(QString cmdStr, bool multi)
 {
     Util::ParsedCommand parsedCmd;
     QString wd;
@@ -57,7 +57,8 @@ void CommandWidget::execCmd(QString cmdStr)
 
     parsedCmd = Util::parseCmdStr(cmdStr);
 
-    ui->viewCommandOutput->clear();
+    if(!multi)
+        ui->viewCommandOutput->clear();
     ui->viewCommandOutput->append("<span style='color:green'>executing [" + cmdStr +
                                   "] in " + wd + "</span>");
 
@@ -70,7 +71,7 @@ void CommandWidget::execCmd(QString cmdStr)
 bool CommandWidget::execMultiCmds(QStringList cmdList)
 {
     for(int i=0; i<cmdList.size(); i++){
-        this->execCmd(cmdList.at(i));
+        this->execCmd(cmdList.at(i), true);
         this->process->waitForFinished();
         if(this->process->exitCode() != 0)
             return false;

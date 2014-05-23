@@ -29,6 +29,9 @@ public slots:
     void setSelectedFolder(QString folderPath);
     void setSelectedFile(QString filePath);
 
+    void commandProcessStarted();
+    void commandProcessStopped();
+
 private slots:
     void onFileSelected();
     void onFolderSeleced();
@@ -50,6 +53,8 @@ signals:
     void fileSelected(QString filePath);
     void configChanged();
     void actPriSecTriggered();
+    void execMultiCommand(QStringList);
+    void execCommand(QString);
 
 private:
     Ui::FileBrowser *ui;

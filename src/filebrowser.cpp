@@ -80,6 +80,20 @@ void FileBrowser::setSelectedFile(QString filePath)
     emit this->fileSelected(filePath);
 }
 
+void FileBrowser::commandProcessStarted()
+{
+    ui->btnScmCommit->setEnabled(false);
+    ui->btnScmPull->setEnabled(false);
+    ui->btnScmPush->setEnabled(false);
+}
+
+void FileBrowser::commandProcessStopped()
+{
+    ui->btnScmCommit->setEnabled(true);
+    ui->btnScmPull->setEnabled(true);
+    ui->btnScmPush->setEnabled(true);
+}
+
 void FileBrowser::onFileSelected()
 {
     QString selectedFilePath = this->getSelectedFile();
@@ -246,17 +260,38 @@ void FileBrowser::on_btnPreferences_clicked()
 
 void FileBrowser::on_btnScmPull_clicked()
 {
-    qDebug() << "not yet implemented";
+    emit this->execCommand(QString("git pull --all"));
 }
 
 void FileBrowser::on_btnScmCommit_clicked()
 {
-    qDebug() << "not yet implemented";
+    bool ok;
+    QString commitMsg = QInputDialog::getText(
+                this,
+                "Commit message",
+                "Commit msg:",
+                QLineEdit::Normal,
+                "",
+                &ok);
+    if(ok && !commitMsg.isEmpty()){
+        QStringList cmdList;
+        cmdList << "git add --all";
+        cmdList << "git commit -am \"" + commitMsg + "\"";
+        emit this->execMultiCommand(cmdList);
+    } else {
+        if(ok)
+            QMessageBox::warning(
+                        this,
+                        "Commit error",
+                        "Can't commit with empty commit message. Aborting.",
+                        QMessageBox::Ok
+                        );
+    }
 }
 
 void FileBrowser::on_btnScmPush_clicked()
 {
-    qDebug() << "not yet implemented";
+    emit this->execCommand("git push --all");
 }
 
 void FileBrowser::on_btnHelp_clicked()

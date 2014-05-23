@@ -44,12 +44,19 @@ void MainWindow::initWidget(DataStore *ds)
     // presets
     this->updatePresets();
 
-    this->ui->notesWidget->initWidget(this->ds);
-    this->ui->fileBrowser->initFileBrowser(this->ds);
-    this->ui->commandWidget->initCommandWidget(this->ds);
-
     connect(ui->commandWidget, SIGNAL(commandChanged(QString)),
             ui->notesWidget,   SLOT(commandChanged(QString)));
+
+    connect(ui->commandWidget, SIGNAL(processExecutionStarted()),
+            ui->fileBrowser,   SLOT(commandProcessStarted()));
+    connect(ui->commandWidget, SIGNAL(processExecutionStopped()),
+            ui->fileBrowser,   SLOT(commandProcessStopped()));
+    connect(ui->fileBrowser,   SIGNAL(folderSelected(QString)),
+            ui->commandWidget, SLOT(selectedFolderChanged(QString)));
+    connect(ui->fileBrowser,   SIGNAL(execCommand(QString)),
+            ui->commandWidget, SLOT(execCmd(QString)));
+    connect(ui->fileBrowser,   SIGNAL(execMultiCommand(QStringList)),
+            ui->commandWidget, SLOT(execMultiCmds(QStringList)));
 
     connect(ui->fileBrowser, SIGNAL(fileSelected(QString)),
             ui->notesWidget, SLOT  (selectedFileChanged(QString)));
@@ -59,6 +66,10 @@ void MainWindow::initWidget(DataStore *ds)
 
     connect(ui->wfileinner,  SIGNAL(fileSelected(QString)),
             ui->fileBrowser, SLOT  (setSelectedFile(QString)));
+
+    this->ui->notesWidget->initWidget(this->ds);
+    this->ui->fileBrowser->initFileBrowser(this->ds);
+    this->ui->commandWidget->initCommandWidget(this->ds);
 }
 
 void MainWindow::updatePresets()

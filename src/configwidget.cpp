@@ -67,7 +67,6 @@ void ConfigWidget::on_btnCommit_clicked()
         w = new QListWidgetItem(extStr, ui->extensionlist);
         this->extWidgetMap.insert(extStr, w);
     }
-    qDebug() << "commiting extension" << extStr << extActPri << extActSec;
     ds->setExtensionValues(extStr, extActPri, extActSec);
     ui->extensionlist->setCurrentItem(w);
 }

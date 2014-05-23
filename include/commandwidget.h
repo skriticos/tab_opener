@@ -23,7 +23,7 @@ public:
 public slots:
     void selectedFolderChanged(QString selectedFolder);
     void historyCommandChanged(QString cmdStr);
-    void execCmd(QString cmdStr);
+    void execCmd(QString cmdStr, bool multi = false);
     bool execMultiCmds(QStringList cmdList);
 
 private slots:
