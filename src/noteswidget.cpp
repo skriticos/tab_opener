@@ -95,7 +95,7 @@ void NotesWidget::on_btnCmdNotes_clicked(bool checked)
     ds->setGeneralValue("last_note_state", "command");
     ui->btnGlobalNotes->setChecked(false);
     ui->btnFileNotes->setChecked(false);
-    this->setNotesText(ds->getCommandNote(ds->getGeneralValue("current_command")));
+    this->setNotesText(ds->getCommandNote(this->commandStr));
 }
 
 void NotesWidget::on_notesView_textChanged()
