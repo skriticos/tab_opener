@@ -212,7 +212,7 @@ void FileBrowser::on_btnActPrimary_clicked()
 
     ds->setFile(selectedFile);
 
-    emit this->actPriSecTriggered();
+    emit this->closeAction();
 }
 
 void FileBrowser::on_btnActSecondary_clicked()
@@ -227,7 +227,7 @@ void FileBrowser::on_btnActSecondary_clicked()
 
     ds->setFile(selectedFile);
 
-    emit this->actPriSecTriggered();
+    emit this->closeAction();
 }
 
 void FileBrowser::on_btnHome_clicked()
@@ -242,6 +242,7 @@ void FileBrowser::on_btnTerminal_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
+    emit this->closeAction();
 }
 
 void FileBrowser::on_btnExtFileBrowser_clicked()
@@ -251,6 +252,7 @@ void FileBrowser::on_btnExtFileBrowser_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
+    emit this->closeAction();
 }
 
 void FileBrowser::on_btnPreferences_clicked()

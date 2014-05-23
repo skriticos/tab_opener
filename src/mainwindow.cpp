@@ -61,8 +61,8 @@ void MainWindow::initWidget(DataStore *ds)
     connect(ui->fileBrowser, SIGNAL(fileSelected(QString)),
             ui->notesWidget, SLOT  (selectedFileChanged(QString)));
 
-    connect(ui->fileBrowser, SIGNAL(actPriSecTriggered()),
-            this,            SLOT  (close()));
+    connect(ui->fileBrowser, SIGNAL(closeAction()),
+            this,            SLOT  (onCloseAction()));
 
     connect(ui->wfileinner,  SIGNAL(fileSelected(QString)),
             ui->fileBrowser, SLOT  (setSelectedFile(QString)));
@@ -98,6 +98,13 @@ void MainWindow::onEscPressed()
         if(ret == QMessageBox::Abort)
             this->close();
     } else {
+        this->close();
+    }
+}
+
+void MainWindow::onCloseAction()
+{
+    if(!ui->commandWidget->processExecuting()){
         this->close();
     }
 }

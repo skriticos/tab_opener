@@ -27,6 +27,7 @@ public:
 private slots:
     void updatePresets();
     void onEscPressed();
+    void onCloseAction(); // file opened with primary or secondary action, or terminal or file browser run
 
 private:
     Ui::MainWindow *ui;

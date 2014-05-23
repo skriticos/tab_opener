@@ -52,7 +52,7 @@ signals:
     void folderSelected(QString folderPath);
     void fileSelected(QString filePath);
     void configChanged();
-    void actPriSecTriggered();
+    void closeAction();
     void execMultiCommand(QStringList);
     void execCommand(QString);
 
