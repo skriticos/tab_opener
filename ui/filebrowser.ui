@@ -20,6 +20,18 @@
 }</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0" rowspan="3">
     <widget class="QTreeView" name="viewFolders">
      <property name="sizePolicy">
@@ -378,7 +390,7 @@
   <customwidget>
    <class>HoverButton</class>
    <extends>QPushButton</extends>
-   <header>hoverbutton.h</header>
+   <header location="global">hoverbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

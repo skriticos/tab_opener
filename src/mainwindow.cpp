@@ -32,15 +32,6 @@ void MainWindow::initWidget(DataStore *ds)
 {
     this->ds = ds;
 
-    // file and command quicklists
-    ui->wfileinner->init(ds);
-    connect(this->ui->wfileinner, SIGNAL(openOrEditClicked()), this, SLOT(close()));
-
-    ui->wcmdinner->init(ds);
-    // TODO: properly connect cmdlist widget
-    // connect(ui->wcmdinner, SIGNAL(commandSelected(QString,QString)),
-    //         this, SLOT(setCommand(QString,QString)));
-
     // presets
     this->updatePresets();
 
@@ -66,9 +57,6 @@ void MainWindow::initWidget(DataStore *ds)
 
     connect(ui->fileBrowser, SIGNAL(closeAction()),
             this,            SLOT  (onCloseAction()));
-
-    connect(ui->wfileinner,  SIGNAL(fileSelected(QString)),
-            ui->fileBrowser, SLOT  (setSelectedFile(QString)));
 
     this->ui->notesWidget->initWidget(this->ds);
     this->ui->fileBrowser->initFileBrowser(this->ds);

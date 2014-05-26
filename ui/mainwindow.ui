@@ -61,6 +61,18 @@
       <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="NotesWidget" name="notesWidget" native="true">
         <property name="sizePolicy">
@@ -105,7 +117,7 @@
       <item>
        <widget class="QWidget" name="wpreset" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -127,22 +139,28 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <property name="leftMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="topMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="bottomMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="spacing">
           <number>0</number>
          </property>
          <item row="9" column="0">
           <widget class="PresetButton" name="wprb8">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb8</string>
            </property>
@@ -150,6 +168,12 @@
          </item>
          <item row="8" column="0">
           <widget class="PresetButton" name="wprb7">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb7</string>
            </property>
@@ -157,6 +181,12 @@
          </item>
          <item row="3" column="0">
           <widget class="PresetButton" name="wprb2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb2</string>
            </property>
@@ -164,6 +194,12 @@
          </item>
          <item row="2" column="0">
           <widget class="PresetButton" name="wprb1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb1</string>
            </property>
@@ -171,6 +207,12 @@
          </item>
          <item row="7" column="0">
           <widget class="PresetButton" name="wprb6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb6</string>
            </property>
@@ -178,6 +220,12 @@
          </item>
          <item row="4" column="0">
           <widget class="PresetButton" name="wprb3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb3</string>
            </property>
@@ -185,6 +233,12 @@
          </item>
          <item row="6" column="0">
           <widget class="PresetButton" name="wprb5">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb5</string>
            </property>
@@ -192,6 +246,12 @@
          </item>
          <item row="10" column="0">
           <widget class="PresetButton" name="wprb9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb9</string>
            </property>
@@ -199,6 +259,12 @@
          </item>
          <item row="5" column="0">
           <widget class="PresetButton" name="wprb4">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb4</string>
            </property>
@@ -206,6 +272,12 @@
          </item>
          <item row="1" column="0">
           <widget class="PresetButton" name="wprb0">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>wprb0</string>
            </property>
@@ -215,57 +287,17 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="wfilelist" native="true">
+       <widget class="HistoryWidget" name="fileHistory" native="true">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="FileList" name="wfileinner" native="true"/>
-         </item>
-        </layout>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="wcmdlist" native="true">
+       <widget class="HistoryWidget" name="commandHistory" native="true">
         <property name="styleSheet">
          <string notr="true"/>
         </property>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="CmdList" name="wcmdinner" native="true"/>
-         </item>
-        </layout>
        </widget>
       </item>
      </layout>
@@ -295,18 +327,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>FileList</class>
-   <extends>QWidget</extends>
-   <header location="global">filelist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>CmdList</class>
-   <extends>QWidget</extends>
-   <header location="global">cmdlist.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>PresetButton</class>
    <extends>QPushButton</extends>
    <header location="global">presetbutton.h</header>
@@ -327,6 +347,12 @@
    <class>CommandWidget</class>
    <extends>QWidget</extends>
    <header location="global">commandwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>HistoryWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">historywidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
