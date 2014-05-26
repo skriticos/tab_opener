@@ -8,7 +8,7 @@
 #include "datastore.h"
 
 namespace Ui {
-class FileList;
+    class FileList;
 }
 
 class FileList : public QWidget

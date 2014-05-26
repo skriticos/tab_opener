@@ -38,6 +38,9 @@ void ConfigWidget::showEvent(QShowEvent *event){
 
 void ConfigWidget::on_ConfigWidget_accepted()
 {
+    // TODO: check if the preset paths exist before commiting
+    //       prompt user if error occured
+
     ds->setPreset(0, ui->preset0->text());
     ds->setPreset(1, ui->preset1->text());
     ds->setPreset(2, ui->preset2->text());

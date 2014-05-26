@@ -7,6 +7,7 @@
 #include "util.h"
 #include "dstable.h"
 #include "dstablefav.h"
+#include "historywidget.h"
 
 class Test : public QObject
 {
@@ -20,6 +21,7 @@ private slots:
     void testUtilExecDetachedCommand();
     void testDsTable();
     void testDsTableFav();
+    void testHistoryWidget();
 };
 
 #endif // TEST_H

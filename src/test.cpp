@@ -235,3 +235,9 @@ void Test::testDsTableFav()
     QVERIFY(top10.at(0).value("path") == "path15");
     QVERIFY(recent10.at(0).value("path") == "path1");
 }
+
+void Test::testHistoryWidget()
+{
+    HistoryWidget historyWidget;
+}
+

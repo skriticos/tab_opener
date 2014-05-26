@@ -61,6 +61,9 @@ void MainWindow::initWidget(DataStore *ds)
     connect(ui->fileBrowser, SIGNAL(fileSelected(QString)),
             ui->notesWidget, SLOT  (selectedFileChanged(QString)));
 
+    connect(ui->fileBrowser, SIGNAL(configChanged()),
+            this,            SLOT(updatePresets()));
+
     connect(ui->fileBrowser, SIGNAL(closeAction()),
             this,            SLOT  (onCloseAction()));
 

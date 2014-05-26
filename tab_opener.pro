@@ -32,7 +32,9 @@ SOURCES += \
     src/noteswidget.cpp \
     src/filebrowser.cpp \
     src/commandwidget.cpp \
-    src/cmdexecbutton.cpp
+    src/cmdexecbutton.cpp \
+    src/historywidget.cpp \
+    src/historybutton.cpp
 
 HEADERS  += \
     include/hoverbutton.h \
@@ -52,7 +54,9 @@ HEADERS  += \
     include/noteswidget.h \
     include/filebrowser.h \
     include/commandwidget.h \
-    include/cmdexecbutton.h
+    include/cmdexecbutton.h \
+    include/historywidget.h \
+    include/historybutton.h
 
 FORMS    += \
     ui/filelist.ui \
@@ -61,7 +65,8 @@ FORMS    += \
     ui/configwidget.ui \
     ui/noteswidget.ui \
     ui/filebrowser.ui \
-    ui/commandwidget.ui
+    ui/commandwidget.ui \
+    ui/historywidget.ui
 
 RESOURCES += \
     images.qrc
