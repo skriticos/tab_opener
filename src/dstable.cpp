@@ -1,6 +1,7 @@
 #include "dstable.h"
 
 DsTable::DsTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db, QObject *parent)
+    : QObject(parent)
 {
     QString fieldKey;
     QStringList reservedSqliteKeywords;

@@ -11,17 +11,6 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(slotEscPressed()));
 
-    connect(ui->wprb0, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb1, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb2, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb3, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb4, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb5, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb6, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb7, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb8, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb9, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-
     ui->fileHistory->setType(History::FILEHISTORY);
     ui->commandHistory->setType(History::COMMANDHISTORY);
 
@@ -29,21 +18,16 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
             ui->commandHistory, SLOT(slotUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
     connect(ds, SIGNAL(sigUpdateFileHistory(QList<History::Entry>,QList<History::Entry>)),
             ui->fileHistory, SLOT(slotUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
+    connect(ui->fileHistory, SIGNAL(sigSelectedFileChanged(QString)),
+            ui->fileBrowser, SLOT(slotSelectFile(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
+            ui->fileHistory, SLOT(slotFileSelected(QString)));
+    connect(ui->fileHistory, SIGNAL(sigFilePriActRequested(QString)),
+            ui->fileBrowser, SLOT(slotOpenFilePrimary()));
+    connect(ui->fileHistory, SIGNAL(sigFileSecActRequested(QString)),
+            ui->fileBrowser, SLOT(slotOpenFileSeconday()));
 
     ds->initWidgets();
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-void MainWindow::initWidget(DataStore *ds)
-{
-    this->ds = ds;
-
-    // presets
-    this->slotUpdatePresets();
 
     connect(ui->commandWidget, SIGNAL(sigCmdChanged(QString)),
             ui->notesWidget,   SLOT(slotUpdateCmd(QString)));
@@ -62,29 +46,22 @@ void MainWindow::initWidget(DataStore *ds)
     connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
             ui->notesWidget, SLOT  (slotUpdateFile(QString)));
 
+    /* move to datastore
     connect(ui->fileBrowser, SIGNAL(sigConfigChanged()),
             this,            SLOT(slotUpdatePresets()));
+    */
 
-    connect(ui->fileBrowser, SIGNAL(sigCloseAction()),
+    connect(ui->fileBrowser, SIGNAL(sigFileOpened()),
             this,            SLOT  (slotRequestClose()));
 
-    this->ui->notesWidget->initWidget(this->ds);
-    this->ui->fileBrowser->initFileBrowser(this->ds);
-    this->ui->commandWidget->initCommandWidget(this->ds);
+    this->ui->notesWidget->initWidget(ds);
+    this->ui->fileBrowser->initFileBrowser(ds);
+    this->ui->commandWidget->initCommandWidget(ds);
 }
 
-void MainWindow::slotUpdatePresets()
+MainWindow::~MainWindow()
 {
-    ui->wprb0->setText(ds->getPreset(0));
-    ui->wprb1->setText(ds->getPreset(1));
-    ui->wprb2->setText(ds->getPreset(2));
-    ui->wprb3->setText(ds->getPreset(3));
-    ui->wprb4->setText(ds->getPreset(4));
-    ui->wprb5->setText(ds->getPreset(5));
-    ui->wprb6->setText(ds->getPreset(6));
-    ui->wprb7->setText(ds->getPreset(7));
-    ui->wprb8->setText(ds->getPreset(8));
-    ui->wprb9->setText(ds->getPreset(9));
+    delete ui;
 }
 
 void MainWindow::slotEscPressed()

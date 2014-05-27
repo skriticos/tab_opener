@@ -10,7 +10,7 @@ CONFIG   += c++11
 TARGET = tab_opener
 TEMPLATE = app
 
-INCLUDEPATH += include
+INCLUDEPATH += include include/buttons include/widgets
 
 SOURCES += \
     src/buttons/charmbutton.cpp \
@@ -24,6 +24,7 @@ SOURCES += \
     src/widgets/historywidget.cpp \
     src/widgets/mainwindow.cpp \
     src/widgets/noteswidget.cpp \
+    src/widgets/presetwidget.cpp \
     src/datastore.cpp \
     src/dstable.cpp \
     src/dstablefav.cpp \
@@ -32,21 +33,22 @@ SOURCES += \
     src/util.cpp
 
 HEADERS  += \
-    include/charmbutton.h \
-    include/cmdexecbutton.h \
-    include/commandwidget.h \
-    include/configwidget.h \
+    include/buttons/charmbutton.h \
+    include/buttons/cmdexecbutton.h \
+    include/buttons/historybutton.h \
+    include/buttons/hoverbutton.h \
+    include/buttons/presetbutton.h \
+    include/widgets/commandwidget.h \
+    include/widgets/configwidget.h \
+    include/widgets/filebrowserwidget.h \
+    include/widgets/historywidget.h \
+    include/widgets/mainwindow.h \
+    include/widgets/noteswidget.h \
+    include/widgets/presetwidget.h \
     include/datastore.h \
     include/dstable.h \
     include/dstablefav.h \
-    include/filebrowserwidget.h \
     include/history.h \
-    include/historybutton.h \
-    include/historywidget.h \
-    include/hoverbutton.h \
-    include/mainwindow.h \
-    include/noteswidget.h \
-    include/presetbutton.h \
     include/test.h \
     include/util.h
 
@@ -56,7 +58,8 @@ FORMS    += \
     ui/noteswidget.ui \
     ui/filebrowser.ui \
     ui/commandwidget.ui \
-    ui/historywidget.ui
+    ui/historywidget.ui \
+    ui/presetwidget.ui
 
 RESOURCES += \
     images.qrc

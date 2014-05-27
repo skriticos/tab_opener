@@ -23,6 +23,9 @@ void HistoryButton::reset()
 
 void HistoryButton::slotIdSelected(QString id)
 {
+    if(this->id.isEmpty())
+        return;
+
     this->blockSignals(true);
 
     if(this->id == id){
@@ -38,8 +41,13 @@ void HistoryButton::slotIdSelected(QString id)
 
 void HistoryButton::_slotOnClicked(bool checked)
 {
+    if(this->id.isEmpty()){
+        this->setChecked(false);
+        return;
+    }
+
     if(!checked){
-        this->setChecked(true);
+        this->setChecked(false);
         return;
     } else {
         emit this->sigSelected(this->id);

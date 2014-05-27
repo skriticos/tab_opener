@@ -11,8 +11,10 @@ HistoryWidget::HistoryWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Hist
     for(int i=0; i<10; i++){
         button = _getRecentBtnAt(i);
         connect(button, SIGNAL(sigSelected(QString)), this, SLOT(_slotButtonSelected(QString)));
+        connect(this, SIGNAL(sigIdSelected(QString)), button, SLOT(slotIdSelected(QString)));
         button = _getPopularBtnAt(i);
         connect(button, SIGNAL(sigSelected(QString)), this, SLOT(_slotButtonSelected(QString)));
+        connect(this, SIGNAL(sigIdSelected(QString)), button, SLOT(slotIdSelected(QString)));
     }
 
     connect(ui->control0, SIGNAL(clicked()), this, SLOT(_slotControl0Clicked()));

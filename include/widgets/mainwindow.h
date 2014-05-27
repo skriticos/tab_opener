@@ -22,17 +22,14 @@ class MainWindow : public QWidget
 public:
     explicit MainWindow(DataStore *ds, QWidget *parent = 0);
     ~MainWindow();
-    void initWidget(DataStore *ds);
 
 private slots:
-    void slotUpdatePresets();
     void slotEscPressed();
     void slotRequestClose(); // file opened with primary or secondary action, or terminal or file browser run
 
 private:
     Ui::MainWindow *ui;
     QShortcut *shortEsc;
-    DataStore *ds;
 };
 
 #endif // MAINWINDOW_H

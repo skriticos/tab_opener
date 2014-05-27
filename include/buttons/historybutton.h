@@ -1,6 +1,7 @@
 #ifndef HISTORYBUTTON_H
 #define HISTORYBUTTON_H
 
+#include <QtCore>
 #include "hoverbutton.h"
 
 class HistoryButton : public HoverButton

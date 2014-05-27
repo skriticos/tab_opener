@@ -49,12 +49,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="recent1">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -63,12 +69,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="recent3">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -77,12 +89,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="recent5">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -91,12 +109,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="recent7">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -105,12 +129,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="recent9">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -207,12 +237,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="popular1">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -221,12 +257,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="popular3">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -235,12 +277,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="popular5">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -249,12 +297,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="popular7">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -263,12 +317,18 @@
         <property name="text">
          <string/>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="HistoryButton" name="popular9">
         <property name="text">
          <string/>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

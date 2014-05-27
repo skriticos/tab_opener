@@ -29,6 +29,9 @@ FileBrowserWidget::FileBrowserWidget(QWidget *parent) : QWidget(parent), ui(new 
     connect(fileSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(_slotOnFileSelected()));
 
+    connect(ui->btnActPrimary, SIGNAL(clicked()), this, SLOT(slotOpenFilePrimary()));
+    connect(ui->btnActSecondary, SIGNAL(clicked()), this, SLOT(slotOpenFileSeconday()));
+
     this->isInit = false;
 }
 
@@ -78,6 +81,36 @@ void FileBrowserWidget::slotSelectFile(QString filePath)
     }
 
     emit this->sigFileSelected(filePath);
+}
+
+void FileBrowserWidget::slotOpenFilePrimary()
+{
+    QString selectedFile, extension, command;
+
+    selectedFile = this->getSelectedFile();
+    extension = selectedFile.split(".").last();
+
+    command = ds->getExtActPri(extension) + " " + selectedFile;
+    Util::execDetachedCommand(command);
+
+    ds->setFile(selectedFile);
+
+    emit this->sigFileOpened();
+}
+
+void FileBrowserWidget::slotOpenFileSeconday()
+{
+    QString selectedFile, extension, command;
+
+    selectedFile = this->getSelectedFile();
+    extension = selectedFile.split(".").last();
+
+    command = ds->getExtActSec(extension) + " " + selectedFile;
+    Util::execDetachedCommand(command);
+
+    ds->setFile(selectedFile);
+
+    emit this->sigFileOpened();
 }
 
 void FileBrowserWidget::slotScmOff()
@@ -200,36 +233,6 @@ QString FileBrowserWidget::getSelectedFile()
     }
 }
 
-void FileBrowserWidget::on_btnActPrimary_clicked()
-{
-    QString selectedFile, extension, command;
-
-    selectedFile = this->getSelectedFile();
-    extension = selectedFile.split(".").last();
-
-    command = ds->getExtActPri(extension) + " " + selectedFile;
-    Util::execDetachedCommand(command);
-
-    ds->setFile(selectedFile);
-
-    emit this->sigCloseAction();
-}
-
-void FileBrowserWidget::on_btnActSecondary_clicked()
-{
-    QString selectedFile, extension, command;
-
-    selectedFile = this->getSelectedFile();
-    extension = selectedFile.split(".").last();
-
-    command = ds->getExtActSec(extension) + " " + selectedFile;
-    Util::execDetachedCommand(command);
-
-    ds->setFile(selectedFile);
-
-    emit this->sigCloseAction();
-}
-
 void FileBrowserWidget::on_btnHome_clicked()
 {
     this->slotSelectFolder(QDir::homePath());
@@ -242,7 +245,7 @@ void FileBrowserWidget::on_btnTerminal_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
-    emit this->sigCloseAction();
+    emit this->sigFileOpened();
 }
 
 void FileBrowserWidget::on_btnExtFileBrowser_clicked()
@@ -252,7 +255,7 @@ void FileBrowserWidget::on_btnExtFileBrowser_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
-    emit this->sigCloseAction();
+    emit this->sigFileOpened();
 }
 
 void FileBrowserWidget::on_btnPreferences_clicked()

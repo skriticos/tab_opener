@@ -29,13 +29,16 @@ signals:
     void sigFolderSelected(QString folderPath);
     void sigFileSelected(QString filePath);
     void sigConfigChanged();
-    void sigCloseAction();
+    void sigFileOpened();
     void sigExecMultiCommand(QStringList);
     void sigExecCommand(QString);
 
 public slots:
     void slotSelectFolder(QString folderPath);
     void slotSelectFile(QString filePath);
+
+    void slotOpenFilePrimary();
+    void slotOpenFileSeconday();
 
     void slotScmOff();
     void slotScmOn();
@@ -45,8 +48,6 @@ private slots:
     void _slotOnFolderSeleced();
     void _slotOnConfigAccepted();
 
-    void on_btnActPrimary_clicked();
-    void on_btnActSecondary_clicked();
     void on_btnHome_clicked();
     void on_btnTerminal_clicked();
     void on_btnExtFileBrowser_clicked();
