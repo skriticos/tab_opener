@@ -33,37 +33,37 @@ public:
     explicit HistoryWidget(QWidget *parent = 0);
     ~HistoryWidget();
 
-    void setType(History::WidgetType type);
+    void iSetType(History::WidgetType type);
 
 signals:
-    void selectedFileChanged(QString path);
-    void selectedCommandChanged(QString command);
-    void selectedFolderChanged(QString workingDirectory);
+    void sigSelectedFileChanged(QString path);
+    void sigSelectedCommandChanged(QString command);
+    void sigSelectedFolderChanged(QString workingDirectory);
 
-    void filePriActRequested(QString filePath);
-    void fileSecActRequested(QString filePath);
+    void sigFilePriActRequested(QString filePath);
+    void sigFileSecActRequested(QString filePath);
 
-    void idSelected(QString id); // internal signal to history buttons
+    void sigIdSelected(QString id); // internal signal to history buttons
 
 public slots:
-    void updateWidget(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
-    void fileSelected(QString filePath);
-    void commandSelected(QString commandString);
-    void workingDirectorySelected(QString workingDirectory);
+    void iUpdateWidget(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void iFileSelected(QString filePath);
+    void iCommandSelected(QString commandString);
+    void iWorkingDirectorySelected(QString workingDirectory);
 
 private slots:
-    void buttonSelected(QString id);
+    void _buttonSelected(QString id);
 
-    void onControl0Clicked();
-    void onControl1Clicked();
-    void onControl2Clicked();
+    void _onControl0Clicked();
+    void _onControl1Clicked();
+    void _onControl2Clicked();
 
 private:
-    HistoryButton *getRecentBtnAt(int pos);
-    HistoryButton *getPopularBtnAt(int pos);
+    HistoryButton *_getRecentBtnAt(int pos);
+    HistoryButton *_getPopularBtnAt(int pos);
 
-    void updateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
-    void updateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void _updateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void _updateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
 
     Ui::HistoryWidget *ui;
 

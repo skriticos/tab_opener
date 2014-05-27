@@ -22,13 +22,13 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ui->wprb8, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
     connect(ui->wprb9, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
 
-    ui->fileHistory->setType(History::FILEHISTORY);
-    ui->commandHistory->setType(History::COMMANDHISTORY);
+    ui->fileHistory->iSetType(History::FILEHISTORY);
+    ui->commandHistory->iSetType(History::COMMANDHISTORY);
 
     connect(ds, SIGNAL(sigUpdateCommandHistory(QList<History::Entry>,QList<History::Entry>)),
-            ui->commandHistory, SLOT(updateWidget(QList<History::Entry>,QList<History::Entry>)));
+            ui->commandHistory, SLOT(iUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
     connect(ds, SIGNAL(sigUpdateFileHistory(QList<History::Entry>,QList<History::Entry>)),
-            ui->fileHistory, SLOT(updateWidget(QList<History::Entry>,QList<History::Entry>)));
+            ui->fileHistory, SLOT(iUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
 
     ds->initWidgets();
 }
