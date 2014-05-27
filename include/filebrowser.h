@@ -25,17 +25,25 @@ public:
     QString getSelectedFolder();
     QString getSelectedFile();
 
-public slots:
-    void setSelectedFolder(QString folderPath);
-    void setSelectedFile(QString filePath);
+signals:
+    void sigFolderSelected(QString folderPath);
+    void sigFileSelected(QString filePath);
+    void sigConfigChanged();
+    void sigCloseAction();
+    void sigExecMultiCommand(QStringList);
+    void sigExecCommand(QString);
 
-    void commandProcessStarted();
-    void commandProcessStopped();
+public slots:
+    void slotSelectFolder(QString folderPath);
+    void slotSelectFile(QString filePath);
+
+    void slotScmOff();
+    void slotScmOn();
 
 private slots:
-    void onFileSelected();
-    void onFolderSeleced();
-    void onConfigAccepted();
+    void _slotOnFileSelected();
+    void _slotOnFolderSeleced();
+    void _slotOnConfigAccepted();
 
     void on_btnActPrimary_clicked();
     void on_btnActSecondary_clicked();
@@ -47,14 +55,6 @@ private slots:
     void on_btnScmCommit_clicked();
     void on_btnScmPush_clicked();
     void on_btnHelp_clicked();
-
-signals:
-    void folderSelected(QString folderPath);
-    void fileSelected(QString filePath);
-    void configChanged();
-    void closeAction();
-    void execMultiCommand(QStringList);
-    void execCommand(QString);
 
 private:
     Ui::FileBrowser *ui;

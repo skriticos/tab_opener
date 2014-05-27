@@ -11,16 +11,16 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
     connect(shortEsc, SIGNAL(activated()), this, SLOT(onEscPressed()));
 
-    connect(ui->wprb0, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb1, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb2, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb3, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb4, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb5, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb6, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb7, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb8, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
-    connect(ui->wprb9, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(setSelectedFolder(QString)));
+    connect(ui->wprb0, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb1, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb2, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb3, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb4, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb5, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb6, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb7, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb8, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb9, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
 
     ui->fileHistory->setType(History::FILEHISTORY);
     ui->commandHistory->setType(History::COMMANDHISTORY);
@@ -49,23 +49,23 @@ void MainWindow::initWidget(DataStore *ds)
             ui->notesWidget,   SLOT(commandChanged(QString)));
 
     connect(ui->commandWidget, SIGNAL(processExecutionStarted()),
-            ui->fileBrowser,   SLOT(commandProcessStarted()));
+            ui->fileBrowser,   SLOT(slotScmOff()));
     connect(ui->commandWidget, SIGNAL(processExecutionStopped()),
-            ui->fileBrowser,   SLOT(commandProcessStopped()));
-    connect(ui->fileBrowser,   SIGNAL(folderSelected(QString)),
+            ui->fileBrowser,   SLOT(slotScmOn()));
+    connect(ui->fileBrowser,   SIGNAL(sigFolderSelected(QString)),
             ui->commandWidget, SLOT(selectedFolderChanged(QString)));
-    connect(ui->fileBrowser,   SIGNAL(execCommand(QString)),
+    connect(ui->fileBrowser,   SIGNAL(sigExecCommand(QString)),
             ui->commandWidget, SLOT(execCmd(QString)));
-    connect(ui->fileBrowser,   SIGNAL(execMultiCommand(QStringList)),
+    connect(ui->fileBrowser,   SIGNAL(sigExecMultiCommand(QStringList)),
             ui->commandWidget, SLOT(execMultiCmds(QStringList)));
 
-    connect(ui->fileBrowser, SIGNAL(fileSelected(QString)),
+    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
             ui->notesWidget, SLOT  (selectedFileChanged(QString)));
 
-    connect(ui->fileBrowser, SIGNAL(configChanged()),
+    connect(ui->fileBrowser, SIGNAL(sigConfigChanged()),
             this,            SLOT(updatePresets()));
 
-    connect(ui->fileBrowser, SIGNAL(closeAction()),
+    connect(ui->fileBrowser, SIGNAL(sigCloseAction()),
             this,            SLOT  (onCloseAction()));
 
     this->ui->notesWidget->initWidget(this->ds);

@@ -23,11 +23,11 @@ FileBrowser::FileBrowser(QWidget *parent) : QWidget(parent), ui(new Ui::FileBrow
 
     QItemSelectionModel *folderSelectionModel = ui->viewFolders->selectionModel();
     connect(folderSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(onFolderSeleced()));
+            this, SLOT(_slotOnFolderSeleced()));
 
     QItemSelectionModel *fileSelectionModel = ui->viewFiles->selectionModel();
     connect(fileSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-            this, SLOT(onFileSelected()));
+            this, SLOT(_slotOnFileSelected()));
 
     this->isInit = false;
 }
@@ -45,65 +45,65 @@ void FileBrowser::initFileBrowser(DataStore *ds)
 
     if(ds->tblGeneral->contains("selected_file")
               && !ds->getGeneralValue("selected_file").isEmpty()){
-        this->setSelectedFile(ds->getGeneralValue("selected_file"));
+        this->slotSelectFile(ds->getGeneralValue("selected_file"));
     } else if(ds->tblGeneral->contains("navigator_path")
               && !ds->getGeneralValue("navigator_path").isEmpty()){
-        this->setSelectedFolder(ds->getGeneralValue("navigator_path"));
+        this->slotSelectFolder(ds->getGeneralValue("navigator_path"));
     } else {
-        this->setSelectedFolder(QDir::homePath());
+        this->slotSelectFolder(QDir::homePath());
     }
 
     // note: config is mostly working with datastore
     //       in this class only the config changed signal is passed
     this->configWidget = new ConfigWidget(ds, this);
-    connect(this->configWidget, SIGNAL(accepted()), this, SLOT(onConfigAccepted()));
+    connect(this->configWidget, SIGNAL(accepted()), this, SLOT(_slotOnConfigAccepted()));
 
     this->isInit = false;
 }
 
-void FileBrowser::setSelectedFolder(QString folderPath)
+void FileBrowser::slotSelectFolder(QString folderPath)
 {
     if(!folderPath.isEmpty()){
         ui->viewFolders->setCurrentIndex(this->dirmodel->index(folderPath));
     }
 }
 
-void FileBrowser::setSelectedFile(QString filePath)
+void FileBrowser::slotSelectFile(QString filePath)
 {
     QString baseFolder = QFileInfo(filePath).absolutePath();
-    this->setSelectedFolder(baseFolder);
+    this->slotSelectFolder(baseFolder);
 
     if(!filePath.isEmpty()){
         ui->viewFiles->setCurrentIndex(this->filemodel->index(filePath));
     }
 
-    emit this->fileSelected(filePath);
+    emit this->sigFileSelected(filePath);
 }
 
-void FileBrowser::commandProcessStarted()
+void FileBrowser::slotScmOff()
 {
     ui->btnScmCommit->setEnabled(false);
     ui->btnScmPull->setEnabled(false);
     ui->btnScmPush->setEnabled(false);
 }
 
-void FileBrowser::commandProcessStopped()
+void FileBrowser::slotScmOn()
 {
     ui->btnScmCommit->setEnabled(true);
     ui->btnScmPull->setEnabled(true);
     ui->btnScmPush->setEnabled(true);
 }
 
-void FileBrowser::onFileSelected()
+void FileBrowser::_slotOnFileSelected()
 {
     QString selectedFilePath = this->getSelectedFile();
 
     if(!this->isInit)
         ds->setGeneralValue("selected_file", selectedFilePath);
-    emit this->fileSelected(selectedFilePath);
+    emit this->sigFileSelected(selectedFilePath);
 }
 
-void FileBrowser::onFolderSeleced()
+void FileBrowser::_slotOnFolderSeleced()
 {
     CharmButton *charmButton;
     QLabel      *charmLabel;
@@ -115,7 +115,7 @@ void FileBrowser::onFolderSeleced()
     ui->viewFolders->setExpanded(dirmodel->index(selectedFolderPath), true);
     ui->viewFiles->setRootIndex(filemodel->setRootPath(selectedFolderPath));
     ui->viewFiles->selectionModel()->clearSelection();
-    emit this->fileSelected("");
+    emit this->sigFileSelected("");
 
     // remove all charms
     for(int i=0; i<ui->charmLayout->count(); i++)
@@ -133,7 +133,7 @@ void FileBrowser::onFolderSeleced()
     charmButton = new CharmButton(QDir::rootPath(), QDir::rootPath(), ui->charmContainer);
     ui->charmLayout->addWidget(charmButton);
     charmButtonList.append(charmButton);
-    connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(setSelectedFolder(QString)));
+    connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
 
     // add folder charms and separator labels
     QStringList charmParts = selectedFolderPath.split(QDir::separator());
@@ -146,7 +146,7 @@ void FileBrowser::onFolderSeleced()
 
             charmButton = new CharmButton(charmParts.at(i), charmPath, ui->charmContainer);
             this->charmButtonList.append(charmButton);
-            connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(setSelectedFolder(QString)));
+            connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
 
             if(i>1){
                 charmLabel = new QLabel("/", ui->charmContainer);
@@ -162,12 +162,12 @@ void FileBrowser::onFolderSeleced()
     // external interface
     if(!this->isInit)
         ds->setGeneralValue("navigator_path", selectedFolderPath);
-    emit this->folderSelected(selectedFolderPath);
+    emit this->sigFolderSelected(selectedFolderPath);
 }
 
-void FileBrowser::onConfigAccepted()
+void FileBrowser::_slotOnConfigAccepted()
 {
-    emit this->configChanged();
+    emit this->sigConfigChanged();
 }
 
 QString FileBrowser::getSelectedFolder()
@@ -212,7 +212,7 @@ void FileBrowser::on_btnActPrimary_clicked()
 
     ds->setFile(selectedFile);
 
-    emit this->closeAction();
+    emit this->sigCloseAction();
 }
 
 void FileBrowser::on_btnActSecondary_clicked()
@@ -227,12 +227,12 @@ void FileBrowser::on_btnActSecondary_clicked()
 
     ds->setFile(selectedFile);
 
-    emit this->closeAction();
+    emit this->sigCloseAction();
 }
 
 void FileBrowser::on_btnHome_clicked()
 {
-    this->setSelectedFolder(QDir::homePath());
+    this->slotSelectFolder(QDir::homePath());
 }
 
 void FileBrowser::on_btnTerminal_clicked()
@@ -242,7 +242,7 @@ void FileBrowser::on_btnTerminal_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
-    emit this->closeAction();
+    emit this->sigCloseAction();
 }
 
 void FileBrowser::on_btnExtFileBrowser_clicked()
@@ -252,7 +252,7 @@ void FileBrowser::on_btnExtFileBrowser_clicked()
     selectedFolder = this->getSelectedFolder();
     command = ds->getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
-    emit this->closeAction();
+    emit this->sigCloseAction();
 }
 
 void FileBrowser::on_btnPreferences_clicked()
@@ -262,7 +262,7 @@ void FileBrowser::on_btnPreferences_clicked()
 
 void FileBrowser::on_btnScmPull_clicked()
 {
-    emit this->execCommand(QString("git pull --all"));
+    emit this->sigExecCommand(QString("git pull --all"));
 }
 
 void FileBrowser::on_btnScmCommit_clicked()
@@ -279,7 +279,7 @@ void FileBrowser::on_btnScmCommit_clicked()
         QStringList cmdList;
         cmdList << "git add --all";
         cmdList << "git commit -am \"" + commitMsg + "\"";
-        emit this->execMultiCommand(cmdList);
+        emit this->sigExecMultiCommand(cmdList);
     } else {
         if(ok)
             QMessageBox::warning(
@@ -293,7 +293,7 @@ void FileBrowser::on_btnScmCommit_clicked()
 
 void FileBrowser::on_btnScmPush_clicked()
 {
-    emit this->execCommand("git push --all");
+    emit this->sigExecCommand("git push --all");
 }
 
 void FileBrowser::on_btnHelp_clicked()
