@@ -25,7 +25,7 @@ HistoryWidget::~HistoryWidget()
     delete ui;
 }
 
-void HistoryWidget::slotSetType(History::WidgetType type)
+void HistoryWidget::setType(History::WidgetType type)
 {
     this->type = type;
 

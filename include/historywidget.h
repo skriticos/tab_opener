@@ -33,6 +33,8 @@ public:
     explicit HistoryWidget(QWidget *parent = 0);
     ~HistoryWidget();
 
+    void setType(History::WidgetType type);
+
 signals:
     void sigSelectedFileChanged(QString path);
     void sigSelectedCommandChanged(QString command);
@@ -44,8 +46,6 @@ signals:
     void sigIdSelected(QString id); // internal signal to history buttons
 
 public slots:
-    void slotSetType(History::WidgetType type);
-
     void slotUpdateWidget(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void slotFileSelected(QString filePath);
     void slotCommandSelected(QString commandString);
