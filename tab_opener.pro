@@ -4,13 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui sql testlib
+QT       += core widgets sql testlib
 CONFIG   += c++11
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = tab_opener
 TEMPLATE = app
+
 INCLUDEPATH += include
 
 SOURCES += \
