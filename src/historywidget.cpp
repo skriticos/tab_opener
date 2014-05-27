@@ -10,14 +10,14 @@ HistoryWidget::HistoryWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Hist
     HistoryButton *button;
     for(int i=0; i<10; i++){
         button = _getRecentBtnAt(i);
-        connect(button, SIGNAL(selected(QString)), this, SLOT(_buttonSelected(QString)));
+        connect(button, SIGNAL(sigSelected(QString)), this, SLOT(_slotButtonSelected(QString)));
         button = _getPopularBtnAt(i);
-        connect(button, SIGNAL(selected(QString)), this, SLOT(_buttonSelected(QString)));
+        connect(button, SIGNAL(sigSelected(QString)), this, SLOT(_slotButtonSelected(QString)));
     }
 
-    connect(ui->control0, SIGNAL(clicked()), this, SLOT(_onControl0Clicked()));
-    connect(ui->control1, SIGNAL(clicked()), this, SLOT(_onControl1Clicked()));
-    connect(ui->control2, SIGNAL(clicked()), this, SLOT(_onControl2Clicked()));
+    connect(ui->control0, SIGNAL(clicked()), this, SLOT(_slotControl0Clicked()));
+    connect(ui->control1, SIGNAL(clicked()), this, SLOT(_slotControl1Clicked()));
+    connect(ui->control2, SIGNAL(clicked()), this, SLOT(_slotControl2Clicked()));
 }
 
 HistoryWidget::~HistoryWidget()
@@ -80,7 +80,7 @@ void HistoryWidget::slotWorkingDirectorySelected(QString workingDirectory)
     this->selectedWorkingDirectory = workingDirectory;
 }
 
-void HistoryWidget::_buttonSelected(QString id)
+void HistoryWidget::_slotButtonSelected(QString id)
 {
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
 
@@ -106,7 +106,7 @@ void HistoryWidget::_buttonSelected(QString id)
 
 }
 
-void HistoryWidget::_onControl0Clicked()
+void HistoryWidget::_slotControl0Clicked()
 {
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
 
@@ -119,14 +119,14 @@ void HistoryWidget::_onControl0Clicked()
 
 }
 
-void HistoryWidget::_onControl1Clicked()
+void HistoryWidget::_slotControl1Clicked()
 {
     Q_ASSERT(this->type == History::FILEHISTORY);
 
     emit this->sigFileSecActRequested(this->selectedFile);
 }
 
-void HistoryWidget::_onControl2Clicked()
+void HistoryWidget::_slotControl2Clicked()
 {
     Q_ASSERT(this->type == History::FILEHISTORY);
 

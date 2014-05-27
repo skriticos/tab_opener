@@ -14,13 +14,13 @@ public:
     void reset();
 
 signals:
-    void selected(QString id);
+    void sigSelected(QString id);
 
 public slots:
-    void idSelected(QString id);
+    void slotIdSelected(QString id);
 
 private slots:
-    void onClicked(bool checked);
+    void _slotOnClicked(bool checked);
 
 private:
     QString id;

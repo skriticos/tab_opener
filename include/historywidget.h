@@ -52,11 +52,11 @@ public slots:
     void slotWorkingDirectorySelected(QString workingDirectory);
 
 private slots:
-    void _buttonSelected(QString id);
+    void _slotButtonSelected(QString id);
 
-    void _onControl0Clicked();
-    void _onControl1Clicked();
-    void _onControl2Clicked();
+    void _slotControl0Clicked();
+    void _slotControl1Clicked();
+    void _slotControl2Clicked();
 
 private:
     HistoryButton *_getRecentBtnAt(int pos);

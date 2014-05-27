@@ -2,7 +2,7 @@
 
 HistoryButton::HistoryButton(QWidget *parent) : HoverButton(parent)
 {
-    connect(this, SIGNAL(clicked(bool)), this, SLOT(onClicked(bool)));
+    connect(this, SIGNAL(clicked(bool)), this, SLOT(_slotOnClicked(bool)));
 }
 
 void HistoryButton::setId(QString id)
@@ -21,7 +21,7 @@ void HistoryButton::reset()
     this->blockSignals(false);
 }
 
-void HistoryButton::idSelected(QString id)
+void HistoryButton::slotIdSelected(QString id)
 {
     this->blockSignals(true);
 
@@ -36,12 +36,12 @@ void HistoryButton::idSelected(QString id)
     this->blockSignals(false);
 }
 
-void HistoryButton::onClicked(bool checked)
+void HistoryButton::_slotOnClicked(bool checked)
 {
     if(!checked){
         this->setChecked(true);
         return;
     } else {
-        emit this->selected(this->id);
+        emit this->sigSelected(this->id);
     }
 }
