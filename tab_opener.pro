@@ -13,42 +13,42 @@ TEMPLATE = app
 INCLUDEPATH += include
 
 SOURCES += \
-    src/main.cpp \
-    src/hoverbutton.cpp \
-    src/mainwindow.cpp \
+    src/buttons/charmbutton.cpp \
+    src/buttons/cmdexecbutton.cpp \
+    src/buttons/historybutton.cpp \
+    src/buttons/hoverbutton.cpp \
+    src/buttons/presetbutton.cpp \
+    src/widgets/commandwidget.cpp \
+    src/widgets/configwidget.cpp \
+    src/widgets/filebrowserwidget.cpp \
+    src/widgets/historywidget.cpp \
+    src/widgets/mainwindow.cpp \
+    src/widgets/noteswidget.cpp \
     src/datastore.cpp \
-    src/configwidget.cpp \
-    src/charmbutton.cpp \
-    src/presetbutton.cpp \
-    src/util.cpp \
     src/dstable.cpp \
-    src/test.cpp \
     src/dstablefav.cpp \
-    src/noteswidget.cpp \
-    src/filebrowser.cpp \
-    src/commandwidget.cpp \
-    src/cmdexecbutton.cpp \
-    src/historywidget.cpp \
-    src/historybutton.cpp
+    src/main.cpp \
+    src/test.cpp \
+    src/util.cpp
 
 HEADERS  += \
+    include/charmbutton.h \
+    include/cmdexecbutton.h \
+    include/commandwidget.h \
+    include/configwidget.h \
+    include/datastore.h \
+    include/dstable.h \
+    include/dstablefav.h \
+    include/filebrowserwidget.h \
+    include/history.h \
+    include/historybutton.h \
+    include/historywidget.h \
     include/hoverbutton.h \
     include/mainwindow.h \
-    include/datastore.h \
-    include/configwidget.h \
-    include/charmbutton.h \
-    include/presetbutton.h \
-    include/util.h \
-    include/dstable.h \
-    include/test.h \
-    include/dstablefav.h \
     include/noteswidget.h \
-    include/filebrowser.h \
-    include/commandwidget.h \
-    include/cmdexecbutton.h \
-    include/historywidget.h \
-    include/historybutton.h \
-    include/history.h
+    include/presetbutton.h \
+    include/test.h \
+    include/util.h
 
 FORMS    += \
     ui/mainwindow.ui \

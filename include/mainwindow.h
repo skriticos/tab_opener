@@ -8,7 +8,7 @@
 #include "configwidget.h"
 #include "presetbutton.h"
 #include "noteswidget.h"
-#include "filebrowser.h"
+#include "filebrowserwidget.h"
 #include "commandwidget.h"
 
 namespace Ui {

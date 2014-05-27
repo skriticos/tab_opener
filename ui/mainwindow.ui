@@ -28,7 +28,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0">
-    <widget class="FileBrowser" name="fileBrowser" native="true">
+    <widget class="FileBrowserWidget" name="fileBrowser" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
        <horstretch>0</horstretch>
@@ -338,12 +338,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>FileBrowser</class>
-   <extends>QWidget</extends>
-   <header location="global">filebrowser.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>CommandWidget</class>
    <extends>QWidget</extends>
    <header location="global">commandwidget.h</header>
@@ -353,6 +347,12 @@
    <class>HistoryWidget</class>
    <extends>QWidget</extends>
    <header location="global">historywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>FileBrowserWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">filebrowserwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

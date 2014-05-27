@@ -1,7 +1,7 @@
-#include "filebrowser.h"
+#include "filebrowserwidget.h"
 #include "ui_filebrowser.h"
 
-FileBrowser::FileBrowser(QWidget *parent) : QWidget(parent), ui(new Ui::FileBrowser)
+FileBrowserWidget::FileBrowserWidget(QWidget *parent) : QWidget(parent), ui(new Ui::FileBrowser)
 {
     this->isInit = true;
 
@@ -32,12 +32,12 @@ FileBrowser::FileBrowser(QWidget *parent) : QWidget(parent), ui(new Ui::FileBrow
     this->isInit = false;
 }
 
-FileBrowser::~FileBrowser()
+FileBrowserWidget::~FileBrowserWidget()
 {
     delete ui;
 }
 
-void FileBrowser::initFileBrowser(DataStore *ds)
+void FileBrowserWidget::initFileBrowser(DataStore *ds)
 {
     this->isInit = true;
 
@@ -61,14 +61,14 @@ void FileBrowser::initFileBrowser(DataStore *ds)
     this->isInit = false;
 }
 
-void FileBrowser::slotSelectFolder(QString folderPath)
+void FileBrowserWidget::slotSelectFolder(QString folderPath)
 {
     if(!folderPath.isEmpty()){
         ui->viewFolders->setCurrentIndex(this->dirmodel->index(folderPath));
     }
 }
 
-void FileBrowser::slotSelectFile(QString filePath)
+void FileBrowserWidget::slotSelectFile(QString filePath)
 {
     QString baseFolder = QFileInfo(filePath).absolutePath();
     this->slotSelectFolder(baseFolder);
@@ -80,21 +80,21 @@ void FileBrowser::slotSelectFile(QString filePath)
     emit this->sigFileSelected(filePath);
 }
 
-void FileBrowser::slotScmOff()
+void FileBrowserWidget::slotScmOff()
 {
     ui->btnScmCommit->setEnabled(false);
     ui->btnScmPull->setEnabled(false);
     ui->btnScmPush->setEnabled(false);
 }
 
-void FileBrowser::slotScmOn()
+void FileBrowserWidget::slotScmOn()
 {
     ui->btnScmCommit->setEnabled(true);
     ui->btnScmPull->setEnabled(true);
     ui->btnScmPush->setEnabled(true);
 }
 
-void FileBrowser::_slotOnFileSelected()
+void FileBrowserWidget::_slotOnFileSelected()
 {
     QString selectedFilePath = this->getSelectedFile();
 
@@ -103,7 +103,7 @@ void FileBrowser::_slotOnFileSelected()
     emit this->sigFileSelected(selectedFilePath);
 }
 
-void FileBrowser::_slotOnFolderSeleced()
+void FileBrowserWidget::_slotOnFolderSeleced()
 {
     CharmButton *charmButton;
     QLabel      *charmLabel;
@@ -165,12 +165,12 @@ void FileBrowser::_slotOnFolderSeleced()
     emit this->sigFolderSelected(selectedFolderPath);
 }
 
-void FileBrowser::_slotOnConfigAccepted()
+void FileBrowserWidget::_slotOnConfigAccepted()
 {
     emit this->sigConfigChanged();
 }
 
-QString FileBrowser::getSelectedFolder()
+QString FileBrowserWidget::getSelectedFolder()
 {
     QModelIndex index;
     QItemSelectionModel *selectionModel;
@@ -185,7 +185,7 @@ QString FileBrowser::getSelectedFolder()
     }
 }
 
-QString FileBrowser::getSelectedFile()
+QString FileBrowserWidget::getSelectedFile()
 {
     QModelIndex index;
     QItemSelectionModel *selectionModel;
@@ -200,7 +200,7 @@ QString FileBrowser::getSelectedFile()
     }
 }
 
-void FileBrowser::on_btnActPrimary_clicked()
+void FileBrowserWidget::on_btnActPrimary_clicked()
 {
     QString selectedFile, extension, command;
 
@@ -215,7 +215,7 @@ void FileBrowser::on_btnActPrimary_clicked()
     emit this->sigCloseAction();
 }
 
-void FileBrowser::on_btnActSecondary_clicked()
+void FileBrowserWidget::on_btnActSecondary_clicked()
 {
     QString selectedFile, extension, command;
 
@@ -230,12 +230,12 @@ void FileBrowser::on_btnActSecondary_clicked()
     emit this->sigCloseAction();
 }
 
-void FileBrowser::on_btnHome_clicked()
+void FileBrowserWidget::on_btnHome_clicked()
 {
     this->slotSelectFolder(QDir::homePath());
 }
 
-void FileBrowser::on_btnTerminal_clicked()
+void FileBrowserWidget::on_btnTerminal_clicked()
 {
     QString selectedFolder, command;
 
@@ -245,7 +245,7 @@ void FileBrowser::on_btnTerminal_clicked()
     emit this->sigCloseAction();
 }
 
-void FileBrowser::on_btnExtFileBrowser_clicked()
+void FileBrowserWidget::on_btnExtFileBrowser_clicked()
 {
     QString selectedFolder, command;
 
@@ -255,17 +255,17 @@ void FileBrowser::on_btnExtFileBrowser_clicked()
     emit this->sigCloseAction();
 }
 
-void FileBrowser::on_btnPreferences_clicked()
+void FileBrowserWidget::on_btnPreferences_clicked()
 {
     this->configWidget->show();
 }
 
-void FileBrowser::on_btnScmPull_clicked()
+void FileBrowserWidget::on_btnScmPull_clicked()
 {
     emit this->sigExecCommand(QString("git pull --all"));
 }
 
-void FileBrowser::on_btnScmCommit_clicked()
+void FileBrowserWidget::on_btnScmCommit_clicked()
 {
     bool ok;
     QString commitMsg = QInputDialog::getText(
@@ -291,12 +291,12 @@ void FileBrowser::on_btnScmCommit_clicked()
     }
 }
 
-void FileBrowser::on_btnScmPush_clicked()
+void FileBrowserWidget::on_btnScmPush_clicked()
 {
     emit this->sigExecCommand("git push --all");
 }
 
-void FileBrowser::on_btnHelp_clicked()
+void FileBrowserWidget::on_btnHelp_clicked()
 {
     qDebug() << "not yet implemented";
 }

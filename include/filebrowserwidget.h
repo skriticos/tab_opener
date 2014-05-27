@@ -12,13 +12,13 @@ namespace Ui {
     class FileBrowser;
 }
 
-class FileBrowser : public QWidget
+class FileBrowserWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit FileBrowser(QWidget *parent = 0);
-    ~FileBrowser();
+    explicit FileBrowserWidget(QWidget *parent = 0);
+    ~FileBrowserWidget();
 
     void initFileBrowser(DataStore *ds);
 
