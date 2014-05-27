@@ -90,7 +90,7 @@ QList<DsTable::Record> DsTableFav::getRecent10()
     return result;
 }
 
-bool DsTableFav::createTable()
+bool DsTableFav::_createTable()
 {
     DsTable::SchemaField schemaField;
 
@@ -100,5 +100,5 @@ bool DsTableFav::createTable()
     schemaField = {"timestamp", DsTable::INTEGER};
     this->schema.insert(2, schemaField);
 
-    return DsTable::createTable();
+    return DsTable::_createTable();
 }

@@ -32,8 +32,8 @@ public:
     void clearRecords();
 
 protected:
-    bool loadTable();
-    virtual bool createTable();
+    bool _loadTable();
+    virtual bool _createTable();
 
     bool tableInitialized;
     QString tableName;

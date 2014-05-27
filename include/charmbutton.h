@@ -11,10 +11,10 @@ public:
     explicit CharmButton(QString label, QString path, QWidget *parent = 0);
 
 signals:
-    void charmClicked(QString path);
+    void sigCharmClicked(QString path);
 
-public slots:
-    void onClicked();
+private slots:
+    void _slotClicked();
 
 private:
     QString path;

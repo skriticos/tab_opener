@@ -16,7 +16,7 @@ public:
     QList<Record> getRecent10();
 
 private:
-    virtual bool createTable();
+    virtual bool _createTable();
 
 };
 

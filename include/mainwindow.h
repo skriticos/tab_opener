@@ -25,9 +25,9 @@ public:
     void initWidget(DataStore *ds);
 
 private slots:
-    void updatePresets();
-    void onEscPressed();
-    void onCloseAction(); // file opened with primary or secondary action, or terminal or file browser run
+    void slotUpdatePresets();
+    void slotEscPressed();
+    void slotRequestClose(); // file opened with primary or secondary action, or terminal or file browser run
 
 private:
     Ui::MainWindow *ui;

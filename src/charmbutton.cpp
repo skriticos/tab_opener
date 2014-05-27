@@ -6,10 +6,10 @@ CharmButton::CharmButton(QString label, QString path, QWidget *parent) : HoverBu
     this->setText(label);
     this->path = path;
 
-    connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
+    connect(this, SIGNAL(clicked()), this, SLOT(_slotClicked()));
 }
 
-void CharmButton::onClicked()
+void CharmButton::_slotClicked()
 {
-    emit charmClicked(this->path);
+    emit sigCharmClicked(this->path);
 }

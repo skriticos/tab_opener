@@ -16,11 +16,6 @@ public:
 
     static ParsedCommand parseCmdStr(QString cmdStr);
     static bool execDetachedCommand(QString cmdStr, QString wd = "");
-
-signals:
-
-public slots:
-
 };
 
 #endif // UTIL_H

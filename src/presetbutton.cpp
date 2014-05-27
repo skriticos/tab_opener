@@ -2,12 +2,12 @@
 
 PresetButton::PresetButton(QWidget *parent) : HoverButton(parent)
 {
-    connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
+    connect(this, SIGNAL(clicked()), this, SLOT(_slotClicked()));
 }
 
-void PresetButton::onClicked()
+void PresetButton::_slotClicked()
 {
     if (!this->text().isEmpty())
-        emit presetClicked(this->text());
+        emit sigClicked(this->text());
 }
 

@@ -6,11 +6,11 @@ CommandWidget::CommandWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Comm
     ui->setupUi(this);
 
     this->process = new QProcess();
-    connect(this->process, SIGNAL(readyReadStandardOutput()), this, SLOT(onStdoutReadReady()));
-    connect(this->process, SIGNAL(readyReadStandardError()), this, SLOT(onStderrReadReady()));
-    connect(this->process, SIGNAL(finished(int)), this, SLOT(onProcessFinished(int)));
-    connect(this->process, SIGNAL(finished(int)), ui->btnExecCommand, SLOT(processExecutionStopped()));
-    connect(this->process, SIGNAL(started()), ui->btnExecCommand, SLOT(processExecutionStarted()));
+    connect(this->process, SIGNAL(readyReadStandardOutput()), this, SLOT(_slotStdoutReadReady()));
+    connect(this->process, SIGNAL(readyReadStandardError()), this, SLOT(_slotStderrReadReady()));
+    connect(this->process, SIGNAL(finished(int)), this, SLOT(_slotProcessFinished(int)));
+    connect(this->process, SIGNAL(finished(int)), ui->btnExecCommand, SLOT(slotProcExecStopped()));
+    connect(this->process, SIGNAL(started()), ui->btnExecCommand, SLOT(slotProcExecStarted()));
 }
 
 CommandWidget::~CommandWidget()
@@ -27,7 +27,7 @@ void CommandWidget::initCommandWidget(DataStore *ds)
     }
 }
 
-bool CommandWidget::processExecuting()
+bool CommandWidget::isExecuting()
 {
     if(this->process->state() == QProcess::NotRunning)
         return false;
@@ -35,17 +35,17 @@ bool CommandWidget::processExecuting()
         return true;
 }
 
-void CommandWidget::selectedFolderChanged(QString selectedFolder)
+void CommandWidget::slotUpdateFolder(QString selectedFolder)
 {
     this->workingDirectory = selectedFolder;
 }
 
-void CommandWidget::historyCommandChanged(QString cmdStr)
+void CommandWidget::slotUpdateCmd(QString cmdStr)
 {
     ui->inputCommand->setText(cmdStr);
 }
 
-void CommandWidget::execCmd(QString cmdStr, bool multi)
+void CommandWidget::slotExecCmd(QString cmdStr, bool multi)
 {
     Util::ParsedCommand parsedCmd;
     QString wd;
@@ -65,13 +65,13 @@ void CommandWidget::execCmd(QString cmdStr, bool multi)
     this->process->setWorkingDirectory(wd);
     process->start(parsedCmd.program, parsedCmd.args);
 
-    emit this->processExecutionStarted();
+    emit this->sigProcStarted();
 }
 
-bool CommandWidget::execMultiCmds(QStringList cmdList)
+bool CommandWidget::slotExecMultiCmds(QStringList cmdList)
 {
     for(int i=0; i<cmdList.size(); i++){
-        this->execCmd(cmdList.at(i), true);
+        this->slotExecCmd(cmdList.at(i), true);
         this->process->waitForFinished();
         if(this->process->exitCode() != 0)
             return false;
@@ -83,9 +83,9 @@ void CommandWidget::on_btnExecCommand_clicked()
 {
     if(this->process->state() == QProcess::NotRunning){
         if(!ui->inputCommand->text().isEmpty()){
-            emit this->manualCommandExecuted(ui->inputCommand->text());
+            emit this->sigCmdExecuted(ui->inputCommand->text());
             this->ds->setCommand(ui->inputCommand->text(), this->workingDirectory);
-            this->execCmd(ui->inputCommand->text());
+            this->slotExecCmd(ui->inputCommand->text());
         }
     } else { // process already running, aborting
         this->process->kill();
@@ -101,10 +101,10 @@ void CommandWidget::on_btnClearCommand_clicked()
 
 void CommandWidget::on_inputCommand_textChanged(const QString &arg1)
 {
-    emit this->commandChanged(arg1);
+    emit this->sigCmdChanged(arg1);
 }
 
-void CommandWidget::onStdoutReadReady()
+void CommandWidget::_slotStdoutReadReady()
 {
     QByteArray output = this->process->readAllStandardOutput();
     QString outputStr = QString(output).toHtmlEscaped();
@@ -113,7 +113,7 @@ void CommandWidget::onStdoutReadReady()
     ui->viewCommandOutput->append(outputStr);
 }
 
-void CommandWidget::onStderrReadReady()
+void CommandWidget::_slotStderrReadReady()
 {
     QByteArray output = this->process->readAllStandardError();
     QString outputStr = QString(output).toHtmlEscaped();
@@ -123,11 +123,11 @@ void CommandWidget::onStderrReadReady()
     ui->viewCommandOutput->append(outputStr);
 }
 
-void CommandWidget::onProcessFinished(int exitCode)
+void CommandWidget::_slotProcessFinished(int exitCode)
 {
     ui->viewCommandOutput->append("<span style='color:gray'>[process finished with exit code: "
                                   + QString::number(exitCode) + "]</span>");
-    emit this->processExecutionStopped();
+    emit this->sigProcStopped();
 }
 
 void CommandWidget::on_inputCommand_returnPressed()

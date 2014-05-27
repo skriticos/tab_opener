@@ -14,11 +14,11 @@ public:
     explicit CmdExecButton(QWidget *parent = 0);
 
 public slots:
-    void processExecutionStarted();
-    void processExecutionStopped();
+    void slotProcExecStarted();
+    void slotProcExecStopped();
 
 private slots:
-    void setExecFrame();
+    void _slotSetExecIconFrame();
 
 private:
     QMovie *execAnimation;

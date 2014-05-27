@@ -14,13 +14,13 @@ void NotesWidget::initWidget(DataStore *ds)
     QString state = ds->getGeneralValue("last_note_state");
     if(state == "file"){
         ui->btnFileNotes->setChecked(true);
-        this->setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
+        this->_setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
     } else if(state == "command"){
         ui->btnCmdNotes->setChecked(true);
-        this->setNotesText(ds->getCommandNote(ds->getGeneralValue("current_command")));
+        this->_setNotesText(ds->getCommandNote(ds->getGeneralValue("current_command")));
     } else {
         ui->btnGlobalNotes->setChecked(true);
-        this->setNotesText(ds->getGeneralValue("notes"));
+        this->_setNotesText(ds->getGeneralValue("notes"));
     }
 }
 
@@ -29,7 +29,7 @@ NotesWidget::~NotesWidget()
     delete ui;
 }
 
-void NotesWidget::selectedFileChanged(QString filePath)
+void NotesWidget::slotUpdateFile(QString filePath)
 {
     if(ui->btnFileNotes->isChecked()){
         if(filePath.isEmpty()){
@@ -37,12 +37,12 @@ void NotesWidget::selectedFileChanged(QString filePath)
             ui->notesView->clear();
             ui->notesView->blockSignals(false);
         } else
-            this->setNotesText(ds->getFileNote(filePath));
+            this->_setNotesText(ds->getFileNote(filePath));
     }
     this->filePath = filePath;
 }
 
-void NotesWidget::commandChanged(QString cmdStr)
+void NotesWidget::slotUpdateCmd(QString cmdStr)
 {
     if(ui->btnCmdNotes->isChecked()){
         if(cmdStr.isEmpty()){
@@ -50,12 +50,12 @@ void NotesWidget::commandChanged(QString cmdStr)
             ui->notesView->clear();
             ui->notesView->blockSignals(false);
         } else
-            this->setNotesText(ds->getCommandNote(cmdStr));
+            this->_setNotesText(ds->getCommandNote(cmdStr));
     }
     this->commandStr = cmdStr;
 }
 
-void NotesWidget::setNotesText(QString notesText)
+void NotesWidget::_setNotesText(QString notesText)
 {
     ui->notesView->blockSignals(true);
     ui->notesView->setPlainText(notesText);
@@ -71,7 +71,7 @@ void NotesWidget::on_btnGlobalNotes_clicked(bool checked)
     ds->setGeneralValue("last_note_state", "global");
     ui->btnFileNotes->setChecked(false);
     ui->btnCmdNotes->setChecked(false);
-    this->setNotesText(ds->getGeneralValue("notes"));
+    this->_setNotesText(ds->getGeneralValue("notes"));
 }
 
 void NotesWidget::on_btnFileNotes_clicked(bool checked)
@@ -83,7 +83,7 @@ void NotesWidget::on_btnFileNotes_clicked(bool checked)
     ds->setGeneralValue("last_note_state", "file");
     ui->btnGlobalNotes->setChecked(false);
     ui->btnCmdNotes->setChecked(false);
-    this->setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
+    this->_setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
 }
 
 void NotesWidget::on_btnCmdNotes_clicked(bool checked)
@@ -95,7 +95,7 @@ void NotesWidget::on_btnCmdNotes_clicked(bool checked)
     ds->setGeneralValue("last_note_state", "command");
     ui->btnGlobalNotes->setChecked(false);
     ui->btnFileNotes->setChecked(false);
-    this->setNotesText(ds->getCommandNote(this->commandStr));
+    this->_setNotesText(ds->getCommandNote(this->commandStr));
 }
 
 void NotesWidget::on_notesView_textChanged()

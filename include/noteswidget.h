@@ -15,17 +15,13 @@ class NotesWidget : public QWidget
 
 public:
     explicit NotesWidget(QWidget *parent = 0);
-    void initWidget(DataStore *ds);
     ~NotesWidget();
 
-public slots:
-    void selectedFileChanged(QString filePath);
-    void commandChanged(QString cmdStr);
+    void initWidget(DataStore *ds);
 
-protected:
-    DataStore *ds;
-    void setNotesText(QString notesText);
-    void resetButtons();
+public slots:
+    void slotUpdateFile(QString filePath);
+    void slotUpdateCmd(QString cmdStr);
 
 private slots:
     void on_btnGlobalNotes_clicked(bool checked);
@@ -34,6 +30,10 @@ private slots:
     void on_notesView_textChanged();
 
 private:
+    DataStore *ds;
+    void _setNotesText(QString notesText);
+    void _resetButtons();
+
     Ui::NotesWidget *ui;
     QString filePath;
     QString commandStr;

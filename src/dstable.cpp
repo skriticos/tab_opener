@@ -62,9 +62,9 @@ bool DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSche
     this->db = db;
 
     if(this->db.tables().contains(tableName))
-        result = this->loadTable();
+        result = this->_loadTable();
     else
-        result = this->createTable();
+        result = this->_createTable();
 
     this->tableInitialized = true;
 
@@ -247,7 +247,7 @@ void DsTable::clearRecords()
  *         so the query input is not verified. Hm, maybe we should verify the
  *         query data?
  */
-bool DsTable::loadTable()
+bool DsTable::_loadTable()
 {
     QSqlQuery query;
     QString fieldName;
@@ -281,7 +281,7 @@ bool DsTable::loadTable()
 /**
  * @brief DsTable::createTable
  */
-bool DsTable::createTable()
+bool DsTable::_createTable()
 {
     QStringList fieldDeclarations;
     QString strFieldType;

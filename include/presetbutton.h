@@ -11,11 +11,10 @@ public:
     explicit PresetButton(QWidget *parent = 0);
 
 signals:
-    void presetClicked(QString path);
+    void sigClicked(QString path);
 
-public slots:
-    void onClicked();
-
+private slots:
+    void _slotClicked();
 };
 
 #endif // PRESETBUTTON_H

@@ -9,18 +9,18 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
 
     // keyboard shortcuts
     this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
-    connect(shortEsc, SIGNAL(activated()), this, SLOT(onEscPressed()));
+    connect(shortEsc, SIGNAL(activated()), this, SLOT(slotEscPressed()));
 
-    connect(ui->wprb0, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb1, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb2, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb3, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb4, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb5, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb6, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb7, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb8, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
-    connect(ui->wprb9, SIGNAL(presetClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb0, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb1, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb2, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb3, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb4, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb5, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb6, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb7, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb8, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+    connect(ui->wprb9, SIGNAL(sigClicked(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
 
     ui->fileHistory->setType(History::FILEHISTORY);
     ui->commandHistory->setType(History::COMMANDHISTORY);
@@ -43,37 +43,37 @@ void MainWindow::initWidget(DataStore *ds)
     this->ds = ds;
 
     // presets
-    this->updatePresets();
+    this->slotUpdatePresets();
 
-    connect(ui->commandWidget, SIGNAL(commandChanged(QString)),
-            ui->notesWidget,   SLOT(commandChanged(QString)));
+    connect(ui->commandWidget, SIGNAL(sigCmdChanged(QString)),
+            ui->notesWidget,   SLOT(slotUpdateCmd(QString)));
 
-    connect(ui->commandWidget, SIGNAL(processExecutionStarted()),
+    connect(ui->commandWidget, SIGNAL(sigProcStarted()),
             ui->fileBrowser,   SLOT(slotScmOff()));
-    connect(ui->commandWidget, SIGNAL(processExecutionStopped()),
+    connect(ui->commandWidget, SIGNAL(sigProcStopped()),
             ui->fileBrowser,   SLOT(slotScmOn()));
     connect(ui->fileBrowser,   SIGNAL(sigFolderSelected(QString)),
-            ui->commandWidget, SLOT(selectedFolderChanged(QString)));
+            ui->commandWidget, SLOT(slotUpdateFolder(QString)));
     connect(ui->fileBrowser,   SIGNAL(sigExecCommand(QString)),
-            ui->commandWidget, SLOT(execCmd(QString)));
+            ui->commandWidget, SLOT(slotExecCmd(QString)));
     connect(ui->fileBrowser,   SIGNAL(sigExecMultiCommand(QStringList)),
-            ui->commandWidget, SLOT(execMultiCmds(QStringList)));
+            ui->commandWidget, SLOT(slotExecMultiCmds(QStringList)));
 
     connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
-            ui->notesWidget, SLOT  (selectedFileChanged(QString)));
+            ui->notesWidget, SLOT  (slotUpdateFile(QString)));
 
     connect(ui->fileBrowser, SIGNAL(sigConfigChanged()),
-            this,            SLOT(updatePresets()));
+            this,            SLOT(slotUpdatePresets()));
 
     connect(ui->fileBrowser, SIGNAL(sigCloseAction()),
-            this,            SLOT  (onCloseAction()));
+            this,            SLOT  (slotRequestClose()));
 
     this->ui->notesWidget->initWidget(this->ds);
     this->ui->fileBrowser->initFileBrowser(this->ds);
     this->ui->commandWidget->initCommandWidget(this->ds);
 }
 
-void MainWindow::updatePresets()
+void MainWindow::slotUpdatePresets()
 {
     ui->wprb0->setText(ds->getPreset(0));
     ui->wprb1->setText(ds->getPreset(1));
@@ -87,9 +87,9 @@ void MainWindow::updatePresets()
     ui->wprb9->setText(ds->getPreset(9));
 }
 
-void MainWindow::onEscPressed()
+void MainWindow::slotEscPressed()
 {
-    if(ui->commandWidget->processExecuting()){
+    if(ui->commandWidget->isExecuting()){
         int ret = QMessageBox::warning(
                     this,
                     "Command still running",
@@ -103,9 +103,9 @@ void MainWindow::onEscPressed()
     }
 }
 
-void MainWindow::onCloseAction()
+void MainWindow::slotRequestClose()
 {
-    if(!ui->commandWidget->processExecuting()){
+    if(!ui->commandWidget->isExecuting()){
         this->close();
     }
 }

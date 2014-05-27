@@ -133,7 +133,7 @@ void FileBrowser::_slotOnFolderSeleced()
     charmButton = new CharmButton(QDir::rootPath(), QDir::rootPath(), ui->charmContainer);
     ui->charmLayout->addWidget(charmButton);
     charmButtonList.append(charmButton);
-    connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
+    connect(charmButton, SIGNAL(sigCharmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
 
     // add folder charms and separator labels
     QStringList charmParts = selectedFolderPath.split(QDir::separator());
@@ -146,7 +146,7 @@ void FileBrowser::_slotOnFolderSeleced()
 
             charmButton = new CharmButton(charmParts.at(i), charmPath, ui->charmContainer);
             this->charmButtonList.append(charmButton);
-            connect(charmButton, SIGNAL(charmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
+            connect(charmButton, SIGNAL(sigCharmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
 
             if(i>1){
                 charmLabel = new QLabel("/", ui->charmContainer);

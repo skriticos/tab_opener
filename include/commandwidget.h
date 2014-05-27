@@ -17,31 +17,31 @@ class CommandWidget : public QWidget
 public:
     explicit CommandWidget(QWidget *parent = 0);
     ~CommandWidget();
+
     void initCommandWidget(DataStore *ds);
-    bool processExecuting();
+    bool isExecuting();
+
+signals:
+    void sigProcStarted();        // used to disable all cmd related controls (scm)
+    void sigProcStopped();        // used to enable all cmd related controls (scm)
+    void sigCmdExecuted(QString); // used to update cmd history
+    void sigCmdChanged(QString);  // used to update notes
 
 public slots:
-    void selectedFolderChanged(QString selectedFolder);
-    void historyCommandChanged(QString cmdStr);
-    void execCmd(QString cmdStr, bool multi = false);
-    bool execMultiCmds(QStringList cmdList);
+    void slotUpdateFolder(QString selectedFolder);
+    void slotUpdateCmd(QString cmdStr);
+    void slotExecCmd(QString cmdStr, bool multi = false);
+    bool slotExecMultiCmds(QStringList cmdList);
 
 private slots:
     void on_btnExecCommand_clicked();
     void on_btnClearCommand_clicked();
+    void on_inputCommand_returnPressed();
     void on_inputCommand_textChanged(const QString &arg1);
 
-    void onStdoutReadReady();
-    void onStderrReadReady();
-    void onProcessFinished(int exitCode);
-
-    void on_inputCommand_returnPressed();
-
-signals:
-    void processExecutionStarted();      // used to disable all cmd related controls (scm)
-    void processExecutionStopped();      // used to enable all cmd related controls (scm)
-    void manualCommandExecuted(QString); // used to update cmd history
-    void commandChanged(QString);        // used to update notes
+    void _slotStdoutReadReady();
+    void _slotStderrReadReady();
+    void _slotProcessFinished(int exitCode);
 
 private:
     QString workingDirectory;
