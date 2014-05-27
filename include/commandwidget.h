@@ -1,7 +1,7 @@
 #ifndef COMMANDWIDGET_H
 #define COMMANDWIDGET_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 #include "datastore.h"
 #include "util.h"

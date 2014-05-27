@@ -1,7 +1,7 @@
 #ifndef NOTESWIDGET_H
 #define NOTESWIDGET_H
 
-#include <QWidget>
+#include <QtWidgets>
 #include "datastore.h"
 #include "hoverbutton.h"
 

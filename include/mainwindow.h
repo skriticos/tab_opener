@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QtCore>
-#include <QWidget>
+#include <QtWidgets>
 
 #include "datastore.h"
 #include "configwidget.h"

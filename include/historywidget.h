@@ -2,7 +2,7 @@
 #define HISTORYWIDGET_H
 
 #include <QtCore>
-#include <QWidget>
+#include <QtWidgets>
 #include <QClipboard>
 
 #include "history.h"

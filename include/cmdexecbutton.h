@@ -2,7 +2,7 @@
 #define CMDEXECBUTTON_H
 
 #include <QtCore>
-#include <QWidget>
+#include <QtWidgets>
 #include <QMovie>
 #include "hoverbutton.h"
 
