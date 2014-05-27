@@ -1,27 +1,6 @@
 #include "dstable.h"
 
-/**
- * @brief DsTable::DsTable
- * @param parent
- */
-DsTable::DsTable(QObject *parent) : QObject(parent)
-{
-    this->tableInitialized = false;
-}
-
-DsTable::~DsTable()
-{
-
-}
-
-/**
- * @brief DsTable::initTable
- * @param tableName
- * @param fieldSchema
- * @param db
- * @return
- */
-void DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
+DsTable::DsTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db, QObject *parent)
 {
     QString fieldKey;
     QStringList reservedSqliteKeywords;
@@ -67,22 +46,19 @@ void DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSche
         this->_loadTable();
     else
         this->_createTable();
-
-    this->tableInitialized = true;
 }
 
-/**
- * @brief DsTable::insertRecord
- * @param record
- */
+DsTable::~DsTable()
+{
+
+}
+
 void DsTable::insertRecord(Record record)
 {
     QString lKey; // lookup key value
     QSqlQuery query(this->db);
     QStringList fieldNames, fieldPlaceholderNames;
     QMetaType::Type metaType;
-
-    Q_ASSERT(this->tableInitialized);
 
     // verify record field names contain schema fields
     // note: we don't care about additional fields as long as the schema fields are properly populated
@@ -164,11 +140,6 @@ void DsTable::insertRecord(Record record)
     this->records.insert(lKey, record);
 }
 
-/**
- * @brief DsTable::deleteRecord
- * @param lKey
- * @return
- */
 void DsTable::deleteRecord(QString lKey)
 {
     QSqlQuery query(this->db);
@@ -181,30 +152,16 @@ void DsTable::deleteRecord(QString lKey)
     this->records.remove(lKey);
 }
 
-/**
- * @brief DsTable::getRecordCount
- * @return
- */
 int DsTable::size()
 {
     return this->records.size();
 }
 
-/**
- * @brief DsTable::recordExists
- * @param lookupKey
- * @return
- */
 bool DsTable::contains(QString lookupKey)
 {
     return this->records.contains(lookupKey);
 }
 
-/**
- * @brief DsTable::getRecord
- * @param lookupKey
- * @return
- */
 DsTable::Record DsTable::getRecord(QString lookupKey)
 {
     return this->records.value(lookupKey);
@@ -215,23 +172,12 @@ QStringList DsTable::getRecordKeys()
     return this->records.keys();
 }
 
-/**
- * @brief DsTable::clearRecords
- */
 void DsTable::clearRecords()
 {
-    if(!this->tableInitialized) return;
     this->records.clear();
     this->db.exec("DELETE FROM " + this->tableName);
 }
 
-/**
- * @brief DsTable::loadTable
- *
- * Notice: we don't assume that anything nefarious is going on in the database,
- *         so the query input is not verified. Hm, maybe we should verify the
- *         query data?
- */
 void DsTable::_loadTable()
 {
     QSqlQuery query;
@@ -260,9 +206,6 @@ void DsTable::_loadTable()
     }
 }
 
-/**
- * @brief DsTable::createTable
- */
 void DsTable::_createTable()
 {
     QStringList fieldDeclarations;

@@ -1,20 +1,21 @@
 #include "dstablefav.h"
 
-DsTableFav::DsTableFav(QObject *parent) : DsTable(parent)
+QList<DsTable::SchemaField> patchSchema(QList<DsTable::SchemaField> fieldSchema){
+    fieldSchema.insert(1, {"counter", DsTable::INTEGER});
+    fieldSchema.insert(2, {"timestamp", DsTable::INTEGER});
+    return fieldSchema;
+}
+
+// notice: the fieldSchema is patched before passed to base class constructor
+//         see patchSchema function for details
+DsTableFav::DsTableFav(
+        QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db, QObject *parent) :
+        DsTable(tableName, patchSchema(fieldSchema), db, parent)
 {
 }
 
 DsTableFav::~DsTableFav()
 {
-
-}
-
-void DsTableFav::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
-{
-    fieldSchema.insert(1, {"counter", DsTable::INTEGER});
-    fieldSchema.insert(2, {"timestamp", DsTable::INTEGER});
-
-    DsTable::initTable(tableName, fieldSchema, db);
 }
 
 /*

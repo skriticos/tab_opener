@@ -11,8 +11,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     DsTable::SchemaField generalVal = {"gval", DsTable::TEXT}; // general value
     QList<DsTable::SchemaField> generalSchema; generalSchema << generalKey << generalVal;
 
-    this->tblGeneral = new DsTable(this);
-    this->tblGeneral->initTable("tblGeneral", generalSchema, this->dsDB);
+    this->tblGeneral = new DsTable("tblGeneral", generalSchema,this->dsDB, this);
 
     // tblExtension setup
     DsTable::SchemaField extStr    = {"ext_str", DsTable::TEXT};     // extension string
@@ -20,16 +19,14 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     DsTable::SchemaField extActSec = {"ext_act_sec", DsTable::TEXT}; // extension secondary action
     QList<DsTable::SchemaField> extSchema; extSchema << extStr << extActPri << extActSec;
 
-    this->tblExtensions = new DsTable(this);
-    this->tblExtensions->initTable("tblExtensions", extSchema, this->dsDB);
+    this->tblExtensions = new DsTable("tblExtensions", extSchema,this->dsDB, this);
 
     // tblFiles setup
     DsTable::SchemaField filePath  = {"path", DsTable::TEXT};
     QList<DsTable::SchemaField> fileSchema;
     fileSchema << filePath;
 
-    this->tblFiles = new DsTableFav(this);
-    this->tblFiles->initTable("tblFiles", fileSchema, this->dsDB);
+    this->tblFiles = new DsTableFav("tblFiles", fileSchema,this->dsDB, this);
 
     // tblCommands setup
     DsTable::SchemaField cmdCommand = {"command", DsTable::TEXT};
@@ -37,8 +34,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     QList<DsTable::SchemaField> cmdSchema;
     cmdSchema << cmdCommand << cmdPath;
 
-    this->tblCommands = new DsTableFav(this);
-    this->tblCommands->initTable("tblCommands", cmdSchema, this->dsDB);
+    this->tblCommands = new DsTableFav("tblCommands", cmdSchema,this->dsDB, this);
 
     // tblFileNotes setup
     DsTable::SchemaField fnPath  = {"path", DsTable::TEXT};
@@ -46,8 +42,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     QList<DsTable::SchemaField> fileNoteSchema;
     fileNoteSchema << fnPath << fnNote;
 
-    this->tblFileNotes = new DsTable(this);
-    this->tblFileNotes->initTable("tblFileNotes", fileNoteSchema, this->dsDB);
+    this->tblFileNotes = new DsTable("tblFileNotes", fileNoteSchema,this->dsDB, this);
 
     // tblCommandNotes setup
     DsTable::SchemaField cnCmd  = {"command", DsTable::TEXT};
@@ -55,8 +50,7 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     QList<DsTable::SchemaField> commandNoteSchema;
     commandNoteSchema << cnCmd << cnNote;
 
-    this->tblCommandNotes = new DsTable(this);
-    this->tblCommandNotes->initTable("tblCommandNotes", commandNoteSchema, this->dsDB);
+    this->tblCommandNotes = new DsTable("tblCommandNotes", commandNoteSchema,this->dsDB, this);
 }
 
 DataStore::~DataStore()

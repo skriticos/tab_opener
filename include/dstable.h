@@ -18,12 +18,12 @@ public:
         DsTable::FieldType fieldType;
     };
 
-    explicit DsTable(QObject *parent = 0);
+    explicit DsTable(
+            QString tableName,
+            QList<SchemaField> fieldSchema,
+            QSqlDatabase db,
+            QObject *parent = 0);
     virtual ~DsTable();
-
-    virtual void initTable(QString            tableName,
-                   QList<SchemaField> fieldSchema,
-                   QSqlDatabase       db);
 
     bool contains(QString lookupKey);
     void deleteRecord(QString lKey);
@@ -37,7 +37,6 @@ protected:
     void _loadTable();
     void _createTable();
 
-    bool tableInitialized;
     QString tableName;
     QString lookupKey;
     QList<SchemaField> schema;

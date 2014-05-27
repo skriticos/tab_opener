@@ -8,12 +8,12 @@ class DsTableFav : public DsTable
     Q_OBJECT
 
 public:
-    explicit DsTableFav(QObject *parent = 0);
+    explicit DsTableFav(
+                        QString tableName,
+                        QList<SchemaField> fieldSchema,
+                        QSqlDatabase db,
+                        QObject *parent = 0);
     virtual ~DsTableFav();
-
-    virtual void initTable(QString            tableName,
-                   QList<SchemaField> fieldSchema,
-                   QSqlDatabase       db);
 
     virtual void insertRecord(Record record);
 
