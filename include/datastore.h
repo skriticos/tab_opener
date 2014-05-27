@@ -7,6 +7,8 @@
 #include "dstable.h"
 #include "dstablefav.h"
 
+#include "history.h"
+
 class DataStore : public QObject
 {
     Q_OBJECT
@@ -20,6 +22,8 @@ public:
     DsTable    *tblGeneral;
     DsTable    *tblFileNotes;
     DsTable    *tblCommandNotes;
+
+    void    initWidgets();
 
     bool    setCommand(QString cmd, QString path);
     bool    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
@@ -36,7 +40,15 @@ public:
     bool setFileNote(QString filePath, QString note);
     bool setCommandNote(QString command, QString note);
 
+signals:
+    // called on init and when history changes
+    void sigUpdateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void sigUpdateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+
 private:
+    void _updateFileHistory();
+    void _updateCommandHistory();
+
     QSqlDatabase dsDB;
 };
 

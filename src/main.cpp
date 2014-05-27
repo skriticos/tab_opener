@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
     DataStore *dataStore = new DataStore(&a);
 
-    MainWindow mainWindow;
+    MainWindow mainWindow(dataStore);
     mainWindow.initWidget(dataStore);
     mainWindow.show();
 

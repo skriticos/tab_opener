@@ -48,7 +48,8 @@ HEADERS  += \
     include/commandwidget.h \
     include/cmdexecbutton.h \
     include/historywidget.h \
-    include/historybutton.h
+    include/historybutton.h \
+    include/history.h
 
 FORMS    += \
     ui/mainwindow.ui \

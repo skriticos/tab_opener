@@ -64,6 +64,13 @@ DataStore::~DataStore()
     this->dsDB.close();
 }
 
+// this has to be called from MainWindow after all signals and slots are connected
+void DataStore::initWidgets()
+{
+    this->_updateFileHistory();
+    this->_updateCommandHistory();
+}
+
 bool DataStore::setCommand(QString cmd, QString path)
 {
     DsTable::Record record;
@@ -145,6 +152,49 @@ bool DataStore::setCommandNote(QString command, QString note)
     record.insert("command", command);
     record.insert("note", note);
     return tblCommandNotes->insertRecord(record);
+}
+
+void DataStore::_updateFileHistory()
+{
+    QList<DsTable::Record> recent10 = tblFiles->getRecent10();
+    QList<DsTable::Record> top10    = tblFiles->getTop10();
+
+    QList<History::Entry> recentFileHistory, popularFileHistory;
+
+    for(int i=0; i<recent10.size(); i++){
+        History::Entry entry;
+        entry.filePath = recent10.at(i).value("path").toString();
+        recentFileHistory.append(entry);
+    }
+    for(int i=0; i<top10.size(); i++){
+        History::Entry entry;
+        entry.filePath = top10.at(i).value("path").toString();
+        popularFileHistory.append(entry);
+    }
+
+    emit this->sigUpdateFileHistory(recentFileHistory, popularFileHistory);
+}
+
+void DataStore::_updateCommandHistory()
+{
+    QList<DsTable::Record> recent10 = tblCommands->getRecent10();
+    QList<DsTable::Record> top10    = tblCommands->getTop10();
+
+    QList<History::Entry> recentCommandHistory, popularCommandHistory;
+
+    for(int i=0; i<recent10.size(); i++){
+        History::Entry entry;
+        entry.commandString = recent10.at(i).value("command").toString();
+        entry.workingDirecotry = recent10.at(i).value("working_directory").toString();
+        recentCommandHistory.append(entry);
+    }
+    for(int i=0; i<top10.size(); i++){
+        History::Entry entry;
+        entry.commandString = top10.at(i).value("command").toString();
+        entry.workingDirecotry = top10.at(i).value("working_directory").toString();
+        popularCommandHistory.append(entry);
+    }
+    emit this->sigUpdateCommandHistory(recentCommandHistory, popularCommandHistory);
 }
 
 bool DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)

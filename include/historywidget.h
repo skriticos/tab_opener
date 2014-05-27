@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QClipboard>
 
+#include "history.h"
 #include "historybutton.h"
 
 namespace Ui {
@@ -16,7 +17,7 @@ namespace Ui {
  *
  * Note: This is a dual purpose class: file and command history.
  *       I wanted to avoid mucking around with even more classes and abstraction
- *       for this relatively trivial case, so we just check the WidgetType flag
+ *       for this relatively trivial case, so we just check the History::WidgetType flag
  *       for specific operations and use specific types.
  * Note: The id that is used in the history buttons is:
  *       - for file history the full file path
@@ -28,21 +29,11 @@ class HistoryWidget : public QWidget
     Q_OBJECT
 
 public:
-    struct HistoryEntry {
-        QString filePath;
-        QString commandString;
-        QString workingDirecotry;
-    };
-    enum WidgetType {
-        UNDEFINED,
-        FILEHISTORY,
-        COMMANDHISTORY
-    };
 
     explicit HistoryWidget(QWidget *parent = 0);
     ~HistoryWidget();
 
-    void setType(WidgetType type);
+    void setType(History::WidgetType type);
 
 signals:
     void selectedFileChanged(QString path);
@@ -55,7 +46,7 @@ signals:
     void idSelected(QString id); // internal signal to history buttons
 
 public slots:
-    void updateWidget(QList<HistoryEntry> recentHistory, QList<HistoryEntry> popularHistory);
+    void updateWidget(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void fileSelected(QString filePath);
     void commandSelected(QString commandString);
     void workingDirectorySelected(QString workingDirectory);
@@ -71,12 +62,12 @@ private:
     HistoryButton *getRecentBtnAt(int pos);
     HistoryButton *getPopularBtnAt(int pos);
 
-    void updateFileHistory(QList<HistoryEntry> recentHistory, QList<HistoryEntry> popularHistory);
-    void updateCommandHistory(QList<HistoryEntry> recentHistory, QList<HistoryEntry> popularHistory);
+    void updateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void updateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
 
     Ui::HistoryWidget *ui;
 
-    WidgetType type;
+    History::WidgetType type;
 
     QMap<QString, QStringList> cmdIds;
 
