@@ -25,7 +25,7 @@ HistoryWidget::~HistoryWidget()
     delete ui;
 }
 
-void HistoryWidget::iSetType(History::WidgetType type)
+void HistoryWidget::slotSetType(History::WidgetType type)
 {
     this->type = type;
 
@@ -41,7 +41,7 @@ void HistoryWidget::iSetType(History::WidgetType type)
     }
 }
 
-void HistoryWidget::iUpdateWidget(QList<History::Entry> recentHistory,
+void HistoryWidget::slotUpdateWidget(QList<History::Entry> recentHistory,
                                  QList<History::Entry> popularHistory)
 {
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
@@ -59,7 +59,7 @@ void HistoryWidget::iUpdateWidget(QList<History::Entry> recentHistory,
     }
 }
 
-void HistoryWidget::iFileSelected(QString filePath)
+void HistoryWidget::slotFileSelected(QString filePath)
 {
     if(filePath != this->selectedFile){
         this->selectedFile = filePath;
@@ -67,7 +67,7 @@ void HistoryWidget::iFileSelected(QString filePath)
     }
 }
 
-void HistoryWidget::iCommandSelected(QString commandString)
+void HistoryWidget::slotCommandSelected(QString commandString)
 {
     if(commandString != this->selectedCommand){
         this->selectedCommand = commandString;
@@ -75,7 +75,7 @@ void HistoryWidget::iCommandSelected(QString commandString)
     }
 }
 
-void HistoryWidget::iWorkingDirectorySelected(QString workingDirectory)
+void HistoryWidget::slotWorkingDirectorySelected(QString workingDirectory)
 {
     this->selectedWorkingDirectory = workingDirectory;
 }
