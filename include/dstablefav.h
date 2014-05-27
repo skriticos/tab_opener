@@ -9,15 +9,16 @@ class DsTableFav : public DsTable
 
 public:
     explicit DsTableFav(QObject *parent = 0);
+    virtual ~DsTableFav();
 
-    virtual bool insertRecord(Record record);
+    virtual void initTable(QString            tableName,
+                   QList<SchemaField> fieldSchema,
+                   QSqlDatabase       db);
+
+    virtual void insertRecord(Record record);
 
     QList<Record> getTop10();
     QList<Record> getRecent10();
-
-private:
-    virtual bool _createTable();
-
 };
 
 #endif // DSTABLEFAV_H

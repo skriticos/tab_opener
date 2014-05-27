@@ -4,12 +4,25 @@ DsTableFav::DsTableFav(QObject *parent) : DsTable(parent)
 {
 }
 
+DsTableFav::~DsTableFav()
+{
+
+}
+
+void DsTableFav::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
+{
+    fieldSchema.insert(1, {"counter", DsTable::INTEGER});
+    fieldSchema.insert(2, {"timestamp", DsTable::INTEGER});
+
+    DsTable::initTable(tableName, fieldSchema, db);
+}
+
 /*
  * Instead of just inserting the record into the database as the parent does,
  * the record is extended with timestamp and count to be retrived by the top10 / recent10 methods.
  * In other words providing file path to location favourites is enough for this method.
  */
-bool DsTableFav::insertRecord(DsTable::Record record)
+void DsTableFav::insertRecord(DsTable::Record record)
 {
     qint64 timesamp = 0;
     bool recordExists = false;
@@ -47,7 +60,7 @@ bool DsTableFav::insertRecord(DsTable::Record record)
     timesamp = QDateTime::currentMSecsSinceEpoch();
     record["timestamp"] = timesamp;
 
-    return DsTable::insertRecord(record);
+    DsTable::insertRecord(record);
 }
 
 QList<DsTable::Record> DsTableFav::getTop10()
@@ -88,17 +101,4 @@ QList<DsTable::Record> DsTableFav::getRecent10()
         result.append(record);
     }
     return result;
-}
-
-bool DsTableFav::_createTable()
-{
-    DsTable::SchemaField schemaField;
-
-    // insert counter and timestamp field in second and third positions
-    schemaField = {"counter", DsTable::INTEGER};
-    this->schema.insert(1, schemaField);
-    schemaField = {"timestamp", DsTable::INTEGER};
-    this->schema.insert(2, schemaField);
-
-    return DsTable::_createTable();
 }

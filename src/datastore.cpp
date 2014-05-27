@@ -71,13 +71,14 @@ void DataStore::initWidgets()
     this->_updateCommandHistory();
 }
 
-bool DataStore::setCommand(QString cmd, QString path)
+void DataStore::setCommand(QString cmd, QString path)
 {
     DsTable::Record record;
     record.insert("command", cmd);
     record.insert("working_directory", path);
     this->setGeneralValue("current_command", cmd);
-    return tblCommands->insertRecord(record);
+    tblCommands->insertRecord(record);
+    this->_updateCommandHistory();
 }
 
 QString DataStore::getGeneralValue(QString key)
@@ -87,17 +88,17 @@ QString DataStore::getGeneralValue(QString key)
     return QString();
 }
 
-bool DataStore::setGeneralValue(QString key, QString value)
+void DataStore::setGeneralValue(QString key, QString value)
 {
     DsTable::Record record;
     record.insert("gkey", key);
     record.insert("gval", value);
-    return tblGeneral->insertRecord(record);
+    tblGeneral->insertRecord(record);
 }
 
-bool DataStore::setPreset(int pos, QString path) {
+void DataStore::setPreset(int pos, QString path) {
     QString presetKey = "preset" + QString::number(pos);
-    return setGeneralValue(presetKey, path);
+    setGeneralValue(presetKey, path);
 }
 
 QString DataStore::getExtActPri(QString ext)
@@ -138,20 +139,20 @@ QString DataStore::getCommandNote(QString command)
     return "";
 }
 
-bool DataStore::setFileNote(QString filePath, QString note)
+void DataStore::setFileNote(QString filePath, QString note)
 {
     DsTable::Record record;
     record.insert("path", filePath);
     record.insert("note", note);
-    return tblFileNotes->insertRecord(record);
+    tblFileNotes->insertRecord(record);
 }
 
-bool DataStore::setCommandNote(QString command, QString note)
+void DataStore::setCommandNote(QString command, QString note)
 {
     DsTable::Record record;
     record.insert("command", command);
     record.insert("note", note);
-    return tblCommandNotes->insertRecord(record);
+    tblCommandNotes->insertRecord(record);
 }
 
 void DataStore::_updateFileHistory()
@@ -197,18 +198,19 @@ void DataStore::_updateCommandHistory()
     emit this->sigUpdateCommandHistory(recentCommandHistory, popularCommandHistory);
 }
 
-bool DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
+void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
 {
     DsTable::Record record;
     record.insert("ext_str", extStr);
     record.insert("ext_act_pri", extActPri);
     record.insert("ext_act_sec", extActSec);
-    return tblExtensions->insertRecord(record);
+    tblExtensions->insertRecord(record);
 }
 
-bool DataStore::setFile(QString path)
+void DataStore::setFile(QString path)
 {
     DsTable::Record record;
     record.insert("path", path);
-    return tblFiles->insertRecord(record);
+    tblFiles->insertRecord(record);
+    this->_updateFileHistory();
 }

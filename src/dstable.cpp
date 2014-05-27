@@ -9,6 +9,11 @@ DsTable::DsTable(QObject *parent) : QObject(parent)
     this->tableInitialized = false;
 }
 
+DsTable::~DsTable()
+{
+
+}
+
 /**
  * @brief DsTable::initTable
  * @param tableName
@@ -16,13 +21,11 @@ DsTable::DsTable(QObject *parent) : QObject(parent)
  * @param db
  * @return
  */
-bool DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
+void DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db)
 {
-    bool result;
     QString fieldKey;
     QStringList reservedSqliteKeywords;
 
-    result = true;
     reservedSqliteKeywords
         << "ABORT" << "ACTION" << "ADD" << "AFTER" << "ALL" << "ALTER" << "ANALYZE"
         << "AND" << "AS" << "ASC" << "ATTACH" << "AUTOINCREMENT" << "BEFORE" << "BEGIN"
@@ -45,15 +48,14 @@ bool DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSche
         << "UPDATE" << "USING" << "VACUUM" << "VALUES" << "VIEW" << "VIRTUAL"
         << "WHEN" << "WHERE" << "WITH" << "WITHOUT";
 
-    if(tableName == "") return false;
-    if(!db.isOpen())    return false;
+    Q_ASSERT(!tableName.isEmpty());
+    Q_ASSERT(db.isOpen());
 
     for(int i=0; i<fieldSchema.size(); i++){
 
         fieldKey = fieldSchema.at(i).fieldName.toUpper();
         // yes, I had this problem and spent too much time to debug it
-        if(reservedSqliteKeywords.contains(fieldKey))
-            return false;
+        Q_ASSERT(!reservedSqliteKeywords.contains(fieldKey));
     }
 
     this->tableName = tableName;
@@ -62,30 +64,25 @@ bool DsTable::initTable(QString tableName, QList<DsTable::SchemaField> fieldSche
     this->db = db;
 
     if(this->db.tables().contains(tableName))
-        result = this->_loadTable();
+        this->_loadTable();
     else
-        result = this->_createTable();
+        this->_createTable();
 
     this->tableInitialized = true;
-
-    return result;
 }
 
 /**
  * @brief DsTable::insertRecord
  * @param record
  */
-bool DsTable::insertRecord(Record record)
+void DsTable::insertRecord(Record record)
 {
-    bool result;
     QString lKey; // lookup key value
     QSqlQuery query(this->db);
     QStringList fieldNames, fieldPlaceholderNames;
     QMetaType::Type metaType;
 
-    if(!this->tableInitialized){
-        return false;
-    }
+    Q_ASSERT(this->tableInitialized);
 
     // verify record field names contain schema fields
     // note: we don't care about additional fields as long as the schema fields are properly populated
@@ -95,37 +92,27 @@ bool DsTable::insertRecord(Record record)
         FieldType fieldType = this->schema.at(i).fieldType;
 
         // verify schema field is present
-        if(!record.contains(fieldName)){
-            return false;
-        }
+        Q_ASSERT(record.contains(fieldName));
 
         // verify schema field has correct type
         metaType = (QMetaType::Type)record.value(fieldName).type();
         switch(fieldType){
         case TEXT:
-            if(metaType != QMetaType::QString){
-                return false;
-            }
+            Q_ASSERT(metaType == QMetaType::QString);
             break;
         case INTEGER:
-            if(metaType != QMetaType::Int && metaType != QMetaType::Long && metaType != QMetaType::LongLong){
-                return false;
-            }
+            Q_ASSERT(metaType == QMetaType::Int ||
+                     metaType == QMetaType::Long ||
+                     metaType == QMetaType::LongLong);
             break;
         case REAL:
-            if(metaType != QMetaType::Float){
-                return false;
-            }
+            Q_ASSERT(metaType == QMetaType::Float);
             break;
         case BOOLEAN:
-            if(metaType != QMetaType::Bool){
-                return false;
-            }
+            Q_ASSERT(metaType == QMetaType::Bool);
             break;
         case BLOB:
-            if(metaType != QMetaType::QByteArray){
-                return false;
-            }
+            Q_ASSERT(metaType == QMetaType::QByteArray);
         }
     }
 
@@ -166,13 +153,15 @@ bool DsTable::insertRecord(Record record)
         query.bindValue(":" + fieldName, record.value(fieldName));
     }
 
-    result = query.exec();
-    Q_ASSERT(result);
+    if(!query.exec()){
+        qDebug() << record;
+        qDebug() << query.lastQuery();
+        qDebug() << query.lastError();
+        Q_ASSERT(QString("SQL QUERY FAILED").isEmpty());
+    }
 
     // insert record into runtime database
     this->records.insert(lKey, record);
-
-    return true;
 }
 
 /**
@@ -180,20 +169,16 @@ bool DsTable::insertRecord(Record record)
  * @param lKey
  * @return
  */
-bool DsTable::deleteRecord(QString lKey)
+void DsTable::deleteRecord(QString lKey)
 {
     QSqlQuery query(this->db);
 
-    if(!this->records.contains(lKey))
-        return false;
+    Q_ASSERT(this->records.contains(lKey));
 
     query.prepare("DELETE FROM " + this->tableName + " WHERE " + this->lookupKey + "='html'");
-    if(!query.exec())
-        return false;
+    Q_ASSERT(query.exec());
 
     this->records.remove(lKey);
-
-    return true;
 }
 
 /**
@@ -247,7 +232,7 @@ void DsTable::clearRecords()
  *         so the query input is not verified. Hm, maybe we should verify the
  *         query data?
  */
-bool DsTable::_loadTable()
+void DsTable::_loadTable()
 {
     QSqlQuery query;
     QString fieldName;
@@ -255,8 +240,7 @@ bool DsTable::_loadTable()
     Record record;
 
     query = this->db.exec("SELECT * FROM " + this->tableName);
-    if(query.lastError().number() != -1)
-        return false;
+    Q_ASSERT(query.lastError().number() == -1);
 
     // read records
     while (query.next()){
@@ -274,14 +258,12 @@ bool DsTable::_loadTable()
         // commit record
         records.insert(query.value(0).toString(), record);
     }
-
-    return true;
 }
 
 /**
  * @brief DsTable::createTable
  */
-bool DsTable::_createTable()
+void DsTable::_createTable()
 {
     QStringList fieldDeclarations;
     QString strFieldType;
@@ -302,9 +284,5 @@ bool DsTable::_createTable()
     }
 
     query = this->db.exec("CREATE TABLE " + this->tableName + " (" + fieldDeclarations.join(", ") + ")");
-
-    if(query.lastError().number() != -1)
-        return false;
-
-    return true;
+    Q_ASSERT(query.lastError().number() == -1);
 }

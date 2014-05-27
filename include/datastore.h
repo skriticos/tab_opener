@@ -25,11 +25,11 @@ public:
 
     void    initWidgets();
 
-    bool    setCommand(QString cmd, QString path);
-    bool    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
-    bool    setFile(QString path);
-    bool    setGeneralValue(QString key, QString value);
-    bool    setPreset(int pos, QString path);
+    void    setCommand(QString cmd, QString path);
+    void    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
+    void    setFile(QString path);
+    void    setGeneralValue(QString key, QString value);
+    void    setPreset(int pos, QString path);
     QString getExtActPri(QString ext);
     QString getExtActSec(QString ext);
     QString getGeneralValue(QString key);
@@ -37,8 +37,8 @@ public:
 
     QString getFileNote(QString filePath);
     QString getCommandNote(QString command);
-    bool setFileNote(QString filePath, QString note);
-    bool setCommandNote(QString command, QString note);
+    void setFileNote(QString filePath, QString note);
+    void setCommandNote(QString command, QString note);
 
 signals:
     // called on init and when history changes

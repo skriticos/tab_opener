@@ -19,21 +19,23 @@ public:
     };
 
     explicit DsTable(QObject *parent = 0);
-    bool initTable(QString            tableName,
+    virtual ~DsTable();
+
+    virtual void initTable(QString            tableName,
                    QList<SchemaField> fieldSchema,
                    QSqlDatabase       db);
 
     bool contains(QString lookupKey);
-    bool deleteRecord(QString lKey);
-    virtual bool insertRecord(Record record);
+    void deleteRecord(QString lKey);
+    virtual void insertRecord(Record record);
     int size();
     QStringList getRecordKeys();
     Record getRecord(QString lookupKey);
     void clearRecords();
 
 protected:
-    bool _loadTable();
-    virtual bool _createTable();
+    void _loadTable();
+    void _createTable();
 
     bool tableInitialized;
     QString tableName;
