@@ -80,6 +80,7 @@ void HistoryWidget::slotCommandSelected(QString commandString)
 void HistoryWidget::slotWorkingDirectorySelected(QString workingDirectory)
 {
     this->selectedWorkingDirectory = workingDirectory;
+    emit this->sigIdSelected(this->selectedCommand + workingDirectory);
 }
 
 void HistoryWidget::_slotButtonSelected(QString id)
@@ -98,12 +99,12 @@ void HistoryWidget::_slotButtonSelected(QString id)
 
         if(cmd != this->selectedCommand){
             this->selectedCommand = cmd;
-            emit this->sigSelectedCommandChanged(cmd);
         }
+        emit this->sigSelectedCommandChanged(cmd);
         if(wd != this->selectedWorkingDirectory){
             this->selectedWorkingDirectory = wd;
-            emit this->sigSelectedFolderChanged(wd);
         }
+        emit this->sigSelectedFolderChanged(wd);
     }
 
 }
@@ -191,7 +192,7 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
     for(int i=0; i<recentHistory.size(); i++){
         historyEntry = recentHistory.at(i);
         entryId = historyEntry.commandString + historyEntry.workingDirecotry;
-        this->cmdIds.value(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);
+        this->cmdIds.insert(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);
         button = _getRecentBtnAt(i);
         button->setId(entryId);
         button->setText(cmdLabel(historyEntry.commandString));
@@ -199,7 +200,7 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
     for(int i=0; i<popularHistory.size(); i++){
         historyEntry = popularHistory.at(i);
         entryId = historyEntry.commandString + historyEntry.workingDirecotry;
-        this->cmdIds.value(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);
+        this->cmdIds.insert(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);
         button = _getPopularBtnAt(i);
         button->setId(entryId);
         button->setText(cmdLabel(historyEntry.commandString));

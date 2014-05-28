@@ -47,7 +47,7 @@ void HistoryButton::_slotOnClicked(bool checked)
     }
 
     if(!checked){
-        this->setChecked(false);
+        this->setChecked(true);
         return;
     } else {
         emit this->sigSelected(this->id);

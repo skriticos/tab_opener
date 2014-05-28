@@ -27,6 +27,10 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ui->fileHistory, SIGNAL(sigFileSecActRequested(QString)), ui->fileBrowser, SLOT(slotOpenFileSeconday()));
 
     // commandHistory
+    connect(ui->commandHistory, SIGNAL(sigSelectedCommandChanged(QString)),
+            ui->commandWidget, SLOT(slotUpdateCmd(QString)));
+    connect(ui->commandHistory, SIGNAL(sigSelectedFolderChanged(QString)),
+            ui->fileBrowser, SLOT(slotSelectFolder(QString)));
 
     // presetWidget interactions
     connect(ui->presetWidget, SIGNAL(sigFolderChanged(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
@@ -41,6 +45,8 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     // fileBrowser interactions
     connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)), ui->presetWidget, SLOT(slotFolderChanged(QString)));
     connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)), ui->fileHistory, SLOT(slotFileSelected(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)),
+            ui->commandHistory, SLOT(slotWorkingDirectorySelected(QString)));
     connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)), ui->commandWidget, SLOT(slotUpdateFolder(QString)));
     connect(ui->fileBrowser, SIGNAL(sigExecCommand(QString)), ui->commandWidget, SLOT(slotExecCmd(QString)));
     connect(ui->fileBrowser, SIGNAL(sigExecMultiCommand(QStringList)),
