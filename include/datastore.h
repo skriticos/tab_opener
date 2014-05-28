@@ -44,10 +44,12 @@ signals:
     // called on init and when history changes
     void sigUpdateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void sigUpdateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
+    void sigUpdatePresets(QStringList presetList);
 
 private:
     void _updateFileHistory();
     void _updateCommandHistory();
+    void _updatePresets();
 
     QSqlDatabase dsDB;
 };

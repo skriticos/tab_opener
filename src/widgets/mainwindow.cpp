@@ -27,8 +27,6 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ui->fileHistory, SIGNAL(sigFileSecActRequested(QString)),
             ui->fileBrowser, SLOT(slotOpenFileSeconday()));
 
-    ds->initWidgets();
-
     connect(ui->commandWidget, SIGNAL(sigCmdChanged(QString)),
             ui->notesWidget,   SLOT(slotUpdateCmd(QString)));
 
@@ -46,13 +44,17 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
             ui->notesWidget, SLOT  (slotUpdateFile(QString)));
 
-    /* move to datastore
-    connect(ui->fileBrowser, SIGNAL(sigConfigChanged()),
-            this,            SLOT(slotUpdatePresets()));
-    */
+    // presetWidget interactions
+    connect(ds, SIGNAL(sigUpdatePresets(QStringList)), ui->presetWidget, SLOT(slotUpdatePresets(QStringList)));
+    connect(ui->presetWidget, SIGNAL(sigFolderChanged(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+
+    // fileBrowser interactions
+    connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)), ui->presetWidget, SLOT(slotFolderChanged(QString)));
 
     connect(ui->fileBrowser, SIGNAL(sigFileOpened()),
             this,            SLOT  (slotRequestClose()));
+
+    ds->initWidgets();
 
     this->ui->notesWidget->initWidget(ds);
     this->ui->fileBrowser->initFileBrowser(ds);

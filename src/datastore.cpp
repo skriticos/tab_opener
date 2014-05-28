@@ -63,6 +63,7 @@ void DataStore::initWidgets()
 {
     this->_updateFileHistory();
     this->_updateCommandHistory();
+    this->_updatePresets();
 }
 
 void DataStore::setCommand(QString cmd, QString path)
@@ -190,6 +191,20 @@ void DataStore::_updateCommandHistory()
         popularCommandHistory.append(entry);
     }
     emit this->sigUpdateCommandHistory(recentCommandHistory, popularCommandHistory);
+}
+
+void DataStore::_updatePresets()
+{
+    QString preset;
+    QStringList presetList;
+
+    for(int i=0; i<10; i++){
+        preset = this->getPreset(i);
+        if(!preset.isEmpty())
+            presetList << this->getPreset(i);
+    }
+
+    emit this->sigUpdatePresets(presetList);
 }
 
 void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)

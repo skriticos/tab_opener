@@ -7,8 +7,8 @@ PresetWidget::PresetWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Preset
     PresetButton *button;
     for(int i=0; i<10; i++){
         button = _getPresetButtonAt(i);
-        connect(button, SIGNAL(sigClicked(QString)), this, SLOT(_onPresetButtonClicked(QString)));
-        connect(this, SIGNAL(sigPresetClicked(QString)), button, SLOT(slotPresetSelected(QString)));
+        connect(button, SIGNAL(sigClicked(QString)), this, SLOT(_slotPresetButtonClicked(QString)));
+        connect(this, SIGNAL(sigFolderChanged(QString)), button, SLOT(slotPresetSelected(QString)));
     }
 }
 
@@ -26,9 +26,14 @@ void PresetWidget::slotUpdatePresets(QStringList pathList)
     }
 }
 
-void PresetWidget::_onPresetButtonClicked(QString presetPath)
+void PresetWidget::slotFolderChanged(QString folderPath)
 {
-    emit this->sigPresetClicked(presetPath);
+    emit this->sigFolderChanged(folderPath);
+}
+
+void PresetWidget::_slotPresetButtonClicked(QString presetPath)
+{
+    emit this->sigFolderChanged(presetPath);
 }
 
 PresetButton *PresetWidget::_getPresetButtonAt(int pos)

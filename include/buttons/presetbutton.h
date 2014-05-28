@@ -1,8 +1,10 @@
 #ifndef PRESETBUTTON_H
 #define PRESETBUTTON_H
 
-#include "hoverbutton.h"
+#include <QtCore>
 #include <QPushButton>
+
+#include "hoverbutton.h"
 
 class PresetButton : public HoverButton
 {

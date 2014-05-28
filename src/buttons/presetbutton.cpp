@@ -27,11 +27,11 @@ void PresetButton::slotPresetSelected(QString presetPath)
 {
     if(this->presetPath.isEmpty())
         return;
-    if(this->presetPath == presetPath)
+    if(this->presetPath == presetPath && this->isChecked())
         return;
 
     this->blockSignals(true);
-    if(presetPath == this->text()){
+    if(presetPath == this->presetPath){
         this->setChecked(true);
     } else {
         this->setChecked(false);
