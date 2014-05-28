@@ -1,16 +1,11 @@
 #include "configwidget.h"
 #include "ui_configwidget.h"
 
-ConfigWidget::ConfigWidget(DataStore *ds, QWidget *parent) : QDialog(parent), ui(new Ui::ConfigWidget)
+ConfigWidget::ConfigWidget(QWidget *parent) : QDialog(parent), ui(new Ui::ConfigWidget)
 {
     ui->setupUi(this);
-    this->ds = ds;
-    this->deleting_item = false;
-
-    for(QString lKey : ds->tblExtensions->getRecordKeys()){
-        QListWidgetItem *w = new QListWidgetItem(lKey, ui->extensionlist);
-        this->extWidgetMap.insert(lKey, w);
-    }
+    ui->btnCommit->setEnabled(false);
+    ui->btnDelete->setEnabled(false);
 }
 
 ConfigWidget::~ConfigWidget()
@@ -18,42 +13,37 @@ ConfigWidget::~ConfigWidget()
     delete ui;
 }
 
-void ConfigWidget::showEvent(QShowEvent *event){
-    if (!event->spontaneous()){ // we don't want to load the widget config on wm events (hide)
-        this->ui->preset0->setText(ds->getPreset(0));
-        this->ui->preset1->setText(ds->getPreset(1));
-        this->ui->preset2->setText(ds->getPreset(2));
-        this->ui->preset3->setText(ds->getPreset(3));
-        this->ui->preset4->setText(ds->getPreset(4));
-        this->ui->preset5->setText(ds->getPreset(5));
-        this->ui->preset6->setText(ds->getPreset(6));
-        this->ui->preset7->setText(ds->getPreset(7));
-        this->ui->preset8->setText(ds->getPreset(8));
-        this->ui->preset9->setText(ds->getPreset(9));
+void ConfigWidget::slotInitConfig(QStringList presetList,
+                               QList<Config::ExtensionEntry> extList,
+                               QString terminalCmd, QString fbrowserCmd)
+{
+    this->presetList = presetList;
+    this->terminalCmd = terminalCmd;
+    this->fbrowserCmd = fbrowserCmd;
 
-        this->ui->filemanager->setText(ds->getGeneralValue("file_browser"));
-        this->ui->terminal->setText(ds->getGeneralValue("terminal_emulator"));
+    for(int i=0; i<extList.size(); i++){
+        QString extName = extList.at(i).extName;
+        this->extIndex.insert(extName, extList.at(i));
+        new QListWidgetItem(extName, ui->extensionlist);
     }
+
+    _reloadSettings();
 }
 
-void ConfigWidget::on_ConfigWidget_accepted()
+void ConfigWidget::_reloadSettings()
 {
-    // TODO: check if the preset paths exist before commiting
-    //       prompt user if error occured
+    Q_ASSERT(this->presetList.size() <= 10);
 
-    ds->setPreset(0, ui->preset0->text());
-    ds->setPreset(1, ui->preset1->text());
-    ds->setPreset(2, ui->preset2->text());
-    ds->setPreset(3, ui->preset3->text());
-    ds->setPreset(4, ui->preset4->text());
-    ds->setPreset(5, ui->preset5->text());
-    ds->setPreset(6, ui->preset6->text());
-    ds->setPreset(7, ui->preset7->text());
-    ds->setPreset(8, ui->preset8->text());
-    ds->setPreset(9, ui->preset9->text());
+    for(int i=0; i<presetList.size(); i++)
+        _getPresetInput(i)->setText(this->presetList.at(i));
 
-    ds->setGeneralValue("file_browser", this->ui->filemanager->text());
-    ds->setGeneralValue("terminal_emulator", this->ui->terminal->text());
+    this->ui->filemanager->setText(this->fbrowserCmd);
+    this->ui->terminal->setText(this->terminalCmd);
+}
+
+QLineEdit *ConfigWidget::_getPresetInput(int pos)
+{
+    return ui->presetContainer->findChild<QLineEdit*>("preset" + QString::number(pos));
 }
 
 void ConfigWidget::on_btnCommit_clicked()
@@ -70,54 +60,100 @@ void ConfigWidget::on_btnCommit_clicked()
         w = new QListWidgetItem(extStr, ui->extensionlist);
         this->extWidgetMap.insert(extStr, w);
     }
-    ds->setExtensionValues(extStr, extActPri, extActSec);
-    ui->extensionlist->setCurrentItem(w);
-}
 
-void ConfigWidget::on_extensionlist_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)
-{
-    if (this->deleting_item)
-        return;
-    previous = previous; // I'm not unused, ha!
-    QString extStr = current->text();
-    ui->extension->setText(extStr);
-    DsTable::Record record = ds->tblExtensions->getRecord(extStr);
-    ui->viewerpath->setText(record.value("ext_act_pri").toString());
-    ui->editorPath->setText(record.value("ext_act_sec").toString());
+    if(!this->extIndex.contains(extStr) ||
+            this->extIndex.value(extStr).extActPri != extActPri ||
+            this->extIndex.value(extStr).extActSec != extActSec){
+
+        Config::ExtensionEntry eEntry = {extStr, extActPri, extActSec};
+        this->extIndex.insert(extStr, eEntry);
+        emit this->sigExtensionChanged(eEntry);
+    }
+    ui->extensionlist->setCurrentItem(w);
 }
 
 void ConfigWidget::on_btnDelete_clicked()
 {
-    if(ui->extensionlist->selectedItems().size() != 1)
-        return;
+    QString extStr;
 
-    this->deleting_item = true;
+    ui->extensionlist->blockSignals(true);
 
-    QListWidgetItem *w = ui->extensionlist->selectedItems().at(0);
-    QString extStr = w->text();
-
+    QListWidgetItem *w = ui->extensionlist->selectedItems().first();
+    extStr = w->text();
     delete w;
-    ds->tblExtensions->deleteRecord(extStr);
 
     ui->extension->clear();
     ui->viewerpath->clear();
     ui->editorPath->clear();
 
-    this->deleting_item = false;
+    ui->extensionlist->blockSignals(false);
 
     if(ui->extensionlist->count() > 0){
-        extStr = ui->extensionlist->selectedItems().at(0)->text();
+        ui->extensionlist->item(0)->setSelected(true);
+    } else {
+        ui->btnDelete->setEnabled(false);
+    }
+
+    emit this->sigExtensionDeleted(extStr);
+}
+
+void ConfigWidget::on_extensionlist_itemSelectionChanged()
+{
+    QList<QListWidgetItem *> sel = ui->extensionlist->selectedItems();
+
+    if(sel.size() == 1){
+        QString extStr = sel.first()->text();
         ui->extension->setText(extStr);
-
-        DsTable::Record record = ds->tblExtensions->getRecord(extStr);
-
-        ui->viewerpath->setText(record.value("ext_act_pri").toString());
-        ui->editorPath->setText(record.value("ext_act_sec").toString());
+        ui->viewerpath->setText(this->extIndex.value(extStr).extActPri);
+        ui->editorPath->setText(this->extIndex.value(extStr).extActSec);
+        ui->btnDelete->setEnabled(true);
+    } else if (sel.size() == 0) {
+        ui->btnDelete->setEnabled(false);
+    } else {
+        Q_ASSERT(false);
     }
 }
 
+void ConfigWidget::on_buttonBox_clicked(QAbstractButton *button)
+{
+    if(ui->buttonBox->button(QDialogButtonBox::Save) == button){
+        if(this->presetList.size() == 10){
+            bool isChanged = false;
+            for(int i=0; i<10; i++){
+                if(_getPresetInput(i)->text() != this->presetList.at(i)){
+                    isChanged = true;
+                    break;
+                }
+            }
+            if(isChanged){
+                this->presetList.clear();
+                for(int i=0; i<10; i++)
+                    this->presetList.append(_getPresetInput(i)->text());
+                emit this->sigPresetsChanged(this->presetList);
+            }
+        }
 
+        if(this->fbrowserCmd != ui->filemanager->text()){
+            this->fbrowserCmd = ui->filemanager->text();
+            emit this->sigExtFileBrowserChanged(this->fbrowserCmd);
+        }
+        if(this->terminalCmd != ui->terminal->text()){
+            this->terminalCmd = ui->terminal->text();
+            emit this->sigTerminalChanged(this->terminalCmd);
+        }
+    } else if(ui->buttonBox->button(QDialogButtonBox::Discard) == button){
+        _reloadSettings();
+        this->hide();
+    } else if(ui->buttonBox->button(QDialogButtonBox::Reset) == button){
+        _reloadSettings();
+    }
+}
 
-
-
-
+void ConfigWidget::on_extension_textChanged(const QString &arg1)
+{
+    if(arg1.isEmpty()){
+        ui->btnCommit->setEnabled(false);
+    } else {
+        ui->btnCommit->setEnabled(true);
+    }
+}

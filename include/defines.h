@@ -19,6 +19,17 @@
 #define SELECTED_FILE "selected_file"
 #define FILE "file"
 #define GLOBAL "global"
+#define FILE_BROWSER "file_browser"
+#define TERMINAL_EMULATOR "terminal_emulator"
 
+namespace Config {
+
+    struct ExtensionEntry {
+        QString extName;        // exetnsion name, e.g. "txt"
+        QString extActPri;      // primary action command, e.g. "/usr/bin/gvim --remote"
+        QString extActSec;      // secondary action command
+    };
+
+}
 
 #endif // DEFINES_H

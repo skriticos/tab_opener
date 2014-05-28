@@ -24,21 +24,7 @@ public:
     DsTable    *tblFileNotes;
     DsTable    *tblCommandNotes;
 
-    void    initWidgets();
-
-    void    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
-    void    setFile(QString path);
-    void    setGeneralValue(QString key, QString value);
-    void    setPreset(int pos, QString path);
-    QString getExtActPri(QString ext);
-    QString getExtActSec(QString ext);
-    QString getGeneralValue(QString key);
-    QString getPreset(int pos);
-
-    QString getFileNote(QString filePath);
-    QString getCommandNote(QString command);
-    void setFileNote(QString filePath, QString note);
-    void setCommandNote(QString command, QString note);
+    void    initWidgetData();
 
 signals:
     // note:
@@ -46,6 +32,11 @@ signals:
     // queries are required
     // this is the case on startup and on database writes
     // other signals are passed directly between modules
+
+    void sigInitConfig(QStringList presetList,
+                       QList<Config::ExtensionEntry> extList,
+                       QString terminalCmd,
+                       QString fbrowserCmd);
 
     void sigInitCommand(QString commandStr);
     void sigInitNotesSelection(QString section);
@@ -59,6 +50,12 @@ signals:
     void sigCmdSelectionChanged(QString cmdStr, QString noteText); // through commandWidget
 
 public slots:
+    void slotCfgPresetsChanged(QStringList presetList);
+    void slotCfgExtensionChanged(Config::ExtensionEntry extEntry);
+    void slotCfgExtensionDeleted(QString extStr);
+    void slotCfgTerminalChanged(QString terminalCmd);
+    void slotCfgExtFileBrowserChanged(QString fbrowserCmd);
+
     void slotCommandExecuted(QString commandString, QString workingDirectory);
     void slotGlobalNoteChanged(QString noteText);
     void slotFileNoteChanged(QString noteText, QString filePath);
@@ -69,11 +66,15 @@ public slots:
     void slotNoteSelectionChanged(QString newSelection);
 
 private:
+    void _initConfig();
     void _updateFileHistory();
     void _updateCommandHistory();
     void _updatePresets();
     void _initNoteWidget();
     void _initCommandWidget();
+
+    void    _setGeneralValue(QString key, QString value);
+    QString _getGeneralValue(QString key);
 
     QSqlDatabase dsDB;
 };

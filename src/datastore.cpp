@@ -59,39 +59,61 @@ DataStore::~DataStore()
 }
 
 // this has to be called from MainWindow after all signals and slots are connected
-void DataStore::initWidgets()
+void DataStore::initWidgetData()
 {
+    _initConfig();
+
     // the history and preset widget don't send out signals on startup, we init them first
-    this->_updateFileHistory();
-    this->_updateCommandHistory();
-    this->_updatePresets();
+    _updateFileHistory();
+    _updateCommandHistory();
+    _updatePresets();
 
     // the notes widget init just sets the last state and global text, no signals emitted
-    this->_initNoteWidget();
+    _initNoteWidget();
 
     // the command widget emits the command changed signal on startup, which is
     // propagated to notes and command history
-    this->_initCommandWidget();
+    _initCommandWidget();
 }
 
-QString DataStore::getGeneralValue(QString key)
+void DataStore::slotCfgPresetsChanged(QStringList presetList)
+{
+
+}
+
+void DataStore::slotCfgExtensionChanged(Config::ExtensionEntry extEntry)
+{
+
+}
+
+void DataStore::slotCfgExtensionDeleted(QString extStr)
+{
+
+}
+
+void DataStore::slotCfgTerminalChanged(QString terminalCmd)
+{
+
+}
+
+void DataStore::slotCfgExtFileBrowserChanged(QString fbrowserCmd)
+{
+
+}
+
+QString DataStore::_getGeneralValue(QString key)
 {
     if(tblGeneral->contains(key))
         return tblGeneral->getRecord(key).value(GVAL).toString();
     return QString();
 }
 
-void DataStore::setGeneralValue(QString key, QString value)
+void DataStore::_setGeneralValue(QString key, QString value)
 {
     DsTable::Record record;
     record.insert(GKEY, key);
     record.insert(GVAL, value);
     tblGeneral->insertRecord(record);
-}
-
-void DataStore::setPreset(int pos, QString path) {
-    QString presetKey = "preset" + QString::number(pos);
-    setGeneralValue(presetKey, path);
 }
 
 QString DataStore::getExtActPri(QString ext)
@@ -106,12 +128,6 @@ QString DataStore::getExtActSec(QString ext)
     if(this->tblExtensions->contains(ext))
         return this->tblExtensions->getRecord(ext).value(EXT_ACT_SEC).toString();
     return QString();
-}
-
-QString DataStore::getPreset(int pos)
-{
-    QString presetKey = "preset" + QString::number(pos);
-    return getGeneralValue(presetKey);
 }
 
 QString DataStore::getFileNote(QString filePath)
@@ -159,7 +175,7 @@ void DataStore::slotCommandExecuted(QString commandString, QString workingDirect
 
 void DataStore::slotGlobalNoteChanged(QString noteText)
 {
-    this->setGeneralValue(NOTES, noteText);
+    this->_setGeneralValue(NOTES, noteText);
 }
 
 void DataStore::slotFileNoteChanged(QString noteText, QString filePath)
@@ -184,7 +200,7 @@ void DataStore::slotCmdChanged(QString cmdStr)
 {
     QString noteText;
 
-    this->setGeneralValue(CURRENT_COMMAND, cmdStr);
+    this->_setGeneralValue(CURRENT_COMMAND, cmdStr);
 
     if(tblCommandNotes->contains(cmdStr))
         noteText = tblCommandNotes->getRecord(cmdStr).value(NOTE).toString();
@@ -206,7 +222,39 @@ void DataStore::slotSelectedFileChanged(QString filePath)
 
 void DataStore::slotNoteSelectionChanged(QString newSelection)
 {
-    this->setGeneralValue(LAST_NOTE_STATE, newSelection);
+    this->_setGeneralValue(LAST_NOTE_STATE, newSelection);
+}
+
+void DataStore::_initConfig()
+{
+    QStringList presetList;
+    QList<Config::ExtensionEntry> extList;
+    QString terminalCmd;
+    QString fbrowserCmd;
+
+    for(int i=0; i<10; i++){
+        if(tblGeneral->contains("preset" + QString::number(i))){
+            presetList << _getGeneralValue("preset" + QString::number(i));
+        } else {
+            break;
+        }
+    }
+
+    QStringList extKeys = this->tblExtensions->getRecordKeys();
+    for(QString extKey : extKeys){
+        DsTable::Record record = this->tblExtensions->getRecord(extKey);
+        Config::ExtensionEntry extEntry = {
+            record.value(EXT_STR),
+            record.value(EXT_ACT_PRI),
+            record.value(EXT_ACT_SEC)
+        };
+        extList << extEntry;
+    }
+
+    terminalCmd = _getGeneralValue(TERMINAL_EMULATOR);
+    fbrowserCmd = _getGeneralValue(FILE_BROWSER);
+
+    emit this->sigInitConfig(presetList, extList, terminalCmd, fbrowserCmd);
 }
 
 void DataStore::_updateFileHistory()
@@ -269,7 +317,7 @@ void DataStore::_updatePresets()
 void DataStore::_initCommandWidget()
 {
     if(this->tblGeneral->contains(CURRENT_COMMAND)){
-        emit this->sigInitCommand(this->getGeneralValue(CURRENT_COMMAND));
+        emit this->sigInitCommand(this->_getGeneralValue(CURRENT_COMMAND));
     }
 }
 
@@ -280,9 +328,9 @@ void DataStore::_initCommandWidget()
 void DataStore::_initNoteWidget()
 {
     if(this->tblGeneral->contains(LAST_NOTE_STATE))
-        emit this->sigInitNotesSelection(this->getGeneralValue(LAST_NOTE_STATE));
+        emit this->sigInitNotesSelection(this->_getGeneralValue(LAST_NOTE_STATE));
     if(this->tblGeneral->contains(NOTES))
-        emit this->sigInitGlobalNotes(this->getGeneralValue(NOTES));
+        emit this->sigInitGlobalNotes(this->_getGeneralValue(NOTES));
 }
 
 void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)

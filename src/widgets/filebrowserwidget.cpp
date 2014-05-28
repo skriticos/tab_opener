@@ -47,19 +47,14 @@ void FileBrowserWidget::initFileBrowser(DataStore *ds)
     this->ds = ds;
 
     if(ds->tblGeneral->contains("selected_file")
-              && !ds->getGeneralValue("selected_file").isEmpty()){
-        this->slotSelectFile(ds->getGeneralValue("selected_file"));
+              && !ds->_getGeneralValue("selected_file").isEmpty()){
+        this->slotSelectFile(ds->_getGeneralValue("selected_file"));
     } else if(ds->tblGeneral->contains("navigator_path")
-              && !ds->getGeneralValue("navigator_path").isEmpty()){
-        this->slotSelectFolder(ds->getGeneralValue("navigator_path"));
+              && !ds->_getGeneralValue("navigator_path").isEmpty()){
+        this->slotSelectFolder(ds->_getGeneralValue("navigator_path"));
     } else {
         this->slotSelectFolder(QDir::homePath());
     }
-
-    // note: config is mostly working with datastore
-    //       in this class only the config changed signal is passed
-    this->configWidget = new ConfigWidget(ds, this);
-    connect(this->configWidget, SIGNAL(accepted()), this, SLOT(_slotOnConfigAccepted()));
 
     this->isInit = false;
 }
@@ -127,12 +122,22 @@ void FileBrowserWidget::slotScmOn()
     ui->btnScmPush->setEnabled(true);
 }
 
+void FileBrowserWidget::slotTerminalEmulatorChanged(QString newTermEmulator)
+{
+
+}
+
+void FileBrowserWidget::slotExtFileBrowserChanged(QString newExtFBrowser)
+{
+
+}
+
 void FileBrowserWidget::_slotOnFileSelected()
 {
     QString selectedFilePath = this->getSelectedFile();
 
     if(!this->isInit)
-        ds->setGeneralValue("selected_file", selectedFilePath);
+        ds->_setGeneralValue("selected_file", selectedFilePath);
     emit this->sigFileSelected(selectedFilePath);
 }
 
@@ -194,13 +199,8 @@ void FileBrowserWidget::_slotOnFolderSeleced()
 
     // external interface
     if(!this->isInit)
-        ds->setGeneralValue("navigator_path", selectedFolderPath);
+        ds->_setGeneralValue("navigator_path", selectedFolderPath);
     emit this->sigFolderSelected(selectedFolderPath);
-}
-
-void FileBrowserWidget::_slotOnConfigAccepted()
-{
-    emit this->sigConfigChanged();
 }
 
 QString FileBrowserWidget::getSelectedFolder()
@@ -243,7 +243,7 @@ void FileBrowserWidget::on_btnTerminal_clicked()
     QString selectedFolder, command;
 
     selectedFolder = this->getSelectedFolder();
-    command = ds->getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
+    command = ds->_getGeneralValue("terminal_emulator") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
     emit this->sigFileOpened();
 }
@@ -253,14 +253,14 @@ void FileBrowserWidget::on_btnExtFileBrowser_clicked()
     QString selectedFolder, command;
 
     selectedFolder = this->getSelectedFolder();
-    command = ds->getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
+    command = ds->_getGeneralValue("file_browser") + " " + "\"" + selectedFolder + "\"";
     Util::execDetachedCommand(command);
     emit this->sigFileOpened();
 }
 
 void FileBrowserWidget::on_btnPreferences_clicked()
 {
-    this->configWidget->show();
+    emit this->sigConfigClicked();
 }
 
 void FileBrowserWidget::on_btnScmPull_clicked()

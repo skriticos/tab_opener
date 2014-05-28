@@ -29,7 +29,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QShortcut *shortEsc;
+
+    ConfigWidget *configWidget;
 };
 
 #endif // MAINWINDOW_H

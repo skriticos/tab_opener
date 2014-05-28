@@ -8,13 +8,18 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     this->setWindowFlags(Qt::FramelessWindowHint);
 
     // keyboard shortcuts
-    this->shortEsc = new QShortcut(QKeySequence(tr("Esc")), this);
-    connect(shortEsc, SIGNAL(activated()), this, SLOT(slotEscPressed()));
+    connect(new QShortcut(QKeySequence(tr("Esc")), this), SIGNAL(activated()), this, SLOT(slotEscPressed()));
 
+    // configWidget
+    this->configWidget = new ConfigWidget(this);
+
+    // history widget
     ui->fileHistory->setType(History::FILEHISTORY);
     ui->commandHistory->setType(History::COMMANDHISTORY);
 
     // datastore
+    connect(ds, SIGNAL(sigInitConfig(QStringList,QList<Config::ExtensionEntry>,QString,QString)),
+            this->configWidget, SLOT(slotInitConfig(QStringList,QList<Config::ExtensionEntry>,QString,QString)));
     connect(ds, SIGNAL(sigUpdateCommandHistory(QList<History::Entry>,QList<History::Entry>)),
             ui->commandHistory, SLOT(slotUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
     connect(ds, SIGNAL(sigUpdateFileHistory(QList<History::Entry>,QList<History::Entry>)),
@@ -27,6 +32,20 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ds, SIGNAL(sigFileSelectionChanged(QString,QString)),
             ui->notesWidget, SLOT(slotUpdateFileNote(QString,QString)));
     connect(ds, SIGNAL(sigInitCommand(QString)), ui->commandWidget, SLOT(slotUpdateCmd(QString)));
+
+    // config widget
+    connect(this->configWidget, SIGNAL(sigPresetsChanged(QStringList)), ds, SLOT(slotCfgPresetsChanged(QStringList)));
+    connect(this->configWidget, SIGNAL(sigExtensionChanged(Config::ExtensionEntry)),
+            ds, SLOT(slotCfgExtensionChanged(Config::ExtensionEntry)));
+    connect(this->configWidget, SIGNAL(sigExtensionDeleted(QString)), ds, SLOT(slotCfgExtensionDeleted(QString)));
+    connect(this->configWidget, SIGNAL(sigTerminalChanged(QString)), ds, SLOT(slotCfgTerminalChanged(QString)));
+    connect(this->configWidget, SIGNAL(sigExtFileBrowserChanged(QString)),
+            ds, SLOT(slotCfgExtFileBrowserChanged(QString)));
+
+    connect(this->configWidget, SIGNAL(sigTerminalChanged(QString)),
+            ui->fileBrowser, SLOT(slotTerminalEmulatorChanged(QString)));
+    connect(this->configWidget, SIGNAL(sigExtFileBrowserChanged(QString)),
+            ui->fileBrowser, SLOT(slotExtFileBrowserChanged(QString));
 
     // fileHistory
     connect(ui->fileHistory, SIGNAL(sigSelectedFileChanged(QString)), ui->fileBrowser, SLOT(slotSelectFile(QString)));
@@ -63,9 +82,10 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
             ui->commandWidget, SLOT(slotExecMultiCmds(QStringList)));
     connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)), ds, SLOT(slotSelectedFileChanged(QString)));
     connect(ui->fileBrowser, SIGNAL(sigFileOpened()), this, SLOT(slotRequestClose()));
+    connect(ui->fileBrowser, SIGNAL(sigConfigClicked()), this->configWidget, SLOT(show()));
 
     // send initial data load
-    ds->initWidgets();
+    ds->initWidgetData();
 
     this->ui->fileBrowser->initFileBrowser(ds);
 }

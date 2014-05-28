@@ -4,7 +4,6 @@
 #include <QtWidgets>
 
 #include "util.h"
-#include "configwidget.h"
 #include "charmbutton.h"
 #include "datastore.h"
 
@@ -28,10 +27,10 @@ public:
 signals:
     void sigFolderSelected(QString folderPath);
     void sigFileSelected(QString filePath);
-    void sigConfigChanged();
     void sigFileOpened();
     void sigExecMultiCommand(QStringList);
     void sigExecCommand(QString);
+    void sigConfigClicked();
 
 public slots:
     void slotSelectFolder(QString folderPath);
@@ -43,10 +42,12 @@ public slots:
     void slotScmOff();
     void slotScmOn();
 
+    void slotTerminalEmulatorChanged(QString newTermEmulator);
+    void slotExtFileBrowserChanged(QString newExtFBrowser);
+
 private slots:
     void _slotOnFileSelected();
     void _slotOnFolderSeleced();
-    void _slotOnConfigAccepted();
 
     void on_btnHome_clicked();
     void on_btnTerminal_clicked();
@@ -63,7 +64,6 @@ private:
     bool isInit;
 
     QFileSystemModel *dirmodel, *filemodel;
-    ConfigWidget *configWidget;
     QList<QPushButton> charmButtons;
     QList<CharmButton *> charmButtonList;
     QList<QLabel *> charmLabelList;
