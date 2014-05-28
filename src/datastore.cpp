@@ -61,10 +61,17 @@ DataStore::~DataStore()
 // this has to be called from MainWindow after all signals and slots are connected
 void DataStore::initWidgets()
 {
+    // the history and preset widget don't send out signals on startup, we init them first
     this->_updateFileHistory();
     this->_updateCommandHistory();
     this->_updatePresets();
-    this->_updateCommandWidget();
+
+    // the notes widget init just sets the last state and global text, no signals emitted
+    this->_initNoteWidget();
+
+    // the command widget emits the command changed signal on startup, which is
+    // propagated to notes and command history
+    this->_initCommandWidget();
 }
 
 QString DataStore::getGeneralValue(QString key)
@@ -146,9 +153,60 @@ void DataStore::slotCommandExecuted(QString commandString, QString workingDirect
     DsTable::Record record;
     record.insert(COMMAND, commandString);
     record.insert(WORKING_DIRECTORY, workingDirectory);
-    this->setGeneralValue(CURRENT_COMMAND, commandString);
     tblCommands->insertRecord(record);
     this->_updateCommandHistory();
+}
+
+void DataStore::slotGlobalNoteChanged(QString noteText)
+{
+    this->setGeneralValue(NOTES, noteText);
+}
+
+void DataStore::slotFileNoteChanged(QString noteText, QString filePath)
+{
+    DsTable::Record record;
+    record.insert(PATH, filePath);
+    record.insert(NOTE, noteText);
+    this->tblFileNotes->insertRecord(record);
+}
+
+void DataStore::slotCmdNoteChanged(QString noteText, QString cmdStr)
+{
+    DsTable::Record record;
+    record.insert(COMMAND, cmdStr);
+    record.insert(NOTE, noteText);
+    this->tblCommandNotes->insertRecord(record);
+}
+
+// triggered when command entry is changed
+// updates command notes (NotesWidget)
+void DataStore::slotCmdChanged(QString cmdStr)
+{
+    QString noteText;
+
+    this->setGeneralValue(CURRENT_COMMAND, cmdStr);
+
+    if(tblCommandNotes->contains(cmdStr))
+        noteText = tblCommandNotes->getRecord(cmdStr).value(NOTE).toString();
+
+    emit this->sigCmdSelectionChanged(cmdStr, noteText);
+}
+
+// triggered when file selection is changed
+// updates file notes (NotesWidget)
+void DataStore::slotSelectedFileChanged(QString filePath)
+{
+    QString noteText;
+
+    if(tblFileNotes->contains(filePath))
+        noteText = tblFileNotes->getRecord(filePath).value(NOTE).toString();
+
+    emit this->sigFileSelectionChanged(filePath, noteText);
+}
+
+void DataStore::slotNoteSelectionChanged(QString newSelection)
+{
+    this->setGeneralValue(LAST_NOTE_STATE, newSelection);
 }
 
 void DataStore::_updateFileHistory()
@@ -208,11 +266,23 @@ void DataStore::_updatePresets()
     emit this->sigUpdatePresets(presetList);
 }
 
-void DataStore::_updateCommandWidget()
+void DataStore::_initCommandWidget()
 {
-    if(this->tblGeneral->contains(CURRENT_COMMAND) && !this->getGeneralValue(CURRENT_COMMAND).isEmpty()){
-        emit this->sigCommandChanged(this->getGeneralValue(CURRENT_COMMAND));
+    if(this->tblGeneral->contains(CURRENT_COMMAND)){
+        emit this->sigInitCommand(this->getGeneralValue(CURRENT_COMMAND));
     }
+}
+
+// setup NotesWidget
+// only explicitly push last state and global notes
+// file and command notes are pushed through a roundtrip of the
+// CommandWidget and FileBrowserWidget when they are set up
+void DataStore::_initNoteWidget()
+{
+    if(this->tblGeneral->contains(LAST_NOTE_STATE))
+        emit this->sigInitNotesSelection(this->getGeneralValue(LAST_NOTE_STATE));
+    if(this->tblGeneral->contains(NOTES))
+        emit this->sigInitGlobalNotes(this->getGeneralValue(NOTES));
 }
 
 void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)

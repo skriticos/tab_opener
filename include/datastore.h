@@ -7,19 +7,8 @@
 #include "dstable.h"
 #include "dstablefav.h"
 
+#include "defines.h"
 #include "history.h"
-
-// database column name defines (to avoid typos)
-#define COMMAND "command"
-#define CURRENT_COMMAND "current_command"
-#define EXT_ACT_PRI "ext_act_pri"
-#define EXT_ACT_SEC "ext_act_sec"
-#define EXT_STR "ext_str"
-#define GKEY "gkey"
-#define GVAL "gval"
-#define NOTE "note"
-#define PATH "path"
-#define WORKING_DIRECTORY "working_directory"
 
 class DataStore : public QObject
 {
@@ -51,21 +40,40 @@ public:
     void setFileNote(QString filePath, QString note);
     void setCommandNote(QString command, QString note);
 
-public slots:
-    void slotCommandExecuted(QString commandString, QString workingDirectory);
-
 signals:
-    // called on init and when history changes
+    // note:
+    // we only send out signals from this module when database
+    // queries are required
+    // this is the case on startup and on database writes
+    // other signals are passed directly between modules
+
+    void sigInitCommand(QString commandStr);
+    void sigInitNotesSelection(QString section);
+    void sigInitGlobalNotes(QString noteText);
+
     void sigUpdateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void sigUpdateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void sigUpdatePresets(QStringList presetList);
-    void sigCommandChanged(QString commandStr);
+
+    void sigFileSelectionChanged(QString filePath, QString noteText); // through fileBrowser
+    void sigCmdSelectionChanged(QString cmdStr, QString noteText); // through commandWidget
+
+public slots:
+    void slotCommandExecuted(QString commandString, QString workingDirectory);
+    void slotGlobalNoteChanged(QString noteText);
+    void slotFileNoteChanged(QString noteText, QString filePath);
+    void slotCmdNoteChanged(QString noteText, QString cmdStr);
+
+    void slotCmdChanged(QString cmdStr);
+    void slotSelectedFileChanged(QString filePath);
+    void slotNoteSelectionChanged(QString newSelection);
 
 private:
     void _updateFileHistory();
     void _updateCommandHistory();
     void _updatePresets();
-    void _updateCommandWidget();
+    void _initNoteWidget();
+    void _initCommandWidget();
 
     QSqlDatabase dsDB;
 };

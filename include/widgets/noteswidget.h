@@ -2,8 +2,9 @@
 #define NOTESWIDGET_H
 
 #include <QtWidgets>
-#include "datastore.h"
+
 #include "hoverbutton.h"
+#include "defines.h"
 
 namespace Ui {
     class NotesWidget;
@@ -17,11 +18,17 @@ public:
     explicit NotesWidget(QWidget *parent = 0);
     ~NotesWidget();
 
-    void initWidget(DataStore *ds);
+signals:
+    void sigGlobalNoteChanged(QString noteText);
+    void sigFileNoteChanged(QString filePath, QString noteText);
+    void sigCmdNoteChanged(QString cmdStr, QString noteText);
+    void sigSelectionChanged(QString newSelection);
 
 public slots:
-    void slotUpdateFile(QString filePath);
-    void slotUpdateCmd(QString cmdStr);
+    void slotInitSelection(QString selection);
+    void slotInitGlobalNote(QString noteText);
+    void slotUpdateFileNote(QString filePath, QString noteText);
+    void slotUpdateCommandNote(QString cmdStr, QString noteText);
 
 private slots:
     void on_btnGlobalNotes_clicked(bool checked);
@@ -30,13 +37,17 @@ private slots:
     void on_notesView_textChanged();
 
 private:
-    DataStore *ds;
     void _setNotesText(QString notesText);
-    void _resetButtons();
 
     Ui::NotesWidget *ui;
+
+    // cache for current selection
     QString filePath;
     QString commandStr;
+
+    QString globalNote;
+    QString fileNote;
+    QString commandNote;
 };
 
 #endif // NOTESWIDGET_H

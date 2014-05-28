@@ -50,7 +50,8 @@ HEADERS  += \
     include/dstablefav.h \
     include/history.h \
     include/test.h \
-    include/util.h
+    include/util.h \
+    include/defines.h
 
 FORMS    += \
     ui/mainwindow.ui \

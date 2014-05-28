@@ -6,53 +6,64 @@ NotesWidget::NotesWidget(QWidget *parent) : QWidget(parent), ui(new Ui::NotesWid
     ui->setupUi(this);
 }
 
-// can't put this in the constructor, as it breaks the GUI builder
-void NotesWidget::initWidget(DataStore *ds)
-{
-    this->ds = ds;
-
-    QString state = ds->getGeneralValue("last_note_state");
-    if(state == "file"){
-        ui->btnFileNotes->setChecked(true);
-        this->_setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
-    } else if(state == "command"){
-        ui->btnCmdNotes->setChecked(true);
-        this->_setNotesText(ds->getCommandNote(ds->getGeneralValue("current_command")));
-    } else {
-        ui->btnGlobalNotes->setChecked(true);
-        this->_setNotesText(ds->getGeneralValue("notes"));
-    }
-}
-
 NotesWidget::~NotesWidget()
 {
     delete ui;
 }
 
-void NotesWidget::slotUpdateFile(QString filePath)
+void NotesWidget::slotInitSelection(QString selection)
 {
-    if(ui->btnFileNotes->isChecked()){
-        if(filePath.isEmpty()){
-            ui->notesView->blockSignals(true);
-            ui->notesView->clear();
-            ui->notesView->blockSignals(false);
-        } else
-            this->_setNotesText(ds->getFileNote(filePath));
+    if(selection == FILE){
+        ui->btnFileNotes->setChecked(true);
+    } else if(selection == COMMAND){
+        ui->btnCmdNotes->setChecked(true);
+    } else if(selection == GLOBAL) {
+        ui->btnGlobalNotes->setChecked(true);
+    } else {
+        Q_ASSERT(false);
     }
-    this->filePath = filePath;
 }
 
-void NotesWidget::slotUpdateCmd(QString cmdStr)
+void NotesWidget::slotInitGlobalNote(QString noteText)
 {
+    this->globalNote = noteText;
+
+    if(ui->btnGlobalNotes->isChecked())
+        _setNotesText(noteText);
+}
+
+void NotesWidget::slotUpdateFileNote(QString filePath, QString noteText)
+{
+    this->filePath = filePath;
+    this->fileNote = noteText;
+
+    if(ui->btnFileNotes->isChecked()){
+        if(filePath.isEmpty()){
+            ui->notesView->setPlainText("No file selected.");
+            ui->notesView->setEnabled(false);
+        } else {
+            ui->notesView->setEnabled(true);
+            _setNotesText(noteText);
+        }
+    }
+}
+
+void NotesWidget::slotUpdateCommandNote(QString cmdStr, QString noteText)
+{
+    this->commandStr = cmdStr;
+    this->commandNote = noteText;
+
     if(ui->btnCmdNotes->isChecked()){
         if(cmdStr.isEmpty()){
-            ui->notesView->blockSignals(true);
-            ui->notesView->clear();
-            ui->notesView->blockSignals(false);
-        } else
-            this->_setNotesText(ds->getCommandNote(cmdStr));
+            ui->notesView->setPlainText("No command selected.");
+            ui->notesView->setEnabled(false);
+        } else {
+            ui->notesView->setEnabled(true);
+            _setNotesText(noteText);
+        }
     }
-    this->commandStr = cmdStr;
+
+    qDebug() << cmdStr;
 }
 
 void NotesWidget::_setNotesText(QString notesText)
@@ -64,48 +75,62 @@ void NotesWidget::_setNotesText(QString notesText)
 
 void NotesWidget::on_btnGlobalNotes_clicked(bool checked)
 {
-    if(!checked){
+    if(checked){
+        ui->btnFileNotes->setChecked(false);
+        ui->btnCmdNotes->setChecked(false);
+        ui->notesView->setEnabled(true);
+        _setNotesText(this->globalNote);
+        emit this->sigSelectionChanged(GLOBAL);
+    } else {
         ui->btnGlobalNotes->setChecked(true);
-        return;
     }
-    ds->setGeneralValue("last_note_state", "global");
-    ui->btnFileNotes->setChecked(false);
-    ui->btnCmdNotes->setChecked(false);
-    this->_setNotesText(ds->getGeneralValue("notes"));
 }
 
 void NotesWidget::on_btnFileNotes_clicked(bool checked)
 {
-    if(!checked){
+    if(checked){
+        ui->btnGlobalNotes->setChecked(false);
+        ui->btnCmdNotes->setChecked(false);
+        if(this->filePath.isEmpty()){
+            ui->notesView->setPlainText("No file selected.");
+            ui->notesView->setEnabled(false);
+        } else {
+            ui->notesView->setEnabled(true);
+            _setNotesText(this->fileNote);
+        }
+        emit this->sigSelectionChanged(FILE);
+    } else {
         ui->btnFileNotes->setChecked(true);
-        return;
     }
-    ds->setGeneralValue("last_note_state", "file");
-    ui->btnGlobalNotes->setChecked(false);
-    ui->btnCmdNotes->setChecked(false);
-    this->_setNotesText(ds->getFileNote(ds->getGeneralValue("selected_file")));
 }
 
 void NotesWidget::on_btnCmdNotes_clicked(bool checked)
 {
-    if(!checked){
+    if(checked){
+        ui->btnGlobalNotes->setChecked(false);
+        ui->btnFileNotes->setChecked(false);
+        if(this->commandStr.isEmpty()){
+            ui->notesView->setPlainText("No command selected.");
+            ui->notesView->setEnabled(false);
+        } else {
+            ui->notesView->setEnabled(true);
+            _setNotesText(this->commandNote);
+        }
+        emit this->sigSelectionChanged(COMMAND);
+    } else {
         ui->btnCmdNotes->setChecked(true);
-        return;
     }
-    ds->setGeneralValue("last_note_state", "command");
-    ui->btnGlobalNotes->setChecked(false);
-    ui->btnFileNotes->setChecked(false);
-    this->_setNotesText(ds->getCommandNote(this->commandStr));
 }
 
 void NotesWidget::on_notesView_textChanged()
 {
     if(ui->btnGlobalNotes->isChecked()){
-        ds->setGeneralValue("notes", ui->notesView->toPlainText());
+        emit this->sigGlobalNoteChanged(ui->notesView->toPlainText());
     } else if(ui->btnFileNotes->isChecked()){
         if(!this->filePath.isEmpty())
-            ds->setFileNote(this->filePath, ui->notesView->toPlainText());
+            emit this->sigFileNoteChanged(this->filePath, ui->notesView->toPlainText());
     } else if(ui->btnCmdNotes->isChecked()){
-        ds->setCommandNote(this->commandStr, ui->notesView->toPlainText());
+        if(!this->commandStr.isEmpty())
+            emit this->sigCmdNoteChanged(this->commandStr, ui->notesView->toPlainText());
     }
 }

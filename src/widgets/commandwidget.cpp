@@ -34,6 +34,7 @@ void CommandWidget::slotUpdateFolder(QString selectedFolder)
 void CommandWidget::slotUpdateCmd(QString cmdStr)
 {
     ui->inputCommand->setText(cmdStr);
+    emit this->sigCmdChanged(cmdStr);
 }
 
 void CommandWidget::slotExecCmd(QString cmdStr, bool multi)
