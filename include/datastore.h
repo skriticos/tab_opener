@@ -9,6 +9,18 @@
 
 #include "history.h"
 
+// database column name defines (to avoid typos)
+#define COMMAND "command"
+#define CURRENT_COMMAND "current_command"
+#define EXT_ACT_PRI "ext_act_pri"
+#define EXT_ACT_SEC "ext_act_sec"
+#define EXT_STR "ext_str"
+#define GKEY "gkey"
+#define GVAL "gval"
+#define NOTE "note"
+#define PATH "path"
+#define WORKING_DIRECTORY "working_directory"
+
 class DataStore : public QObject
 {
     Q_OBJECT

@@ -7,46 +7,46 @@ DataStore::DataStore(QObject *parent) : QObject(parent)
     this->dsDB.open();
 
     // tblGeneral setup
-    DsTable::SchemaField generalKey = {"gkey", DsTable::TEXT}; // general lookup key
-    DsTable::SchemaField generalVal = {"gval", DsTable::TEXT}; // general value
+    DsTable::SchemaField generalKey = {GKEY, DsTable::TEXT}; // general lookup key
+    DsTable::SchemaField generalVal = {GVAL, DsTable::TEXT}; // general value
     QList<DsTable::SchemaField> generalSchema; generalSchema << generalKey << generalVal;
 
     this->tblGeneral = new DsTable("tblGeneral", generalSchema,this->dsDB, this);
 
     // tblExtension setup
-    DsTable::SchemaField extStr    = {"ext_str", DsTable::TEXT};     // extension string
-    DsTable::SchemaField extActPri = {"ext_act_pri", DsTable::TEXT}; // extension primary action
-    DsTable::SchemaField extActSec = {"ext_act_sec", DsTable::TEXT}; // extension secondary action
+    DsTable::SchemaField extStr    = {EXT_STR, DsTable::TEXT};     // extension string
+    DsTable::SchemaField extActPri = {EXT_ACT_PRI, DsTable::TEXT}; // extension primary action
+    DsTable::SchemaField extActSec = {EXT_ACT_SEC, DsTable::TEXT}; // extension secondary action
     QList<DsTable::SchemaField> extSchema; extSchema << extStr << extActPri << extActSec;
 
     this->tblExtensions = new DsTable("tblExtensions", extSchema,this->dsDB, this);
 
     // tblFiles setup
-    DsTable::SchemaField filePath  = {"path", DsTable::TEXT};
+    DsTable::SchemaField filePath  = {PATH, DsTable::TEXT};
     QList<DsTable::SchemaField> fileSchema;
     fileSchema << filePath;
 
     this->tblFiles = new DsTableFav("tblFiles", fileSchema,this->dsDB, this);
 
     // tblCommands setup
-    DsTable::SchemaField cmdCommand = {"command", DsTable::TEXT};
-    DsTable::SchemaField cmdPath    = {"working_directory", DsTable::TEXT};
+    DsTable::SchemaField cmdCommand = {COMMAND, DsTable::TEXT};
+    DsTable::SchemaField cmdPath    = {WORKING_DIRECTORY, DsTable::TEXT};
     QList<DsTable::SchemaField> cmdSchema;
     cmdSchema << cmdCommand << cmdPath;
 
     this->tblCommands = new DsTableFav("tblCommands", cmdSchema,this->dsDB, this);
 
     // tblFileNotes setup
-    DsTable::SchemaField fnPath  = {"path", DsTable::TEXT};
-    DsTable::SchemaField fnNote  = {"note", DsTable::TEXT};
+    DsTable::SchemaField fnPath  = {PATH, DsTable::TEXT};
+    DsTable::SchemaField fnNote  = {NOTE, DsTable::TEXT};
     QList<DsTable::SchemaField> fileNoteSchema;
     fileNoteSchema << fnPath << fnNote;
 
     this->tblFileNotes = new DsTable("tblFileNotes", fileNoteSchema,this->dsDB, this);
 
     // tblCommandNotes setup
-    DsTable::SchemaField cnCmd  = {"command", DsTable::TEXT};
-    DsTable::SchemaField cnNote = {"note", DsTable::TEXT};
+    DsTable::SchemaField cnCmd  = {COMMAND, DsTable::TEXT};
+    DsTable::SchemaField cnNote = {NOTE, DsTable::TEXT};
     QList<DsTable::SchemaField> commandNoteSchema;
     commandNoteSchema << cnCmd << cnNote;
 
@@ -69,9 +69,9 @@ void DataStore::initWidgets()
 void DataStore::setCommand(QString cmd, QString path)
 {
     DsTable::Record record;
-    record.insert("command", cmd);
-    record.insert("working_directory", path);
-    this->setGeneralValue("current_command", cmd);
+    record.insert(COMMAND, cmd);
+    record.insert(WORKING_DIRECTORY, path);
+    this->setGeneralValue(CURRENT_COMMAND, cmd);
     tblCommands->insertRecord(record);
     this->_updateCommandHistory();
 }
@@ -79,15 +79,15 @@ void DataStore::setCommand(QString cmd, QString path)
 QString DataStore::getGeneralValue(QString key)
 {
     if(tblGeneral->contains(key))
-        return tblGeneral->getRecord(key).value("gval").toString();
+        return tblGeneral->getRecord(key).value(GVAL).toString();
     return QString();
 }
 
 void DataStore::setGeneralValue(QString key, QString value)
 {
     DsTable::Record record;
-    record.insert("gkey", key);
-    record.insert("gval", value);
+    record.insert(GKEY, key);
+    record.insert(GVAL, value);
     tblGeneral->insertRecord(record);
 }
 
@@ -99,14 +99,14 @@ void DataStore::setPreset(int pos, QString path) {
 QString DataStore::getExtActPri(QString ext)
 {
     if(this->tblExtensions->contains(ext))
-        return this->tblExtensions->getRecord(ext).value("ext_act_pri").toString();
+        return this->tblExtensions->getRecord(ext).value(EXT_ACT_PRI).toString();
     return QString();
 }
 
 QString DataStore::getExtActSec(QString ext)
 {
     if(this->tblExtensions->contains(ext))
-        return this->tblExtensions->getRecord(ext).value("ext_act_sec").toString();
+        return this->tblExtensions->getRecord(ext).value(EXT_ACT_SEC).toString();
     return QString();
 }
 
@@ -121,7 +121,7 @@ QString DataStore::getFileNote(QString filePath)
     if(filePath.isEmpty())
         return "";
     if(tblFileNotes->contains(filePath))
-        return tblFileNotes->getRecord(filePath).value("note").toString();
+        return tblFileNotes->getRecord(filePath).value(NOTE).toString();
     return "";
 }
 
@@ -130,23 +130,23 @@ QString DataStore::getCommandNote(QString command)
     if(command.isEmpty())
         return "";
     if(tblCommandNotes->contains(command))
-        return tblCommandNotes->getRecord(command).value("note").toString();
+        return tblCommandNotes->getRecord(command).value(NOTE).toString();
     return "";
 }
 
 void DataStore::setFileNote(QString filePath, QString note)
 {
     DsTable::Record record;
-    record.insert("path", filePath);
-    record.insert("note", note);
+    record.insert(PATH, filePath);
+    record.insert(NOTE, note);
     tblFileNotes->insertRecord(record);
 }
 
 void DataStore::setCommandNote(QString command, QString note)
 {
     DsTable::Record record;
-    record.insert("command", command);
-    record.insert("note", note);
+    record.insert(COMMAND, command);
+    record.insert(NOTE, note);
     tblCommandNotes->insertRecord(record);
 }
 
@@ -159,12 +159,12 @@ void DataStore::_updateFileHistory()
 
     for(int i=0; i<recent10.size(); i++){
         History::Entry entry;
-        entry.filePath = recent10.at(i).value("path").toString();
+        entry.filePath = recent10.at(i).value(PATH).toString();
         recentFileHistory.append(entry);
     }
     for(int i=0; i<top10.size(); i++){
         History::Entry entry;
-        entry.filePath = top10.at(i).value("path").toString();
+        entry.filePath = top10.at(i).value(PATH).toString();
         popularFileHistory.append(entry);
     }
 
@@ -180,14 +180,14 @@ void DataStore::_updateCommandHistory()
 
     for(int i=0; i<recent10.size(); i++){
         History::Entry entry;
-        entry.commandString = recent10.at(i).value("command").toString();
-        entry.workingDirecotry = recent10.at(i).value("working_directory").toString();
+        entry.commandString = recent10.at(i).value(COMMAND).toString();
+        entry.workingDirecotry = recent10.at(i).value(WORKING_DIRECTORY).toString();
         recentCommandHistory.append(entry);
     }
     for(int i=0; i<top10.size(); i++){
         History::Entry entry;
-        entry.commandString = top10.at(i).value("command").toString();
-        entry.workingDirecotry = top10.at(i).value("working_directory").toString();
+        entry.commandString = top10.at(i).value(COMMAND).toString();
+        entry.workingDirecotry = top10.at(i).value(WORKING_DIRECTORY).toString();
         popularCommandHistory.append(entry);
     }
     emit this->sigUpdateCommandHistory(recentCommandHistory, popularCommandHistory);
@@ -210,16 +210,16 @@ void DataStore::_updatePresets()
 void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
 {
     DsTable::Record record;
-    record.insert("ext_str", extStr);
-    record.insert("ext_act_pri", extActPri);
-    record.insert("ext_act_sec", extActSec);
+    record.insert(EXT_STR, extStr);
+    record.insert(EXT_ACT_PRI, extActPri);
+    record.insert(EXT_ACT_SEC, extActSec);
     tblExtensions->insertRecord(record);
 }
 
 void DataStore::setFile(QString path)
 {
     DsTable::Record record;
-    record.insert("path", path);
+    record.insert(PATH, path);
     tblFiles->insertRecord(record);
     this->_updateFileHistory();
 }
