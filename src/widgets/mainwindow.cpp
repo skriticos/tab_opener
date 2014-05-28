@@ -14,46 +14,41 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     ui->fileHistory->setType(History::FILEHISTORY);
     ui->commandHistory->setType(History::COMMANDHISTORY);
 
+    // datastore
+    connect(ds, SIGNAL(sigUpdatePresets(QStringList)), ui->presetWidget, SLOT(slotUpdatePresets(QStringList)));
     connect(ds, SIGNAL(sigUpdateCommandHistory(QList<History::Entry>,QList<History::Entry>)),
             ui->commandHistory, SLOT(slotUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
     connect(ds, SIGNAL(sigUpdateFileHistory(QList<History::Entry>,QList<History::Entry>)),
             ui->fileHistory, SLOT(slotUpdateWidget(QList<History::Entry>,QList<History::Entry>)));
-    connect(ui->fileHistory, SIGNAL(sigSelectedFileChanged(QString)),
-            ui->fileBrowser, SLOT(slotSelectFile(QString)));
-    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
-            ui->fileHistory, SLOT(slotFileSelected(QString)));
-    connect(ui->fileHistory, SIGNAL(sigFilePriActRequested(QString)),
-            ui->fileBrowser, SLOT(slotOpenFilePrimary()));
-    connect(ui->fileHistory, SIGNAL(sigFileSecActRequested(QString)),
-            ui->fileBrowser, SLOT(slotOpenFileSeconday()));
 
-    connect(ui->commandWidget, SIGNAL(sigCmdChanged(QString)),
-            ui->notesWidget,   SLOT(slotUpdateCmd(QString)));
+    // fileHistory
+    connect(ui->fileHistory, SIGNAL(sigSelectedFileChanged(QString)), ui->fileBrowser, SLOT(slotSelectFile(QString)));
+    connect(ui->fileHistory, SIGNAL(sigFilePriActRequested(QString)), ui->fileBrowser, SLOT(slotOpenFilePrimary()));
+    connect(ui->fileHistory, SIGNAL(sigFileSecActRequested(QString)), ui->fileBrowser, SLOT(slotOpenFileSeconday()));
 
-    connect(ui->commandWidget, SIGNAL(sigProcStarted()),
-            ui->fileBrowser,   SLOT(slotScmOff()));
-    connect(ui->commandWidget, SIGNAL(sigProcStopped()),
-            ui->fileBrowser,   SLOT(slotScmOn()));
-    connect(ui->fileBrowser,   SIGNAL(sigFolderSelected(QString)),
-            ui->commandWidget, SLOT(slotUpdateFolder(QString)));
-    connect(ui->fileBrowser,   SIGNAL(sigExecCommand(QString)),
-            ui->commandWidget, SLOT(slotExecCmd(QString)));
-    connect(ui->fileBrowser,   SIGNAL(sigExecMultiCommand(QStringList)),
-            ui->commandWidget, SLOT(slotExecMultiCmds(QStringList)));
-
-    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)),
-            ui->notesWidget, SLOT  (slotUpdateFile(QString)));
+    // commandHistory
 
     // presetWidget interactions
-    connect(ds, SIGNAL(sigUpdatePresets(QStringList)), ui->presetWidget, SLOT(slotUpdatePresets(QStringList)));
     connect(ui->presetWidget, SIGNAL(sigFolderChanged(QString)), ui->fileBrowser, SLOT(slotSelectFolder(QString)));
+
+    // notesWidget
+
+    // commandWidget
+    connect(ui->commandWidget, SIGNAL(sigProcStarted()), ui->fileBrowser, SLOT(slotScmOff()));
+    connect(ui->commandWidget, SIGNAL(sigProcStopped()), ui->fileBrowser, SLOT(slotScmOn()));
+    connect(ui->commandWidget, SIGNAL(sigCmdChanged(QString)), ui->notesWidget, SLOT(slotUpdateCmd(QString)));
 
     // fileBrowser interactions
     connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)), ui->presetWidget, SLOT(slotFolderChanged(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)), ui->fileHistory, SLOT(slotFileSelected(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigFolderSelected(QString)), ui->commandWidget, SLOT(slotUpdateFolder(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigExecCommand(QString)), ui->commandWidget, SLOT(slotExecCmd(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigExecMultiCommand(QStringList)),
+            ui->commandWidget, SLOT(slotExecMultiCmds(QStringList)));
+    connect(ui->fileBrowser, SIGNAL(sigFileSelected(QString)), ui->notesWidget, SLOT(slotUpdateFile(QString)));
+    connect(ui->fileBrowser, SIGNAL(sigFileOpened()), this, SLOT(slotRequestClose()));
 
-    connect(ui->fileBrowser, SIGNAL(sigFileOpened()),
-            this,            SLOT  (slotRequestClose()));
-
+    // send initial data load
     ds->initWidgets();
 
     this->ui->notesWidget->initWidget(ds);
