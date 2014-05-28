@@ -64,16 +64,7 @@ void DataStore::initWidgets()
     this->_updateFileHistory();
     this->_updateCommandHistory();
     this->_updatePresets();
-}
-
-void DataStore::setCommand(QString cmd, QString path)
-{
-    DsTable::Record record;
-    record.insert(COMMAND, cmd);
-    record.insert(WORKING_DIRECTORY, path);
-    this->setGeneralValue(CURRENT_COMMAND, cmd);
-    tblCommands->insertRecord(record);
-    this->_updateCommandHistory();
+    this->_updateCommandWidget();
 }
 
 QString DataStore::getGeneralValue(QString key)
@@ -150,6 +141,16 @@ void DataStore::setCommandNote(QString command, QString note)
     tblCommandNotes->insertRecord(record);
 }
 
+void DataStore::slotCommandExecuted(QString commandString, QString workingDirectory)
+{
+    DsTable::Record record;
+    record.insert(COMMAND, commandString);
+    record.insert(WORKING_DIRECTORY, workingDirectory);
+    this->setGeneralValue(CURRENT_COMMAND, commandString);
+    tblCommands->insertRecord(record);
+    this->_updateCommandHistory();
+}
+
 void DataStore::_updateFileHistory()
 {
     QList<DsTable::Record> recent10 = tblFiles->getRecent10();
@@ -205,6 +206,13 @@ void DataStore::_updatePresets()
     }
 
     emit this->sigUpdatePresets(presetList);
+}
+
+void DataStore::_updateCommandWidget()
+{
+    if(this->tblGeneral->contains(CURRENT_COMMAND) && !this->getGeneralValue(CURRENT_COMMAND).isEmpty()){
+        emit this->sigCommandChanged(this->getGeneralValue(CURRENT_COMMAND));
+    }
 }
 
 void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)

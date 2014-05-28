@@ -18,13 +18,12 @@ public:
     explicit CommandWidget(QWidget *parent = 0);
     ~CommandWidget();
 
-    void initCommandWidget(DataStore *ds);
     bool isExecuting();
 
 signals:
     void sigProcStarted();        // used to disable all cmd related controls (scm)
     void sigProcStopped();        // used to enable all cmd related controls (scm)
-    void sigCmdExecuted(QString); // used to update cmd history
+    void sigCmdExecuted(QString, QString); // used to update cmd history
     void sigCmdChanged(QString);  // used to update notes
 
 public slots:
@@ -48,7 +47,6 @@ private:
     QProcess *process;
 
     Ui::CommandWidget *ui;
-    DataStore *ds;
 };
 
 #endif // COMMANDWIDGET_H

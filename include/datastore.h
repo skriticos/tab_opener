@@ -37,7 +37,6 @@ public:
 
     void    initWidgets();
 
-    void    setCommand(QString cmd, QString path);
     void    setExtensionValues(QString extStr, QString extActPri, QString extActSec);
     void    setFile(QString path);
     void    setGeneralValue(QString key, QString value);
@@ -52,16 +51,21 @@ public:
     void setFileNote(QString filePath, QString note);
     void setCommandNote(QString command, QString note);
 
+public slots:
+    void slotCommandExecuted(QString commandString, QString workingDirectory);
+
 signals:
     // called on init and when history changes
     void sigUpdateFileHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void sigUpdateCommandHistory(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
     void sigUpdatePresets(QStringList presetList);
+    void sigCommandChanged(QString commandStr);
 
 private:
     void _updateFileHistory();
     void _updateCommandHistory();
     void _updatePresets();
+    void _updateCommandWidget();
 
     QSqlDatabase dsDB;
 };

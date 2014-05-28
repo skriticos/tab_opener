@@ -18,15 +18,6 @@ CommandWidget::~CommandWidget()
     delete ui;
 }
 
-void CommandWidget::initCommandWidget(DataStore *ds)
-{
-    this->ds = ds;
-    if(ds->tblGeneral->contains("current_command")
-            && !ds->getGeneralValue("current_command").isEmpty()){
-        ui->inputCommand->setText(ds->getGeneralValue("current_command"));
-    }
-}
-
 bool CommandWidget::isExecuting()
 {
     if(this->process->state() == QProcess::NotRunning)
@@ -83,8 +74,7 @@ void CommandWidget::on_btnExecCommand_clicked()
 {
     if(this->process->state() == QProcess::NotRunning){
         if(!ui->inputCommand->text().isEmpty()){
-            emit this->sigCmdExecuted(ui->inputCommand->text());
-            this->ds->setCommand(ui->inputCommand->text(), this->workingDirectory);
+            emit this->sigCmdExecuted(ui->inputCommand->text(), this->workingDirectory);
             this->slotExecCmd(ui->inputCommand->text());
         }
     } else { // process already running, aborting
