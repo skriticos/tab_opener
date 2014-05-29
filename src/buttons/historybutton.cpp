@@ -30,9 +30,7 @@ void HistoryButton::slotIdSelected(QString id)
     this->blockSignals(true);
 
     if(this->id == id) {
-        if(!this->isChecked()) {
-            this->setChecked(true);
-        }
+        this->setChecked(true);
     } else {
         this->setChecked(false);
     }

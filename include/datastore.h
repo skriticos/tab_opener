@@ -64,8 +64,8 @@ public slots:
 
     void slotCommandExecuted(QString commandString, QString workingDirectory);
     void slotGlobalNoteChanged(QString noteText);
-    void slotFileNoteChanged(QString noteText, QString filePath);
-    void slotCmdNoteChanged(QString noteText, QString cmdStr);
+    void slotFileNoteChanged(QString filePath, QString noteText);
+    void slotCmdNoteChanged(QString cmdStr, QString noteText);
 
     void slotCmdChanged(QString cmdStr);
     void slotSelectedFileChanged(QString filePath);

@@ -54,7 +54,6 @@ private slots:
     void on_btnScmPull_clicked();
     void on_btnScmCommit_clicked();
     void on_btnScmPush_clicked();
-    void on_btnHelp_clicked();
 
 private:
     QString _getSelectedFolder();

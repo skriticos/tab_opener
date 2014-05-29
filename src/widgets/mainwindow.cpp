@@ -135,6 +135,7 @@ void MainWindow::slotInvalidExtension()
         this,
         "Invalid Extension",
         "You requested to open a file with an unconfigured extension."
-        "Opening aborted.",
+        "Opening aborted.\n"
+        "Please go to Preferences and configure the file extension before tyring to open it.",
         QMessageBox::Ok);
 }

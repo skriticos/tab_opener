@@ -24,7 +24,8 @@ void ConfigWidget::slotInitConfig(QStringList presetList,
     for(int i = 0; i < extList.size(); i++) {
         QString extName = extList.at(i).extName;
         this->extIndex.insert(extName, extList.at(i));
-        new QListWidgetItem(extName, ui->extensionlist);
+        QListWidgetItem *w = new QListWidgetItem(extName, ui->extensionlist);
+        this->extWidgetMap.insert(extName, w);
     }
 
     _reloadSettings();

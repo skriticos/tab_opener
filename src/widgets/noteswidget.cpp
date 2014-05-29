@@ -128,13 +128,16 @@ void NotesWidget::on_btnCmdNotes_clicked(bool checked)
 void NotesWidget::on_notesView_textChanged()
 {
     if(ui->btnGlobalNotes->isChecked()) {
+        this->globalNote = ui->notesView->toPlainText();
         emit this->sigGlobalNoteChanged(ui->notesView->toPlainText());
     } else if(ui->btnFileNotes->isChecked()) {
         if(!this->filePath.isEmpty()) {
+            this->fileNote = ui->notesView->toPlainText();
             emit this->sigFileNoteChanged(this->filePath, ui->notesView->toPlainText());
         }
     } else if(ui->btnCmdNotes->isChecked()) {
         if(!this->commandStr.isEmpty()) {
+            this->commandNote = ui->notesView->toPlainText();
             emit this->sigCmdNoteChanged(this->commandStr, ui->notesView->toPlainText());
         }
     }

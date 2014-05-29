@@ -64,18 +64,29 @@ void HistoryWidget::slotUpdateWidget(QList<History::Entry> recentHistory,
 
 void HistoryWidget::slotFileSelected(QString filePath)
 {
-    if(filePath != this->selectedFile) {
-        this->selectedFile = filePath;
-        emit this->sigIdSelected(filePath); // select matching history buttons
+    if(this->historyFilePathList.contains(filePath) && !filePath.isEmpty()) {
+        ui->control0->setEnabled(true);
+        ui->control1->setEnabled(true);
+        ui->control2->setEnabled(true);
+    } else {
+        ui->control0->setEnabled(false);
+        ui->control1->setEnabled(false);
+        ui->control2->setEnabled(false);
     }
+
+    this->selectedFile = filePath;
+    emit this->sigIdSelected(filePath); // select matching history buttons
 }
 
 void HistoryWidget::slotCommandSelected(QString commandString)
 {
-    if(commandString != this->selectedCommand) {
-        this->selectedCommand = commandString;
-        emit this->sigIdSelected(commandString + this->selectedWorkingDirectory);
+    if(!commandString.isEmpty() && this->commandList.contains(commandString)){
+        ui->control0->setEnabled(true);
+    } else {
+        ui->control0->setEnabled(false);
     }
+    this->selectedCommand = commandString;
+    emit this->sigIdSelected(commandString + this->selectedWorkingDirectory);
 }
 
 void HistoryWidget::slotWorkingDirectorySelected(QString workingDirectory)
@@ -157,6 +168,8 @@ void HistoryWidget::_updateFileHistory(QList<History::Entry> recentHistory,
     History::Entry historyEntry;
     QString entryId;
 
+    this->historyFilePathList.clear();
+
     // lambda function to compute file label (see c++11)
     auto fileLabel = [](QString filePath) {
         if(filePath.size() > 35) {
@@ -172,6 +185,7 @@ void HistoryWidget::_updateFileHistory(QList<History::Entry> recentHistory,
         button = _getRecentBtnAt(i);
         button->setId(entryId);
         button->setText(fileLabel(historyEntry.filePath));
+        this->historyFilePathList.append(historyEntry.filePath);
     }
 
     for(int i = 0; i < popularHistory.size(); i++) {
@@ -180,6 +194,7 @@ void HistoryWidget::_updateFileHistory(QList<History::Entry> recentHistory,
         button = _getPopularBtnAt(i);
         button->setId(entryId);
         button->setText(fileLabel(historyEntry.filePath));
+        this->historyFilePathList.append(historyEntry.filePath);
     }
 }
 
@@ -189,6 +204,8 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
     HistoryButton *button;
     History::Entry historyEntry;
     QString entryId;
+
+    this->commandList.clear();
 
     auto cmdLabel = [](QString cmdStr) {
         if(cmdStr.size() > 35) {
@@ -205,6 +222,7 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
         button = _getRecentBtnAt(i);
         button->setId(entryId);
         button->setText(cmdLabel(historyEntry.commandString));
+        this->commandList.append(historyEntry.commandString);
     }
 
     for(int i = 0; i < popularHistory.size(); i++) {
@@ -214,5 +232,8 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
         button = _getPopularBtnAt(i);
         button->setId(entryId);
         button->setText(cmdLabel(historyEntry.commandString));
+        this->commandList.append(historyEntry.commandString);
     }
+
+    emit this->sigIdSelected(this->selectedCommand + this->selectedWorkingDirectory);
 }

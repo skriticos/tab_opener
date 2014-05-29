@@ -41,9 +41,7 @@ signals:
     void sigSelectedFileChanged(QString path);
     void sigSelectedCommandChanged(QString command);
     void sigSelectedFolderChanged(QString workingDirectory);
-
     void sigRequestOpenFile(FileOpen::OpenType openType, QString filePath);
-
     void sigIdSelected(QString id); // gui update signal for child widgets
 
 public slots:
@@ -71,6 +69,8 @@ private:
     History::WidgetType type;
 
     QMap<QString, QStringList> cmdIds;
+    QStringList commandList;
+    QStringList historyFilePathList;
 
     QString selectedFile;
     QString selectedCommand;

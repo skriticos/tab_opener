@@ -125,7 +125,7 @@ void DataStore::slotGlobalNoteChanged(QString noteText)
     this->_setGeneralValue(NOTES, noteText);
 }
 
-void DataStore::slotFileNoteChanged(QString noteText, QString filePath)
+void DataStore::slotFileNoteChanged(QString filePath, QString noteText)
 {
     DsTable::Record record;
     record.insert(PATH, filePath);
@@ -133,7 +133,7 @@ void DataStore::slotFileNoteChanged(QString noteText, QString filePath)
     this->tblFileNotes->insertRecord(record);
 }
 
-void DataStore::slotCmdNoteChanged(QString noteText, QString cmdStr)
+void DataStore::slotCmdNoteChanged(QString cmdStr, QString noteText)
 {
     DsTable::Record record;
     record.insert(COMMAND, cmdStr);
@@ -345,6 +345,8 @@ void DataStore::_initNoteWidget()
 {
     if(this->tblGeneral->contains(LAST_NOTE_STATE)) {
         emit this->sigInitNotesSelection(this->_getGeneralValue(LAST_NOTE_STATE));
+    } else {
+        emit this->sigInitNotesSelection(GLOBAL);
     }
 
     if(this->tblGeneral->contains(NOTES)) {
