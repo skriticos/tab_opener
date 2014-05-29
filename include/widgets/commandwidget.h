@@ -29,8 +29,10 @@ signals:
 public slots:
     void slotUpdateFolder(QString selectedFolder);
     void slotUpdateCmd(QString cmdStr);
-    void slotExecCmd(QString cmdStr, bool multi = false);
-    bool slotExecMultiCmds(QStringList cmdList);
+
+    void slotScmPull();
+    void slotScmCommit(QString commitMsg);
+    void slotScmPush();
 
 private slots:
     void on_btnExecCommand_clicked();
@@ -43,6 +45,9 @@ private slots:
     void _slotProcessFinished(int exitCode);
 
 private:
+    void _slotExecCmd(QString cmdStr, bool multi = false);
+    bool _slotExecMultiCmds(QStringList cmdList);
+
     QString workingDirectory;
     QProcess *process;
 

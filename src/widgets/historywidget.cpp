@@ -114,7 +114,7 @@ void HistoryWidget::_slotControl0Clicked()
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
 
     if(this->type == History::FILEHISTORY){ // execute primary action
-        emit this->sigFilePriActRequested(this->selectedFile);
+        emit this->sigRequestOpenFile(FileOpen::PRIMARY, this->selectedFile);
 
     } else if(this->type == History::COMMANDHISTORY) { // copy to clipboard
         QApplication::clipboard()->setText(this->selectedCommand);
@@ -126,7 +126,7 @@ void HistoryWidget::_slotControl1Clicked()
 {
     Q_ASSERT(this->type == History::FILEHISTORY);
 
-    emit this->sigFileSecActRequested(this->selectedFile);
+    emit this->sigRequestOpenFile(FileOpen::SECONDARY, this->selectedFile);
 }
 
 void HistoryWidget::_slotControl2Clicked()

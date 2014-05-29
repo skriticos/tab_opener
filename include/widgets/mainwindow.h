@@ -26,6 +26,7 @@ public:
 private slots:
     void slotEscPressed();
     void slotRequestClose(); // file opened with primary or secondary action, or terminal or file browser run
+    void slotInvalidExtension();
 
 private:
     Ui::MainWindow *ui;

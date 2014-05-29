@@ -21,6 +21,7 @@
 #define GLOBAL "global"
 #define FILE_BROWSER "file_browser"
 #define TERMINAL_EMULATOR "terminal_emulator"
+#define NAVIGATOR_PATH "navigator_path"
 
 namespace Config {
 
@@ -29,6 +30,13 @@ namespace Config {
         QString extActPri;      // primary action command, e.g. "/usr/bin/gvim --remote"
         QString extActSec;      // secondary action command
     };
+
+}
+
+namespace FileOpen {
+
+    enum OpenType { PRIMARY, SECONDARY };
+    enum ExtApp { TERMINAL, FILEBROWSER };
 
 }
 

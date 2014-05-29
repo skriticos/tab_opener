@@ -7,8 +7,6 @@ PresetButton::PresetButton(QWidget *parent) : HoverButton(parent)
 
 void PresetButton::setPreset(QString presetPath)
 {
-    Q_ASSERT(!presetPath.isEmpty());
-
     auto presetLabel = [] (QString presetPath) {
         if(presetPath.size() > 35)
             return "..." + presetPath.right(35);

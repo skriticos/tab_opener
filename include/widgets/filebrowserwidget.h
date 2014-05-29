@@ -3,9 +3,9 @@
 
 #include <QtWidgets>
 
-#include "util.h"
 #include "charmbutton.h"
-#include "datastore.h"
+#include "defines.h"
+#include "util.h"
 
 namespace Ui {
     class FileBrowser;
@@ -19,33 +19,30 @@ public:
     explicit FileBrowserWidget(QWidget *parent = 0);
     ~FileBrowserWidget();
 
-    void initFileBrowser(DataStore *ds);
-
-    QString getSelectedFolder();
-    QString getSelectedFile();
-
 signals:
     void sigFolderSelected(QString folderPath);
     void sigFileSelected(QString filePath);
-    void sigFileOpened();
-    void sigExecMultiCommand(QStringList);
-    void sigExecCommand(QString);
+    void sigRequestOpenExtApp(FileOpen::ExtApp extApp, QString folderPath);
+    void sigRequestOpenFile(FileOpen::OpenType openType, QString filePath);
+
+    void sigRequestScmPull();
+    void sigRequestScmCommit(QString commitMsg);
+    void sigRequestScmPush();
+
     void sigConfigClicked();
 
 public slots:
+    void slotInitLocation(QString folderPath, QString filePath);
+
     void slotSelectFolder(QString folderPath);
     void slotSelectFile(QString filePath);
-
-    void slotOpenFilePrimary();
-    void slotOpenFileSeconday();
 
     void slotScmOff();
     void slotScmOn();
 
-    void slotTerminalEmulatorChanged(QString newTermEmulator);
-    void slotExtFileBrowserChanged(QString newExtFBrowser);
-
 private slots:
+    void _slotOpenFilePrimary();
+    void _slotOpenFileSeconday();
     void _slotOnFileSelected();
     void _slotOnFolderSeleced();
 
@@ -59,9 +56,10 @@ private slots:
     void on_btnHelp_clicked();
 
 private:
+    QString _getSelectedFolder();
+    QString _getSelectedFile();
+
     Ui::FileBrowser *ui;
-    DataStore *ds;
-    bool isInit;
 
     QFileSystemModel *dirmodel, *filemodel;
     QList<QPushButton> charmButtons;

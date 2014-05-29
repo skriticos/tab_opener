@@ -74,94 +74,38 @@ void DataStore::initWidgetData()
     // the command widget emits the command changed signal on startup, which is
     // propagated to notes and command history
     _initCommandWidget();
+
+    _initFileBrowserWidget();
 }
 
 void DataStore::slotCfgPresetsChanged(QStringList presetList)
 {
-
+    for(int i=0; i<presetList.size(); i++)
+        _setGeneralValue("preset" + QString::number(i), presetList.at(i));
 }
 
 void DataStore::slotCfgExtensionChanged(Config::ExtensionEntry extEntry)
 {
-
+    DsTable::Record record;
+    record.insert(EXT_STR, extEntry.extName);
+    record.insert(EXT_ACT_PRI, extEntry.extActPri);
+    record.insert(EXT_ACT_SEC, extEntry.extActSec);
+    tblExtensions->insertRecord(record);
 }
 
 void DataStore::slotCfgExtensionDeleted(QString extStr)
 {
-
+    tblExtensions->deleteRecord(extStr);
 }
 
 void DataStore::slotCfgTerminalChanged(QString terminalCmd)
 {
-
+    _setGeneralValue(TERMINAL_EMULATOR, terminalCmd);
 }
 
 void DataStore::slotCfgExtFileBrowserChanged(QString fbrowserCmd)
 {
-
-}
-
-QString DataStore::_getGeneralValue(QString key)
-{
-    if(tblGeneral->contains(key))
-        return tblGeneral->getRecord(key).value(GVAL).toString();
-    return QString();
-}
-
-void DataStore::_setGeneralValue(QString key, QString value)
-{
-    DsTable::Record record;
-    record.insert(GKEY, key);
-    record.insert(GVAL, value);
-    tblGeneral->insertRecord(record);
-}
-
-QString DataStore::getExtActPri(QString ext)
-{
-    if(this->tblExtensions->contains(ext))
-        return this->tblExtensions->getRecord(ext).value(EXT_ACT_PRI).toString();
-    return QString();
-}
-
-QString DataStore::getExtActSec(QString ext)
-{
-    if(this->tblExtensions->contains(ext))
-        return this->tblExtensions->getRecord(ext).value(EXT_ACT_SEC).toString();
-    return QString();
-}
-
-QString DataStore::getFileNote(QString filePath)
-{
-    if(filePath.isEmpty())
-        return "";
-    if(tblFileNotes->contains(filePath))
-        return tblFileNotes->getRecord(filePath).value(NOTE).toString();
-    return "";
-}
-
-QString DataStore::getCommandNote(QString command)
-{
-    if(command.isEmpty())
-        return "";
-    if(tblCommandNotes->contains(command))
-        return tblCommandNotes->getRecord(command).value(NOTE).toString();
-    return "";
-}
-
-void DataStore::setFileNote(QString filePath, QString note)
-{
-    DsTable::Record record;
-    record.insert(PATH, filePath);
-    record.insert(NOTE, note);
-    tblFileNotes->insertRecord(record);
-}
-
-void DataStore::setCommandNote(QString command, QString note)
-{
-    DsTable::Record record;
-    record.insert(COMMAND, command);
-    record.insert(NOTE, note);
-    tblCommandNotes->insertRecord(record);
+    _setGeneralValue(FILE_BROWSER, fbrowserCmd);
 }
 
 void DataStore::slotCommandExecuted(QString commandString, QString workingDirectory)
@@ -217,12 +161,68 @@ void DataStore::slotSelectedFileChanged(QString filePath)
     if(tblFileNotes->contains(filePath))
         noteText = tblFileNotes->getRecord(filePath).value(NOTE).toString();
 
+    _setGeneralValue(SELECTED_FILE, filePath);
     emit this->sigFileSelectionChanged(filePath, noteText);
+}
+
+void DataStore::slotSelectedFolderChanged(QString newFolderPath)
+{
+    _setGeneralValue(NAVIGATOR_PATH, newFolderPath);
 }
 
 void DataStore::slotNoteSelectionChanged(QString newSelection)
 {
     this->_setGeneralValue(LAST_NOTE_STATE, newSelection);
+}
+
+void DataStore::slotOpenExtApp(FileOpen::ExtApp extApp, QString folderPath)
+{
+    if(extApp == FileOpen::TERMINAL){
+        Util::execDetachedCommand(_getGeneralValue(TERMINAL_EMULATOR) + " " + "\"" + folderPath + "\"");
+    }
+    if(extApp == FileOpen::FILEBROWSER){
+        Util::execDetachedCommand(_getGeneralValue(FILE_BROWSER) + " " + "\"" + folderPath + "\"");
+    }
+    emit this->sigFileOrExtAppOpened();
+}
+
+void DataStore::slotOpenFile(FileOpen::OpenType openType, QString filePath)
+{
+    QString openCommand;
+    QString extension = filePath.split(".").last();
+
+    if(!this->tblExtensions->contains(extension)){
+        emit this->sigInvalidExtension();
+        return;
+    }
+    if(openType == FileOpen::PRIMARY)
+        openCommand = this->tblExtensions->getRecord(extension).value(EXT_ACT_PRI).toString();
+    else if(openType == FileOpen::SECONDARY)
+        openCommand = this->tblExtensions->getRecord(extension).value(EXT_ACT_SEC).toString();
+
+    Util::execDetachedCommand(openCommand + " " + "\"" + filePath + "\"");
+
+    DsTable::Record record;
+    record.insert(PATH, filePath);
+    tblFiles->insertRecord(record);
+
+    _updateFileHistory();
+    emit this->sigFileOrExtAppOpened();
+}
+
+QString DataStore::_getGeneralValue(QString key)
+{
+    if(tblGeneral->contains(key))
+        return tblGeneral->getRecord(key).value(GVAL).toString();
+    return QString();
+}
+
+void DataStore::_setGeneralValue(QString key, QString value)
+{
+    DsTable::Record record;
+    record.insert(GKEY, key);
+    record.insert(GVAL, value);
+    tblGeneral->insertRecord(record);
 }
 
 void DataStore::_initConfig()
@@ -243,11 +243,10 @@ void DataStore::_initConfig()
     QStringList extKeys = this->tblExtensions->getRecordKeys();
     for(QString extKey : extKeys){
         DsTable::Record record = this->tblExtensions->getRecord(extKey);
-        Config::ExtensionEntry extEntry = {
-            record.value(EXT_STR),
-            record.value(EXT_ACT_PRI),
-            record.value(EXT_ACT_SEC)
-        };
+        Config::ExtensionEntry extEntry;
+        extEntry.extName = record.value(EXT_STR).toString();
+        extEntry.extActPri = record.value(EXT_ACT_PRI).toString();
+        extEntry.extActSec = record.value(EXT_ACT_SEC).toString();
         extList << extEntry;
     }
 
@@ -302,23 +301,21 @@ void DataStore::_updateCommandHistory()
 
 void DataStore::_updatePresets()
 {
-    QString preset;
     QStringList presetList;
-
-    for(int i=0; i<10; i++){
-        preset = this->getPreset(i);
-        if(!preset.isEmpty())
-            presetList << this->getPreset(i);
-    }
-
+    for(int i=0; i<10; i++)
+        presetList << _getGeneralValue("preset" + QString::number(i));
     emit this->sigUpdatePresets(presetList);
 }
 
 void DataStore::_initCommandWidget()
 {
-    if(this->tblGeneral->contains(CURRENT_COMMAND)){
+    if(this->tblGeneral->contains(CURRENT_COMMAND))
         emit this->sigInitCommand(this->_getGeneralValue(CURRENT_COMMAND));
-    }
+}
+
+void DataStore::_initFileBrowserWidget()
+{
+    emit this->sigFbInitLocation(_getGeneralValue(NAVIGATOR_PATH), _getGeneralValue(SELECTED_FILE));
 }
 
 // setup NotesWidget
@@ -331,21 +328,4 @@ void DataStore::_initNoteWidget()
         emit this->sigInitNotesSelection(this->_getGeneralValue(LAST_NOTE_STATE));
     if(this->tblGeneral->contains(NOTES))
         emit this->sigInitGlobalNotes(this->_getGeneralValue(NOTES));
-}
-
-void DataStore::setExtensionValues(QString extStr, QString extActPri, QString extActSec)
-{
-    DsTable::Record record;
-    record.insert(EXT_STR, extStr);
-    record.insert(EXT_ACT_PRI, extActPri);
-    record.insert(EXT_ACT_SEC, extActSec);
-    tblExtensions->insertRecord(record);
-}
-
-void DataStore::setFile(QString path)
-{
-    DsTable::Record record;
-    record.insert(PATH, path);
-    tblFiles->insertRecord(record);
-    this->_updateFileHistory();
 }

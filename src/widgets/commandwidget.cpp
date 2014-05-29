@@ -37,7 +37,7 @@ void CommandWidget::slotUpdateCmd(QString cmdStr)
     emit this->sigCmdChanged(cmdStr);
 }
 
-void CommandWidget::slotExecCmd(QString cmdStr, bool multi)
+void CommandWidget::_slotExecCmd(QString cmdStr, bool multi)
 {
     Util::ParsedCommand parsedCmd;
     QString wd;
@@ -60,10 +60,10 @@ void CommandWidget::slotExecCmd(QString cmdStr, bool multi)
     emit this->sigProcStarted();
 }
 
-bool CommandWidget::slotExecMultiCmds(QStringList cmdList)
+bool CommandWidget::_slotExecMultiCmds(QStringList cmdList)
 {
     for(int i=0; i<cmdList.size(); i++){
-        this->slotExecCmd(cmdList.at(i), true);
+        this->_slotExecCmd(cmdList.at(i), true);
         this->process->waitForFinished();
         if(this->process->exitCode() != 0)
             return false;
@@ -71,12 +71,30 @@ bool CommandWidget::slotExecMultiCmds(QStringList cmdList)
     return true;
 }
 
+void CommandWidget::slotScmPull()
+{
+    _slotExecCmd("git pull --all");
+}
+
+void CommandWidget::slotScmCommit(QString commitMsg)
+{
+    QStringList cmdList;
+    cmdList << "git add --all";
+    cmdList << "git commit -am \"" + commitMsg + "\"";
+    _slotExecMultiCmds(cmdList);
+}
+
+void CommandWidget::slotScmPush()
+{
+    _slotExecCmd("git push --all");
+}
+
 void CommandWidget::on_btnExecCommand_clicked()
 {
     if(this->process->state() == QProcess::NotRunning){
         if(!ui->inputCommand->text().isEmpty()){
             emit this->sigCmdExecuted(ui->inputCommand->text(), this->workingDirectory);
-            this->slotExecCmd(ui->inputCommand->text());
+            this->_slotExecCmd(ui->inputCommand->text());
         }
     } else { // process already running, aborting
         this->process->kill();

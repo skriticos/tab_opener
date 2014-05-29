@@ -8,6 +8,7 @@
 #include "dstablefav.h"
 
 #include "defines.h"
+#include "util.h"
 #include "history.h"
 
 class DataStore : public QObject
@@ -24,7 +25,7 @@ public:
     DsTable    *tblFileNotes;
     DsTable    *tblCommandNotes;
 
-    void    initWidgetData();
+    void initWidgetData();
 
 signals:
     // note:
@@ -49,6 +50,11 @@ signals:
     void sigFileSelectionChanged(QString filePath, QString noteText); // through fileBrowser
     void sigCmdSelectionChanged(QString cmdStr, QString noteText); // through commandWidget
 
+    void sigFbInitLocation(QString folderPath, QString filePath);
+    void sigFileOrExtAppOpened();
+
+    void sigInvalidExtension();
+
 public slots:
     void slotCfgPresetsChanged(QStringList presetList);
     void slotCfgExtensionChanged(Config::ExtensionEntry extEntry);
@@ -63,7 +69,11 @@ public slots:
 
     void slotCmdChanged(QString cmdStr);
     void slotSelectedFileChanged(QString filePath);
+    void slotSelectedFolderChanged(QString newFolderPath);
     void slotNoteSelectionChanged(QString newSelection);
+
+    void slotOpenExtApp(FileOpen::ExtApp extApp, QString folderPath); // opens terminal / external file browser
+    void slotOpenFile(FileOpen::OpenType openType, QString filePath); // opens a file (FileBrowser, FileHistory)
 
 private:
     void _initConfig();
@@ -72,6 +82,7 @@ private:
     void _updatePresets();
     void _initNoteWidget();
     void _initCommandWidget();
+    void _initFileBrowserWidget();
 
     void    _setGeneralValue(QString key, QString value);
     QString _getGeneralValue(QString key);

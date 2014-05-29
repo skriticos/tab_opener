@@ -62,8 +62,6 @@ void NotesWidget::slotUpdateCommandNote(QString cmdStr, QString noteText)
             _setNotesText(noteText);
         }
     }
-
-    qDebug() << cmdStr;
 }
 
 void NotesWidget::_setNotesText(QString notesText)

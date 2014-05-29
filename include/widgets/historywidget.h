@@ -7,6 +7,7 @@
 
 #include "history.h"
 #include "historybutton.h"
+#include "defines.h"
 
 namespace Ui {
     class HistoryWidget;
@@ -40,10 +41,9 @@ signals:
     void sigSelectedCommandChanged(QString command);
     void sigSelectedFolderChanged(QString workingDirectory);
 
-    void sigFilePriActRequested(QString filePath);
-    void sigFileSecActRequested(QString filePath);
+    void sigRequestOpenFile(FileOpen::OpenType openType, QString filePath);
 
-    void sigIdSelected(QString id); // internal signal to history buttons
+    void sigIdSelected(QString id); // gui update signal for child widgets
 
 public slots:
     void slotUpdateWidget(QList<History::Entry> recentHistory, QList<History::Entry> popularHistory);
