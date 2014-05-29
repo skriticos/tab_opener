@@ -121,25 +121,25 @@ void ConfigWidget::on_extensionlist_itemSelectionChanged()
 void ConfigWidget::on_buttonBox_clicked(QAbstractButton *button)
 {
     if(ui->buttonBox->button(QDialogButtonBox::Save) == button) {
-        if(this->presetList.size() == 10) {
-            bool isChanged = false;
+        bool isChanged = false;
+
+        for(int i = 0; i < this->presetList.size(); i++) {
+            if(_getPresetInput(i)->text() != this->presetList.at(i)) {
+                isChanged = true;
+                break;
+            }
+        }
+        if(this->presetList.size() != 10)
+            isChanged = true;
+
+        if(isChanged) {
+            this->presetList.clear();
 
             for(int i = 0; i < 10; i++) {
-                if(_getPresetInput(i)->text() != this->presetList.at(i)) {
-                    isChanged = true;
-                    break;
-                }
+                this->presetList.append(_getPresetInput(i)->text());
             }
 
-            if(isChanged) {
-                this->presetList.clear();
-
-                for(int i = 0; i < 10; i++) {
-                    this->presetList.append(_getPresetInput(i)->text());
-                }
-
-                emit this->sigPresetsChanged(this->presetList);
-            }
+            emit this->sigPresetsChanged(this->presetList);
         }
 
         if(this->fbrowserCmd != ui->filemanager->text()) {

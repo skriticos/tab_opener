@@ -36,7 +36,6 @@ private slots:
     void on_btnDelete_clicked();
     void on_extensionlist_itemSelectionChanged();
     void on_buttonBox_clicked(QAbstractButton *button);
-
     void on_extension_textChanged(const QString &arg1);
 
 private:

@@ -85,6 +85,7 @@ void DataStore::slotCfgPresetsChanged(QStringList presetList)
     for(int i = 0; i < presetList.size(); i++) {
         _setGeneralValue("preset" + QString::number(i), presetList.at(i));
     }
+    _updatePresets();
 }
 
 void DataStore::slotCfgExtensionChanged(Config::ExtensionEntry extEntry)
