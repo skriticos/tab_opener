@@ -24,11 +24,11 @@ FileBrowserWidget::FileBrowserWidget(QWidget *parent) : QWidget(parent), ui(new 
     ui->viewFolders->blockSignals(false);
 
     QItemSelectionModel *folderSelectionModel = ui->viewFolders->selectionModel();
-    connect(folderSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+    connect(folderSelectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(_slotOnFolderSeleced()));
 
     QItemSelectionModel *fileSelectionModel = ui->viewFiles->selectionModel();
-    connect(fileSelectionModel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+    connect(fileSelectionModel, SIGNAL(selectionChanged(QItemSelection, QItemSelection)),
             this, SLOT(_slotOnFileSelected()));
 
     connect(ui->btnActPrimary, SIGNAL(clicked()), this, SLOT(_slotOpenFilePrimary()));
@@ -42,7 +42,7 @@ FileBrowserWidget::~FileBrowserWidget()
 
 void FileBrowserWidget::slotInitLocation(QString folderPath, QString filePath)
 {
-    if(!filePath.isEmpty()){
+    if(!filePath.isEmpty()) {
         // init file path
         this->slotSelectFile(filePath);
     } else if(!folderPath.isEmpty()) {
@@ -55,8 +55,9 @@ void FileBrowserWidget::slotInitLocation(QString folderPath, QString filePath)
 
 void FileBrowserWidget::slotSelectFolder(QString folderPath)
 {
-    if(!folderPath.isEmpty())
+    if(!folderPath.isEmpty()) {
         ui->viewFolders->setCurrentIndex(this->dirmodel->index(folderPath));
+    }
 }
 
 void FileBrowserWidget::slotSelectFile(QString filePath)
@@ -64,9 +65,10 @@ void FileBrowserWidget::slotSelectFile(QString filePath)
     QString baseFolder = QFileInfo(filePath).absolutePath();
     this->slotSelectFolder(baseFolder);
 
-    if(!filePath.isEmpty()){
+    if(!filePath.isEmpty()) {
         ui->viewFiles->setCurrentIndex(this->filemodel->index(filePath));
     }
+
     emit this->sigFileSelected(filePath);
 }
 
@@ -114,13 +116,17 @@ void FileBrowserWidget::_slotOnFolderSeleced()
     emit this->sigFileSelected("");
 
     // remove all charms
-    for(int i=0; i<ui->charmLayout->count(); i++)
+    for(int i = 0; i < ui->charmLayout->count(); i++) {
         ui->charmLayout->removeItem(ui->charmLayout->itemAt(i));
+    }
 
-    for(int i=0; i<this->charmButtonList.size(); i++)
+    for(int i = 0; i < this->charmButtonList.size(); i++) {
         charmButtonList.at(i)->deleteLater();
-    for(int i=0; i<this->charmLabelList.size(); i++)
+    }
+
+    for(int i = 0; i < this->charmLabelList.size(); i++) {
         charmLabelList.at(i)->deleteLater();
+    }
 
     this->charmButtonList.clear();
     this->charmLabelList.clear();
@@ -133,9 +139,10 @@ void FileBrowserWidget::_slotOnFolderSeleced()
 
     // add folder charms and separator labels
     QStringList charmParts = selectedFolderPath.split(QDir::separator());
-    if (selectedFolderPath != QDir::rootPath()) {
 
-        for (int i=1; i<charmParts.size(); i++){
+    if(selectedFolderPath != QDir::rootPath()) {
+
+        for(int i = 1; i < charmParts.size(); i++) {
 
             QStringList charmPartSL = charmParts.mid(1, i);
             QString charmPath = QDir::rootPath() + charmPartSL.join(QDir::separator());
@@ -144,7 +151,7 @@ void FileBrowserWidget::_slotOnFolderSeleced()
             this->charmButtonList.append(charmButton);
             connect(charmButton, SIGNAL(sigCharmClicked(QString)), this, SLOT(slotSelectFolder(QString)));
 
-            if(i>1){
+            if(i > 1) {
                 charmLabel = new QLabel("/", ui->charmContainer);
                 ui->charmLayout->addWidget(charmLabel);
                 charmLabelList.append(charmLabel);
@@ -154,6 +161,7 @@ void FileBrowserWidget::_slotOnFolderSeleced()
             charmButtonList.append(charmButton);
         }
     }
+
     emit this->sigFolderSelected(selectedFolderPath);
 }
 
@@ -164,7 +172,7 @@ QString FileBrowserWidget::_getSelectedFolder()
 
     selectionModel = ui->viewFolders->selectionModel();
 
-    if(!selectionModel->selectedIndexes().isEmpty()){
+    if(!selectionModel->selectedIndexes().isEmpty()) {
         index = selectionModel->selectedIndexes().first();
         return dirmodel->fileInfo(index).absoluteFilePath();
     } else {
@@ -216,17 +224,18 @@ void FileBrowserWidget::on_btnScmCommit_clicked()
 {
     bool ok;
     QString commitMsg = QInputDialog::getText(
-                this, "Commit message", "Commit msg:", QLineEdit::Normal, "", &ok);
-    if(ok && !commitMsg.isEmpty()){
+                            this, "Commit message", "Commit msg:", QLineEdit::Normal, "", &ok);
+
+    if(ok && !commitMsg.isEmpty()) {
         emit this->sigRequestScmCommit(commitMsg);
     } else {
         if(ok)
             QMessageBox::warning(
-                        this,
-                        "Commit error",
-                        "Can't commit with empty commit message. Aborting.",
-                        QMessageBox::Ok
-                        );
+                this,
+                "Commit error",
+                "Can't commit with empty commit message. Aborting.",
+                QMessageBox::Ok
+            );
     }
 }
 

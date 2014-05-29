@@ -9,10 +9,10 @@ class DsTableFav : public DsTable
 
 public:
     explicit DsTableFav(
-                        QString tableName,
-                        QList<SchemaField> fieldSchema,
-                        QSqlDatabase db,
-                        QObject *parent = 0);
+        QString tableName,
+        QList<SchemaField> fieldSchema,
+        QSqlDatabase db,
+        QObject *parent = 0);
     virtual ~DsTableFav();
 
     virtual void insertRecord(Record record);

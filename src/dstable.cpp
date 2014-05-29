@@ -7,31 +7,31 @@ DsTable::DsTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSq
     QStringList reservedSqliteKeywords;
 
     reservedSqliteKeywords
-        << "ABORT" << "ACTION" << "ADD" << "AFTER" << "ALL" << "ALTER" << "ANALYZE"
-        << "AND" << "AS" << "ASC" << "ATTACH" << "AUTOINCREMENT" << "BEFORE" << "BEGIN"
-        << "BETWEEN" << "BY" << "CASCADE" << "CASE" << "CAST" << "CHECK" << "COLLATE"
-        << "COLUMN" << "COMMIT" << "CONFLICT" << "CONSTRAINT" << "CREATE" << "CROSS"
-        << "CURRENT_DATE" << "CURRENT_TIME" << "CURRENT_TIMESTAMP" << "DATABASE"
-        << "DEFAULT" << "DEFERRABLE" << "DEFERRED" << "DELETE" << "DESC" << "DETACH"
-        << "DISTINCT" << "DROP" << "EACH" << "ELSE" << "END" << "ESCAPE" << "EXCEPT"
-        << "EXCLUSIVE" << "EXISTS" << "EXPLAIN" << "FAIL" << "FOR" << "FOREIGN"
-        << "FROM" << "FULL" << "GLOB" << "GROUP" << "HAVING" << "IF" << "IGNORE"
-        << "IMMEDIATE" << "IN" << "INDEX" << "INDEXED" << "INITIALLY" << "INNER"
-        << "INSERT" << "INSTEAD" << "INTERSECT" << "INTO" << "IS" << "ISNULL"
-        << "JOIN" << "KEY" << "LEFT" << "LIKE" << "LIMIT" << "MATCH" << "NATURAL"
-        << "NO" << "NOT" << "NOTNULL" << "NULL" << "OF" << "OFFSET" << "ON" << "OR"
-        << "ORDER" << "OUTER" << "PLAN" << "PRAGMA" << "PRIMARY" << "QUERY" << "RAISE"
-        << "RECURSIVE" << "REFERENCES" << "REGEXP" << "REINDEX" << "RELEASE"
-        << "RENAME" << "REPLACE" << "RESTRICT" << "RIGHT" << "ROLLBACK" << "ROW"
-        << "SAVEPOINT" << "SELECT" << "SET" << "TABLE" << "TEMP" << "TEMPORARY"
-        << "THEN" << "TO" << "TRANSACTION" << "TRIGGER" << "UNION" << "UNIQUE"
-        << "UPDATE" << "USING" << "VACUUM" << "VALUES" << "VIEW" << "VIRTUAL"
-        << "WHEN" << "WHERE" << "WITH" << "WITHOUT";
+            << "ABORT" << "ACTION" << "ADD" << "AFTER" << "ALL" << "ALTER" << "ANALYZE"
+            << "AND" << "AS" << "ASC" << "ATTACH" << "AUTOINCREMENT" << "BEFORE" << "BEGIN"
+            << "BETWEEN" << "BY" << "CASCADE" << "CASE" << "CAST" << "CHECK" << "COLLATE"
+            << "COLUMN" << "COMMIT" << "CONFLICT" << "CONSTRAINT" << "CREATE" << "CROSS"
+            << "CURRENT_DATE" << "CURRENT_TIME" << "CURRENT_TIMESTAMP" << "DATABASE"
+            << "DEFAULT" << "DEFERRABLE" << "DEFERRED" << "DELETE" << "DESC" << "DETACH"
+            << "DISTINCT" << "DROP" << "EACH" << "ELSE" << "END" << "ESCAPE" << "EXCEPT"
+            << "EXCLUSIVE" << "EXISTS" << "EXPLAIN" << "FAIL" << "FOR" << "FOREIGN"
+            << "FROM" << "FULL" << "GLOB" << "GROUP" << "HAVING" << "IF" << "IGNORE"
+            << "IMMEDIATE" << "IN" << "INDEX" << "INDEXED" << "INITIALLY" << "INNER"
+            << "INSERT" << "INSTEAD" << "INTERSECT" << "INTO" << "IS" << "ISNULL"
+            << "JOIN" << "KEY" << "LEFT" << "LIKE" << "LIMIT" << "MATCH" << "NATURAL"
+            << "NO" << "NOT" << "NOTNULL" << "NULL" << "OF" << "OFFSET" << "ON" << "OR"
+            << "ORDER" << "OUTER" << "PLAN" << "PRAGMA" << "PRIMARY" << "QUERY" << "RAISE"
+            << "RECURSIVE" << "REFERENCES" << "REGEXP" << "REINDEX" << "RELEASE"
+            << "RENAME" << "REPLACE" << "RESTRICT" << "RIGHT" << "ROLLBACK" << "ROW"
+            << "SAVEPOINT" << "SELECT" << "SET" << "TABLE" << "TEMP" << "TEMPORARY"
+            << "THEN" << "TO" << "TRANSACTION" << "TRIGGER" << "UNION" << "UNIQUE"
+            << "UPDATE" << "USING" << "VACUUM" << "VALUES" << "VIEW" << "VIRTUAL"
+            << "WHEN" << "WHERE" << "WITH" << "WITHOUT";
 
     Q_ASSERT(!tableName.isEmpty());
     Q_ASSERT(db.isOpen());
 
-    for(int i=0; i<fieldSchema.size(); i++){
+    for(int i = 0; i < fieldSchema.size(); i++) {
 
         fieldKey = fieldSchema.at(i).fieldName.toUpper();
         // yes, I had this problem and spent too much time to debug it
@@ -43,10 +43,11 @@ DsTable::DsTable(QString tableName, QList<DsTable::SchemaField> fieldSchema, QSq
     this->lookupKey = fieldSchema.first().fieldName;
     this->db = db;
 
-    if(this->db.tables().contains(tableName))
+    if(this->db.tables().contains(tableName)) {
         this->_loadTable();
-    else
+    } else {
         this->_createTable();
+    }
 }
 
 DsTable::~DsTable()
@@ -63,7 +64,7 @@ void DsTable::insertRecord(Record record)
 
     // verify record field names contain schema fields
     // note: we don't care about additional fields as long as the schema fields are properly populated
-    for(int i=0; i<this->schema.size(); i++){
+    for(int i = 0; i < this->schema.size(); i++) {
 
         QString fieldName = this->schema.at(i).fieldName;
         FieldType fieldType = this->schema.at(i).fieldType;
@@ -73,21 +74,26 @@ void DsTable::insertRecord(Record record)
 
         // verify schema field has correct type
         metaType = (QMetaType::Type)record.value(fieldName).type();
-        switch(fieldType){
+
+        switch(fieldType) {
         case TEXT:
             Q_ASSERT(metaType == QMetaType::QString);
             break;
+
         case INTEGER:
             Q_ASSERT(metaType == QMetaType::Int ||
                      metaType == QMetaType::Long ||
                      metaType == QMetaType::LongLong);
             break;
+
         case REAL:
             Q_ASSERT(metaType == QMetaType::Float);
             break;
+
         case BOOLEAN:
             Q_ASSERT(metaType == QMetaType::Bool);
             break;
+
         case BLOB:
             Q_ASSERT(metaType == QMetaType::QByteArray);
         }
@@ -96,23 +102,25 @@ void DsTable::insertRecord(Record record)
     lKey = record.value(lookupKey).toString();
 
     // insert record into disk database
-    for(int i=0; i<this->schema.size(); i++){
+    for(int i = 0; i < this->schema.size(); i++) {
 
         SchemaField schemaField = this->schema.at(i);
         fieldNames << schemaField.fieldName;
         fieldPlaceholderNames << ":" + schemaField.fieldName;
     }
 
-    if(this->records.contains(lKey)){ // update record
+    if(this->records.contains(lKey)) { // update record
 
         QStringList setStmt, setFieldNames;
         QString whereStmt, fieldName;
 
         setFieldNames = fieldNames.mid(1);
-        for(int i=0; i<setFieldNames.size(); i++){
+
+        for(int i = 0; i < setFieldNames.size(); i++) {
             fieldName = setFieldNames.at(i);
             setStmt << fieldName + "=:" + fieldName;
         }
+
         fieldName = fieldNames.first();
         whereStmt = fieldName + "=:" + fieldName;
 
@@ -124,13 +132,13 @@ void DsTable::insertRecord(Record record)
                       "VALUES (" + fieldPlaceholderNames.join(", ") + ")");
     }
 
-    for(int i=0; i<this->schema.size(); i++){
+    for(int i = 0; i < this->schema.size(); i++) {
         SchemaField schemaField = this->schema.at(i);
         QString fieldName = schemaField.fieldName;
         query.bindValue(":" + fieldName, record.value(fieldName));
     }
 
-    if(!query.exec()){
+    if(!query.exec()) {
         qDebug() << record;
         qDebug() << query.lastQuery();
         qDebug() << query.lastError();
@@ -190,18 +198,19 @@ void DsTable::_loadTable()
     Q_ASSERT(query.lastError().number() == -1);
 
     // read records
-    while (query.next()){
+    while(query.next()) {
 
         record.clear();
 
         // iterate through schema fields
-        for(int i=0; i<this->schema.size(); i++){
+        for(int i = 0; i < this->schema.size(); i++) {
 
             fieldName = this->schema.at(i).fieldName;
             fieldValue = query.value(i);
 
             record.insert(fieldName, fieldValue);
         }
+
         // commit record
         records.insert(query.value(0).toString(), record);
     }
@@ -214,16 +223,32 @@ void DsTable::_createTable()
     QSqlQuery query;
     SchemaField schemaField;
 
-    for(int i=0; i<this->schema.size(); i++){
+    for(int i = 0; i < this->schema.size(); i++) {
 
         schemaField = this->schema.at(i);
-        switch(schemaField.fieldType){
-            case TEXT:    strFieldType = "TEXT";    break;
-            case INTEGER: strFieldType = "INTEGER"; break;
-            case REAL:    strFieldType = "REAL";    break;
-            case BOOLEAN: strFieldType = "BOOLEAN"; break;
-            case BLOB:    strFieldType = "BLOB";    break;
+
+        switch(schemaField.fieldType) {
+        case TEXT:
+            strFieldType = "TEXT";
+            break;
+
+        case INTEGER:
+            strFieldType = "INTEGER";
+            break;
+
+        case REAL:
+            strFieldType = "REAL";
+            break;
+
+        case BOOLEAN:
+            strFieldType = "BOOLEAN";
+            break;
+
+        case BLOB:
+            strFieldType = "BLOB";
+            break;
         }
+
         fieldDeclarations << schemaField.fieldName + " " + strFieldType;
     }
 

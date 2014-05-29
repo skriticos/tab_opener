@@ -13,9 +13,9 @@ NotesWidget::~NotesWidget()
 
 void NotesWidget::slotInitSelection(QString selection)
 {
-    if(selection == FILE){
+    if(selection == FILE) {
         ui->btnFileNotes->setChecked(true);
-    } else if(selection == COMMAND){
+    } else if(selection == COMMAND) {
         ui->btnCmdNotes->setChecked(true);
     } else if(selection == GLOBAL) {
         ui->btnGlobalNotes->setChecked(true);
@@ -28,8 +28,9 @@ void NotesWidget::slotInitGlobalNote(QString noteText)
 {
     this->globalNote = noteText;
 
-    if(ui->btnGlobalNotes->isChecked())
+    if(ui->btnGlobalNotes->isChecked()) {
         _setNotesText(noteText);
+    }
 }
 
 void NotesWidget::slotUpdateFileNote(QString filePath, QString noteText)
@@ -37,8 +38,8 @@ void NotesWidget::slotUpdateFileNote(QString filePath, QString noteText)
     this->filePath = filePath;
     this->fileNote = noteText;
 
-    if(ui->btnFileNotes->isChecked()){
-        if(filePath.isEmpty()){
+    if(ui->btnFileNotes->isChecked()) {
+        if(filePath.isEmpty()) {
             ui->notesView->setPlainText("No file selected.");
             ui->notesView->setEnabled(false);
         } else {
@@ -53,8 +54,8 @@ void NotesWidget::slotUpdateCommandNote(QString cmdStr, QString noteText)
     this->commandStr = cmdStr;
     this->commandNote = noteText;
 
-    if(ui->btnCmdNotes->isChecked()){
-        if(cmdStr.isEmpty()){
+    if(ui->btnCmdNotes->isChecked()) {
+        if(cmdStr.isEmpty()) {
             ui->notesView->setPlainText("No command selected.");
             ui->notesView->setEnabled(false);
         } else {
@@ -73,7 +74,7 @@ void NotesWidget::_setNotesText(QString notesText)
 
 void NotesWidget::on_btnGlobalNotes_clicked(bool checked)
 {
-    if(checked){
+    if(checked) {
         ui->btnFileNotes->setChecked(false);
         ui->btnCmdNotes->setChecked(false);
         ui->notesView->setEnabled(true);
@@ -86,16 +87,18 @@ void NotesWidget::on_btnGlobalNotes_clicked(bool checked)
 
 void NotesWidget::on_btnFileNotes_clicked(bool checked)
 {
-    if(checked){
+    if(checked) {
         ui->btnGlobalNotes->setChecked(false);
         ui->btnCmdNotes->setChecked(false);
-        if(this->filePath.isEmpty()){
+
+        if(this->filePath.isEmpty()) {
             ui->notesView->setPlainText("No file selected.");
             ui->notesView->setEnabled(false);
         } else {
             ui->notesView->setEnabled(true);
             _setNotesText(this->fileNote);
         }
+
         emit this->sigSelectionChanged(FILE);
     } else {
         ui->btnFileNotes->setChecked(true);
@@ -104,16 +107,18 @@ void NotesWidget::on_btnFileNotes_clicked(bool checked)
 
 void NotesWidget::on_btnCmdNotes_clicked(bool checked)
 {
-    if(checked){
+    if(checked) {
         ui->btnGlobalNotes->setChecked(false);
         ui->btnFileNotes->setChecked(false);
-        if(this->commandStr.isEmpty()){
+
+        if(this->commandStr.isEmpty()) {
             ui->notesView->setPlainText("No command selected.");
             ui->notesView->setEnabled(false);
         } else {
             ui->notesView->setEnabled(true);
             _setNotesText(this->commandNote);
         }
+
         emit this->sigSelectionChanged(COMMAND);
     } else {
         ui->btnCmdNotes->setChecked(true);
@@ -122,13 +127,15 @@ void NotesWidget::on_btnCmdNotes_clicked(bool checked)
 
 void NotesWidget::on_notesView_textChanged()
 {
-    if(ui->btnGlobalNotes->isChecked()){
+    if(ui->btnGlobalNotes->isChecked()) {
         emit this->sigGlobalNoteChanged(ui->notesView->toPlainText());
-    } else if(ui->btnFileNotes->isChecked()){
-        if(!this->filePath.isEmpty())
+    } else if(ui->btnFileNotes->isChecked()) {
+        if(!this->filePath.isEmpty()) {
             emit this->sigFileNoteChanged(this->filePath, ui->notesView->toPlainText());
-    } else if(ui->btnCmdNotes->isChecked()){
-        if(!this->commandStr.isEmpty())
+        }
+    } else if(ui->btnCmdNotes->isChecked()) {
+        if(!this->commandStr.isEmpty()) {
             emit this->sigCmdNoteChanged(this->commandStr, ui->notesView->toPlainText());
+        }
     }
 }

@@ -5,7 +5,8 @@
 #include <QtDebug>
 #include <QtSql>
 
-class DsTable : public QObject{
+class DsTable : public QObject
+{
     Q_OBJECT
 
 public:
@@ -19,10 +20,10 @@ public:
     };
 
     explicit DsTable(
-            QString tableName,
-            QList<SchemaField> fieldSchema,
-            QSqlDatabase db,
-            QObject *parent = 0);
+        QString tableName,
+        QList<SchemaField> fieldSchema,
+        QSqlDatabase db,
+        QObject *parent = 0);
     virtual ~DsTable();
 
     bool contains(QString lookupKey);

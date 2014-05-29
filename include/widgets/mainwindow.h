@@ -11,7 +11,8 @@
 #include "filebrowserwidget.h"
 #include "commandwidget.h"
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
 

@@ -6,7 +6,8 @@
 #include "hoverbutton.h"
 #include "defines.h"
 
-namespace Ui {
+namespace Ui
+{
     class NotesWidget;
 }
 

@@ -23,7 +23,8 @@
 #define TERMINAL_EMULATOR "terminal_emulator"
 #define NAVIGATOR_PATH "navigator_path"
 
-namespace Config {
+namespace Config
+{
 
     struct ExtensionEntry {
         QString extName;        // exetnsion name, e.g. "txt"
@@ -33,7 +34,8 @@ namespace Config {
 
 }
 
-namespace FileOpen {
+namespace FileOpen
+{
 
     enum OpenType { PRIMARY, SECONDARY };
     enum ExtApp { TERMINAL, FILEBROWSER };

@@ -1,6 +1,7 @@
 #include "dstablefav.h"
 
-QList<DsTable::SchemaField> patchSchema(QList<DsTable::SchemaField> fieldSchema){
+QList<DsTable::SchemaField> patchSchema(QList<DsTable::SchemaField> fieldSchema)
+{
     fieldSchema.insert(1, {"counter", DsTable::INTEGER});
     fieldSchema.insert(2, {"timestamp", DsTable::INTEGER});
     return fieldSchema;
@@ -9,8 +10,8 @@ QList<DsTable::SchemaField> patchSchema(QList<DsTable::SchemaField> fieldSchema)
 // notice: the fieldSchema is patched before passed to base class constructor
 //         see patchSchema function for details
 DsTableFav::DsTableFav(
-        QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db, QObject *parent) :
-        DsTable(tableName, patchSchema(fieldSchema), db, parent)
+    QString tableName, QList<DsTable::SchemaField> fieldSchema, QSqlDatabase db, QObject *parent) :
+    DsTable(tableName, patchSchema(fieldSchema), db, parent)
 {
 }
 
@@ -39,7 +40,7 @@ void DsTableFav::insertRecord(DsTable::Record record)
     query.next();
     query.value(0).toLongLong() == 1 ? recordExists = true : recordExists = false;
 
-    if(recordExists){ // record already exists
+    if(recordExists) { // record already exists
 
         // read record values
         query.prepare("SELECT * FROM " + this->tableName + " WHERE " + this->lookupKey + " =:l_key");
@@ -48,10 +49,12 @@ void DsTableFav::insertRecord(DsTable::Record record)
         Q_ASSERT(result);
         query.next();
         int fieldCount = this->schema.size();
-        for(int i=0; i<fieldCount; i++){
+
+        for(int i = 0; i < fieldCount; i++) {
             QString fieldName = this->schema.at(i).fieldName;
             record[fieldName] = query.value(i);
         }
+
         // increment counter
         record["counter"] = record["counter"].toInt() + 1;
     } else { // record does not exist
@@ -73,14 +76,17 @@ QList<DsTable::Record> DsTableFav::getTop10()
     success = query.exec("SELECT * FROM " + this->tableName + " ORDER BY counter DESC LIMIT 10");
     Q_ASSERT(success);
 
-    while(query.next()){
+    while(query.next()) {
         Record record;
-        for(int i=0; i<this->schema.size(); i++){
+
+        for(int i = 0; i < this->schema.size(); i++) {
             QString fieldName = this->schema.at(i).fieldName;
             record[fieldName] = query.value(i);
         }
+
         result.append(record);
     }
+
     return result;
 }
 
@@ -93,13 +99,16 @@ QList<DsTable::Record> DsTableFav::getRecent10()
     success = query.exec("SELECT * FROM " + this->tableName + " ORDER BY timestamp DESC LIMIT 10");
     Q_ASSERT(success);
 
-    while(query.next()){
+    while(query.next()) {
         Record record;
-        for(int i=0; i<this->schema.size(); i++){
+
+        for(int i = 0; i < this->schema.size(); i++) {
             QString fieldName = this->schema.at(i).fieldName;
             record[fieldName] = query.value(i);
         }
+
         result.append(record);
     }
+
     return result;
 }

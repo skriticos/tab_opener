@@ -1,7 +1,8 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-namespace History {
+namespace History
+{
     struct Entry {
         QString filePath;
         QString commandString;

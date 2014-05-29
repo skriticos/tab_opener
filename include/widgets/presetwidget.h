@@ -6,8 +6,9 @@
 
 #include "presetbutton.h"
 
-namespace Ui {
-class PresetWidget;
+namespace Ui
+{
+    class PresetWidget;
 }
 
 class PresetWidget : public QWidget

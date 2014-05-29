@@ -8,7 +8,8 @@ HistoryWidget::HistoryWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Hist
     this->type = History::UNDEFINED;
 
     HistoryButton *button;
-    for(int i=0; i<10; i++){
+
+    for(int i = 0; i < 10; i++) {
         button = _getRecentBtnAt(i);
         connect(button, SIGNAL(sigSelected(QString)), this, SLOT(_slotButtonSelected(QString)));
         connect(this, SIGNAL(sigIdSelected(QString)), button, SLOT(slotIdSelected(QString)));
@@ -31,12 +32,12 @@ void HistoryWidget::setType(History::WidgetType type)
 {
     this->type = type;
 
-    if(type == History::FILEHISTORY){
+    if(type == History::FILEHISTORY) {
         ui->control0->setIcon(QIcon(":/images/rc/document-preview.png"));
         ui->control1->setIcon(QIcon(":/images/rc/text-editor.png"));
         ui->control2->setIcon(QIcon(":/images/rc/editcopy.png"));
 
-    } else if(type == History::COMMANDHISTORY){
+    } else if(type == History::COMMANDHISTORY) {
         ui->control0->setIcon(QIcon(":/images/rc/editcopy.png"));
         ui->control1->hide();
         ui->control2->hide();
@@ -44,17 +45,17 @@ void HistoryWidget::setType(History::WidgetType type)
 }
 
 void HistoryWidget::slotUpdateWidget(QList<History::Entry> recentHistory,
-                                 QList<History::Entry> popularHistory)
+                                     QList<History::Entry> popularHistory)
 {
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
 
     // reset
-    for(int i=0; i<10; i++){
+    for(int i = 0; i < 10; i++) {
         _getRecentBtnAt(i)->reset();
         _getPopularBtnAt(i)->reset();
     }
 
-    if(this->type == History::FILEHISTORY){
+    if(this->type == History::FILEHISTORY) {
         this->_updateFileHistory(recentHistory, popularHistory);
     } else if(this->type == History::COMMANDHISTORY) {
         this->_updateCommandHistory(recentHistory, popularHistory);
@@ -63,7 +64,7 @@ void HistoryWidget::slotUpdateWidget(QList<History::Entry> recentHistory,
 
 void HistoryWidget::slotFileSelected(QString filePath)
 {
-    if(filePath != this->selectedFile){
+    if(filePath != this->selectedFile) {
         this->selectedFile = filePath;
         emit this->sigIdSelected(filePath); // select matching history buttons
     }
@@ -71,7 +72,7 @@ void HistoryWidget::slotFileSelected(QString filePath)
 
 void HistoryWidget::slotCommandSelected(QString commandString)
 {
-    if(commandString != this->selectedCommand){
+    if(commandString != this->selectedCommand) {
         this->selectedCommand = commandString;
         emit this->sigIdSelected(commandString + this->selectedWorkingDirectory);
     }
@@ -89,7 +90,7 @@ void HistoryWidget::_slotButtonSelected(QString id)
 
     emit this->sigIdSelected(id); // if there is a button with same .. on in the other list, select it too, unselect others
 
-    if(this->type == History::FILEHISTORY){
+    if(this->type == History::FILEHISTORY) {
         this->selectedFile = id;
         emit this->sigSelectedFileChanged(id);
 
@@ -97,13 +98,16 @@ void HistoryWidget::_slotButtonSelected(QString id)
         QString cmd = this->cmdIds.value(id).first();
         QString wd  = this->cmdIds.value(id).last();
 
-        if(cmd != this->selectedCommand){
+        if(cmd != this->selectedCommand) {
             this->selectedCommand = cmd;
         }
+
         emit this->sigSelectedCommandChanged(cmd);
-        if(wd != this->selectedWorkingDirectory){
+
+        if(wd != this->selectedWorkingDirectory) {
             this->selectedWorkingDirectory = wd;
         }
+
         emit this->sigSelectedFolderChanged(wd);
     }
 
@@ -113,7 +117,7 @@ void HistoryWidget::_slotControl0Clicked()
 {
     Q_ASSERT(this->type != History::UNDEFINED); // triggers if we forget to set type
 
-    if(this->type == History::FILEHISTORY){ // execute primary action
+    if(this->type == History::FILEHISTORY) { // execute primary action
         emit this->sigRequestOpenFile(FileOpen::PRIMARY, this->selectedFile);
 
     } else if(this->type == History::COMMANDHISTORY) { // copy to clipboard
@@ -138,36 +142,39 @@ void HistoryWidget::_slotControl2Clicked()
 
 HistoryButton *HistoryWidget::_getRecentBtnAt(int pos)
 {
-    return ui->recentHistoryContainer->findChild<HistoryButton*>("recent" + QString::number(pos));
+    return ui->recentHistoryContainer->findChild<HistoryButton *>("recent" + QString::number(pos));
 }
 
 HistoryButton *HistoryWidget::_getPopularBtnAt(int pos)
 {
-    return ui->popularHistoryContainer->findChild<HistoryButton*>("popular" + QString::number(pos));
+    return ui->popularHistoryContainer->findChild<HistoryButton *>("popular" + QString::number(pos));
 }
 
 void HistoryWidget::_updateFileHistory(QList<History::Entry> recentHistory,
-                                      QList<History::Entry> popularHistory)
+                                       QList<History::Entry> popularHistory)
 {
     HistoryButton *button;
     History::Entry historyEntry;
     QString entryId;
 
     // lambda function to compute file label (see c++11)
-    auto fileLabel = [] (QString filePath) {
-        if(filePath.size() > 35)
+    auto fileLabel = [](QString filePath) {
+        if(filePath.size() > 35) {
             return "..." + filePath.right(35);
+        }
+
         return filePath;
     };
 
-    for(int i=0; i<recentHistory.size(); i++){
+    for(int i = 0; i < recentHistory.size(); i++) {
         historyEntry = recentHistory.at(i);
         entryId = historyEntry.filePath;
         button = _getRecentBtnAt(i);
         button->setId(entryId);
         button->setText(fileLabel(historyEntry.filePath));
     }
-    for(int i=0; i<popularHistory.size(); i++){
+
+    for(int i = 0; i < popularHistory.size(); i++) {
         historyEntry = popularHistory.at(i);
         entryId = historyEntry.filePath;
         button = _getPopularBtnAt(i);
@@ -177,19 +184,21 @@ void HistoryWidget::_updateFileHistory(QList<History::Entry> recentHistory,
 }
 
 void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
-                                         QList<History::Entry> popularHistory)
+        QList<History::Entry> popularHistory)
 {
     HistoryButton *button;
     History::Entry historyEntry;
     QString entryId;
 
-    auto cmdLabel = [] (QString cmdStr) {
-        if(cmdStr.size() > 35)
+    auto cmdLabel = [](QString cmdStr) {
+        if(cmdStr.size() > 35) {
             return "..." + cmdStr.right(35);
+        }
+
         return cmdStr;
     };
 
-    for(int i=0; i<recentHistory.size(); i++){
+    for(int i = 0; i < recentHistory.size(); i++) {
         historyEntry = recentHistory.at(i);
         entryId = historyEntry.commandString + historyEntry.workingDirecotry;
         this->cmdIds.insert(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);
@@ -197,7 +206,8 @@ void HistoryWidget::_updateCommandHistory(QList<History::Entry> recentHistory,
         button->setId(entryId);
         button->setText(cmdLabel(historyEntry.commandString));
     }
-    for(int i=0; i<popularHistory.size(); i++){
+
+    for(int i = 0; i < popularHistory.size(); i++) {
         historyEntry = popularHistory.at(i);
         entryId = historyEntry.commandString + historyEntry.workingDirecotry;
         this->cmdIds.insert(entryId, QStringList() << historyEntry.commandString << historyEntry.workingDirecotry);

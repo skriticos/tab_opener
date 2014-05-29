@@ -9,7 +9,8 @@
 #include "historybutton.h"
 #include "defines.h"
 
-namespace Ui {
+namespace Ui
+{
     class HistoryWidget;
 }
 

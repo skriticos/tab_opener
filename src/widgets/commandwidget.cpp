@@ -20,10 +20,11 @@ CommandWidget::~CommandWidget()
 
 bool CommandWidget::isExecuting()
 {
-    if(this->process->state() == QProcess::NotRunning)
+    if(this->process->state() == QProcess::NotRunning) {
         return false;
-    else
+    } else {
         return true;
+    }
 }
 
 void CommandWidget::slotUpdateFolder(QString selectedFolder)
@@ -42,15 +43,18 @@ void CommandWidget::_slotExecCmd(QString cmdStr, bool multi)
     Util::ParsedCommand parsedCmd;
     QString wd;
 
-    if(this->workingDirectory.isEmpty())
+    if(this->workingDirectory.isEmpty()) {
         wd = QDir::homePath();
-    else
+    } else {
         wd = this->workingDirectory;
+    }
 
     parsedCmd = Util::parseCmdStr(cmdStr);
 
-    if(!multi)
+    if(!multi) {
         ui->viewCommandOutput->clear();
+    }
+
     ui->viewCommandOutput->append("<span style='color:green'>executing [" + cmdStr +
                                   "] in " + wd + "</span>");
 
@@ -62,12 +66,15 @@ void CommandWidget::_slotExecCmd(QString cmdStr, bool multi)
 
 bool CommandWidget::_slotExecMultiCmds(QStringList cmdList)
 {
-    for(int i=0; i<cmdList.size(); i++){
+    for(int i = 0; i < cmdList.size(); i++) {
         this->_slotExecCmd(cmdList.at(i), true);
         this->process->waitForFinished();
-        if(this->process->exitCode() != 0)
+
+        if(this->process->exitCode() != 0) {
             return false;
+        }
     }
+
     return true;
 }
 
@@ -91,8 +98,8 @@ void CommandWidget::slotScmPush()
 
 void CommandWidget::on_btnExecCommand_clicked()
 {
-    if(this->process->state() == QProcess::NotRunning){
-        if(!ui->inputCommand->text().isEmpty()){
+    if(this->process->state() == QProcess::NotRunning) {
+        if(!ui->inputCommand->text().isEmpty()) {
             emit this->sigCmdExecuted(ui->inputCommand->text(), this->workingDirectory);
             this->_slotExecCmd(ui->inputCommand->text());
         }
@@ -141,6 +148,7 @@ void CommandWidget::_slotProcessFinished(int exitCode)
 
 void CommandWidget::on_inputCommand_returnPressed()
 {
-    if(this->process->state() == QProcess::NotRunning)
+    if(this->process->state() == QProcess::NotRunning) {
         this->on_btnExecCommand_clicked();
+    }
 }

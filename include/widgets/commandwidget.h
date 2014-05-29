@@ -6,7 +6,8 @@
 #include "datastore.h"
 #include "util.h"
 
-namespace Ui {
+namespace Ui
+{
     class CommandWidget;
 }
 

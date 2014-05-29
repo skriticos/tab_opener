@@ -6,7 +6,7 @@ Test::Test(QObject *parent) : QObject(parent)
 
 void Test::run()
 {
-    char* dummy_args[] = { const_cast<char *>("dummyname"), NULL };
+    char *dummy_args[] = { const_cast<char *>("dummyname"), NULL };
     QTest::qExec(this, 1, dummy_args);
 }
 

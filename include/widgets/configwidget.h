@@ -5,7 +5,8 @@
 
 #include "defines.h"
 
-namespace Ui {
+namespace Ui
+{
     class ConfigWidget;
 }
 
@@ -26,9 +27,9 @@ signals:
 
 public slots:
     void slotInitConfig(QStringList presetList,
-                    QList<Config::ExtensionEntry> extList,
-                    QString terminalCmd,
-                    QString fbrowserCmd);
+                        QList<Config::ExtensionEntry> extList,
+                        QString terminalCmd,
+                        QString fbrowserCmd);
 
 private slots:
     void on_btnCommit_clicked();
@@ -45,7 +46,7 @@ private:
     Ui::ConfigWidget *ui;
 
     // local config cache
-    QMap<QString, QListWidgetItem*> extWidgetMap;
+    QMap<QString, QListWidgetItem *> extWidgetMap;
     QMap<QString, Config::ExtensionEntry> extIndex;
     QString terminalCmd;
     QString fbrowserCmd;

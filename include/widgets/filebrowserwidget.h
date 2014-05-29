@@ -7,7 +7,8 @@
 #include "defines.h"
 #include "util.h"
 
-namespace Ui {
+namespace Ui
+{
     class FileBrowser;
 }
 

@@ -7,9 +7,11 @@ PresetButton::PresetButton(QWidget *parent) : HoverButton(parent)
 
 void PresetButton::setPreset(QString presetPath)
 {
-    auto presetLabel = [] (QString presetPath) {
-        if(presetPath.size() > 35)
+    auto presetLabel = [](QString presetPath) {
+        if(presetPath.size() > 35) {
             return "..." + presetPath.right(35);
+        }
+
         return presetPath;
     };
 
@@ -23,27 +25,34 @@ void PresetButton::setPreset(QString presetPath)
 
 void PresetButton::slotPresetSelected(QString presetPath)
 {
-    if(this->presetPath.isEmpty())
+    if(this->presetPath.isEmpty()) {
         return;
-    if(this->presetPath == presetPath && this->isChecked())
+    }
+
+    if(this->presetPath == presetPath && this->isChecked()) {
         return;
+    }
 
     this->blockSignals(true);
-    if(presetPath == this->presetPath){
+
+    if(presetPath == this->presetPath) {
         this->setChecked(true);
     } else {
         this->setChecked(false);
     }
+
     this->blockSignals(false);
 }
 
 void PresetButton::_slotClicked(bool checked)
 {
-    if(!checked){
+    if(!checked) {
         this->setChecked(false);
         return;
     }
-    if (!this->text().isEmpty())
+
+    if(!this->text().isEmpty()) {
         emit sigClicked(this->presetPath);
+    }
 }
 
