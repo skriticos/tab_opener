@@ -26,7 +26,7 @@ libraries, so no more requirements.
 Screenshot
 ----------
 
-![Alt text](/snapshot1.jpg?raw=true "Optional Title")
+![Alt text](/screenshot.jpeg?raw=true "Optional Title")
 
 
 
