@@ -15,6 +15,12 @@ Video explaining the application
 [Youtube Video (https://www.youtube.com/watch?v=61jXPoaKjsM)]
 
 
+Screenshot
+----------
+
+![Alt text](/screenshot.jpeg?raw=true "Optional Title")
+
+
 Target audience
 ---------------
 
@@ -27,12 +33,6 @@ Technical Requirements
 
 A Linux desktop and Qt5 libraries installed. The application only uses the Qt
 libraries, so no more requirements.
-
-
-Screenshot
-----------
-
-![Alt text](/screenshot.jpeg?raw=true "Optional Title")
 
 
 Usecase
