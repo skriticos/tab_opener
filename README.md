@@ -9,6 +9,12 @@ It has been created to optimize my daily workflow with files and commands.
 As such, it might not be useful for everyone, but some folks might appreciate
 it.
 
+Video explaining the application
+--------------------------------
+
+[Youtube Video (https://www.youtube.com/watch?v=61jXPoaKjsM)]
+
+
 Target audience
 ---------------
 
@@ -27,13 +33,6 @@ Screenshot
 ----------
 
 ![Alt text](/screenshot.jpeg?raw=true "Optional Title")
-
-
-
-Video explaining the application
---------------------------------
-
-[Youtube Video (https://www.youtube.com/watch?v=61jXPoaKjsM)]
 
 
 Usecase
