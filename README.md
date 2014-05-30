@@ -12,7 +12,7 @@ it.
 Video explaining the application
 --------------------------------
 
-[Youtube Video (https://www.youtube.com/watch?v=61jXPoaKjsM)]
+[YouTube Video (https://www.youtube.com/watch?v=61jXPoaKjsM)]
 
 
 Screenshot
@@ -24,7 +24,7 @@ Screenshot
 Target audience
 ---------------
 
-Users and developers who work with different applicaitons of files and want to
+Users and developers who work with different applications or files and want to
 be able to quickly open them to optimize their workflow.
 
 
@@ -32,15 +32,15 @@ Technical Requirements
 ----------------------
 
 A Linux desktop and Qt5 libraries installed. The application only uses the Qt
-libraries, so no more requirements.
+libraries, so there are no more requirements.
 
 
-Usecase
--------
+Use Case
+--------
 
 The user is editing HTML files without IDE. He quickly switches between the
 web-browser and the editor for the files. Because there are many files, the user
-is hunting for them in the file manager. Particulary he is hunting for the
+is hunting for them in the file manager. Particularly he is hunting for the
 secondary application in the context menu as simple activation can only be bound
 to one application.
 
@@ -54,7 +54,7 @@ for example a qick todo list.
 
 With tab\_opener the user does not have many windows open. Every time a file
 is opened, the tab\_opener application closes. The user likes to Alt-Tab between
-his application and he does not like it when a lot of auxilliary applications
+his application and he does not like it when a lot of auxiliary applications
 clutter that list. tab\_opener does not. It will restore the last state when
 started again, so the user will be able to continue his navigation and file
 opening rigth where he left off.
