@@ -155,7 +155,8 @@ void DsTable::deleteRecord(QString lKey)
 
     Q_ASSERT(this->records.contains(lKey));
 
-    query.prepare("DELETE FROM " + this->tableName + " WHERE " + this->lookupKey + "='html'");
+    query.prepare("DELETE FROM " + this->tableName + " WHERE " + this->lookupKey + "=:lKey");
+    query.bindValue(":lKey", lKey);
     Q_ASSERT(query.exec());
 
     this->records.remove(lKey);
