@@ -287,3 +287,8 @@ void FileBrowserWidget::on_btnScmPush_clicked()
 {
     emit this->sigRequestScmPush();
 }
+
+void FileBrowserWidget::on_pushButton_clicked()
+{
+    emit this->sigRequestExit();
+}

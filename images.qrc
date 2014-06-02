@@ -31,5 +31,6 @@
         <file>rc/media-playback-stop.png</file>
         <file>rc/loader.gif</file>
         <file>rc/exec.gif</file>
+        <file>rc/exit.png</file>
     </qresource>
 </RCC>

@@ -94,6 +94,7 @@ MainWindow::MainWindow(DataStore *ds, QWidget *parent) : QWidget(parent), ui(new
     connect(ui->fileBrowser, SIGNAL(sigRequestScmPull()), ui->commandWidget, SLOT(slotScmPull()));
     connect(ui->fileBrowser, SIGNAL(sigRequestScmCommit(QString)), ui->commandWidget, SLOT(slotScmCommit(QString)));
     connect(ui->fileBrowser, SIGNAL(sigRequestScmPush()), ui->commandWidget, SLOT(slotScmPush()));
+    connect(ui->fileBrowser, SIGNAL(sigRequestExit()), this, SLOT(slotEscPressed()));
 
     // send initial data load
     ds->initWidgetData();

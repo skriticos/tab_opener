@@ -25,6 +25,7 @@ signals:
     void sigFileSelected(QString filePath);
     void sigRequestOpenExtApp(FileOpen::ExtApp extApp, QString folderPath);
     void sigRequestOpenFile(FileOpen::OpenType openType, QString filePath);
+    void sigRequestExit();
 
     void sigRequestScmPull();
     void sigRequestScmCommit(QString commitMsg);
@@ -54,6 +55,8 @@ private slots:
     void on_btnScmPull_clicked();
     void on_btnScmCommit_clicked();
     void on_btnScmPush_clicked();
+
+    void on_pushButton_clicked();
 
 private:
     QString _getSelectedFolder();
