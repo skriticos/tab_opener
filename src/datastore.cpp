@@ -2,7 +2,7 @@
 
 DataStore::DataStore(QObject *parent) : QObject(parent)
 {
-    this->dsDB = QSqlDatabase::addDatabase("QSQLITE");
+    this->dsDB = QSqlDatabase::addDatabase("QSQLITE", "master");
     this->dsDB.setDatabaseName(QDir::homePath() + QDir::separator() + ".tab_opener.db");
     this->dsDB.open();
 

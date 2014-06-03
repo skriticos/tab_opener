@@ -34,6 +34,9 @@ public:
     Record getRecord(QString lookupKey);
     void clearRecords();
 
+signals:
+    void sigRecordLookupFailure(QString lookupKey, QString tableName);
+
 protected:
     void _loadTable();
     void _createTable();
@@ -41,7 +44,6 @@ protected:
     QString tableName;
     QString lookupKey;
     QList<SchemaField> schema;
-    QHash<QString, Record> records; // runtime copy of records, might want to get rid of it
 
     QSqlDatabase db;
 };

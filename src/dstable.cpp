@@ -109,7 +109,7 @@ void DsTable::insertRecord(Record record)
         fieldPlaceholderNames << ":" + schemaField.fieldName;
     }
 
-    if(this->records.contains(lKey)) { // update record
+    if(this->contains(lKey)) {
 
         QStringList setStmt, setFieldNames;
         QString whereStmt, fieldName;
@@ -144,47 +144,77 @@ void DsTable::insertRecord(Record record)
         qDebug() << query.lastError();
         Q_ASSERT(QString("SQL QUERY FAILED").isEmpty());
     }
-
-    // insert record into runtime database
-    this->records.insert(lKey, record);
 }
 
 void DsTable::deleteRecord(QString lKey)
 {
     QSqlQuery query(this->db);
 
-    Q_ASSERT(this->records.contains(lKey));
-
     query.prepare("DELETE FROM " + this->tableName + " WHERE " + this->lookupKey + "=:lKey");
     query.bindValue(":lKey", lKey);
     Q_ASSERT(query.exec());
-
-    this->records.remove(lKey);
 }
 
 int DsTable::size()
 {
-    return this->records.size();
+    QSqlQuery query(this->db);
+    query.exec("SELECT * FROM " + this->tableName);
+    query.last();
+    if(query.at() < 0)
+        return 0;
+    else
+        return query.at() + 1;
 }
 
 bool DsTable::contains(QString lookupKey)
 {
-    return this->records.contains(lookupKey);
+    QSqlQuery query(this->db);
+
+    query.prepare("SELECT * FROM " + this->tableName + " WHERE " + this->lookupKey + "=:lKey");
+    query.bindValue(":lKey", lookupKey);
+    query.exec();
+    return query.next();
 }
 
 DsTable::Record DsTable::getRecord(QString lookupKey)
 {
-    return this->records.value(lookupKey);
+    Record record;
+    QString fieldName;
+    QVariant fieldValue;
+    QSqlQuery query(this->db);
+
+    query.prepare("SELECT * FROM " + this->tableName + " WHERE " + this->lookupKey + "=:lKey");
+    query.bindValue(":lKey", lookupKey);
+    query.exec();
+
+    if(query.next()) {
+        for(int i = 0; i < this->schema.size(); i++) {
+
+            fieldName = this->schema.at(i).fieldName;
+            fieldValue = query.value(i);
+            record.insert(fieldName, fieldValue);
+        }
+    } else {
+        emit this->sigRecordLookupFailure(this->tableName, lookupKey);
+    }
+    return record;
 }
 
 QStringList DsTable::getRecordKeys()
 {
-    return this->records.keys();
+    QStringList recordKeys;
+    QSqlQuery query(this->db);
+
+    query.prepare("SELECT " + this->lookupKey + " FROM " + this->tableName);
+    query.exec();
+    while(query.next())
+        recordKeys << query.value(0).toString();
+
+    return recordKeys;
 }
 
 void DsTable::clearRecords()
 {
-    this->records.clear();
     this->db.exec("DELETE FROM " + this->tableName);
 }
 
@@ -211,9 +241,6 @@ void DsTable::_loadTable()
 
             record.insert(fieldName, fieldValue);
         }
-
-        // commit record
-        records.insert(query.value(0).toString(), record);
     }
 }
 
